@@ -54,7 +54,8 @@ class Player (object):
 			self.answer_completed.add(answer_in)
 
 	def show_stats(self):
-		return([self.nickname,self.answer,len(self.answer_completed) - len(self.answer)])
+		score = len(self.answer_completed) - len(self.answer)
+		return([self.nickname,self.answer,score])
 
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -213,7 +214,7 @@ def stats(update, context):
 	result = ''
 	for player in Players.values():
 		result += '{}: {}/{}\n'.format(player.show_stats()[0], player.show_stats()[-1], total_answer)
-	update.message.reply_text('{game enable=}'.format(Game))
+	update.message.reply_text(Game)
 	update.message.reply_text(result)
 
 def main():
@@ -222,18 +223,23 @@ def main():
     #if len(str)>5:
     #    splitted = str[5:].split(' ')
     #    tt = len(splitted)
+
     #Players['q'] = Player(33, 'sanj')
     #for player in Players.values():
     #    player.answer.add('zz')
     #    player.answer.add('xx')
     #    for ans in player.answer:
     #        answer_list.add(ans)
-
+    
     #Game = True
-    #Players["q"]=2
-    #tt1 = Players.__contains__("q")
-    #tt2 = Players.__contains__("w")
-    #t = 1
+    #for player in Players.values():
+    #    for ans in player.answer:
+    #        answer_list.add(ans)
+
+    #total_answer = len(answer_list)
+    #result = ''
+    #for player in Players.values():
+    #    result += '{}: {}/{}\n'.format(player.show_stats()[0], player.show_stats()[-1], total_answer)
 
     updater = Updater("408100374:AAEhMleUbdVH_G1xmKeCAy8MlNfyBwB9AOo", use_context=True)
     dp = updater.dispatcher
