@@ -113,16 +113,9 @@ def finish(update, context):
 
 def help(update, context):
 	"""Send a message when the command /help is issued."""
-	help_mes = '''Comands list:
-	finish
-	start
-	addlist
-	add
-	load
-	login
-	resetanswer
-	resetgame
-	stats'''
+	help_mes = '''
+    hello
+    hui'''
 	update.message.reply_text(help_mes)
 
 def add(update, context):
