@@ -58,105 +58,107 @@ class Player (object):
 
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------
-def rewrite_file(filename):
-	f = open(filename, "w")
-	f.close()
+#def rewrite_file(filename):
+#	f = open(filename, "w")
+#	f.close()
 
-def write_to_file(filename, string):
-	f = open(filename, "w")
-	f.write(string + '\n')
-	f.close()
+#def write_to_file(filename, string):
+#	f = open(filename, "w")
+#	f.write(string + '\n')
+#	f.close()
 
-def append_to_file(filename, string):
-	f = open(filename, "a")
-	f.write(string + '\n')
-	f.close()
+#def append_to_file(filename, string):
+#	f = open(filename, "a")
+#	f.write(string + '\n')
+#	f.close()
 
-def add_to_file(filename, string):
-	if os.path.isfile(filename):
-		append_to_file(filename, string)
-	else:
-		write_to_file(filename, string)
+#def add_to_file(filename, string):
+#	if os.path.isfile(filename):
+#		append_to_file(filename, string)
+#	else:
+#		write_to_file(filename, string)
 
-def load_game(filename):
-	f = open(filename, "r")
-	content = f.readlines()
-	f.close()
-	content = [x.strip() for x in content]
-	return content
+#def load_game(filename):
+#	f = open(filename, "r")
+#	content = f.readlines()
+#	f.close()
+#	content = [x.strip() for x in content]
+#	return content
 
-def game_of_on():
-	#print("hello, world")
-	global Game
-	if Game == True:
-		Game = False
-	else:
-		Game = True
-
-
-# Define a few command handlers. These usually take the two arguments bot and
-# update. Error handlers also receive the raised TelegramError object in error.
-def start(update, context):
-	"""Send a message when the command /start is issued."""
-	global Time_timer
-	if update.message.chat.id == 64798180:
-		update.message.reply_text('Game started')
-		game_of_on()
-		t = Timer(Time_timer, game_of_on)
-		t.start()
-
-def finish(update, context):
-	if update.message.chat.id == "64798180":
-		game_of_on()
-		update.message.reply_text('Game over')
-
-def help(update, context):
-	"""Send a message when the command /help is issued."""
-	help_mes = '''
-    hello
-    huiza'''
-	if os.path.isfile('game_answers') :
-		text = file_read('game_answers')
-		update.message.reply_text(text)
-	file_add('game_answers', r'qwerty')
-
-	t = 1
-	update.message.reply_text(help_mes)
-
-def add(update, context):
-	In_str = update.message.text[4:].strip()
-	add_to_file('game_answer', In_str)
-	update.message.reply_text('Answer:' + In_str)
-
-def addlist(update, context):
-	In_str = update.message.text[8:].split(' ')
-	for item in In_str:
-		add_to_file('game_answer', item)
-	update.message.reply_text(len(answer_list))
-
-def load(update, context):
-	global answer_list
-	answer_list = load_game('game_answer')
-	update.message.reply_text(len(answer_list))
+#def game_of_on():
+#	#print("hello, world")
+#	global Game
+#	if Game == True:
+#		Game = False
+#	else:
+#		Game = True
 
 
-def resetanswer(update, context):
-	global answer_list
-	if update.message.chat.id == 64798180:
-		rewrite_file('game_answer')
-		answer_list = load_game('game_answer')
-		update.message.reply_text(len(answer_list))
+## Define a few command handlers. These usually take the two arguments bot and
+## update. Error handlers also receive the raised TelegramError object in error.
+#def start(update, context):
+#	"""Send a message when the command /start is issued."""
+#	global Time_timer
+#	if update.message.chat.id == 64798180:
+#		update.message.reply_text('Game started')
+#		game_of_on()
+#		t = Timer(Time_timer, game_of_on)
+#		t.start()
 
-def resetgame(update, context):
-	global Players
-	if update.message.chat.id == 64798180:
-		for player in Players.keys():
-			rewrite_file(player)
-		Players.clear()
-		update.message.reply_text('Game reseted!')
+#def finish(update, context):
+#	if update.message.chat.id == "64798180":
+#		game_of_on()
+#		update.message.reply_text('Game over')
+
+#def help(update, context):
+#	"""Send a message when the command /help is issued."""
+#	help_mes = '''
+#    hello
+#    huiza'''
+#	if os.path.isfile('game_answers') :
+#		text = file_read('game_answers')
+#		update.message.reply_text(text)
+#	file_add('game_answers', r'qwerty')
+
+#	t = 1
+#	update.message.reply_text(help_mes)
+
+#def add(update, context):
+#	In_str = update.message.text[4:].strip()
+#	add_to_file('game_answer', In_str)
+#	update.message.reply_text('Answer:' + In_str)
+
+#def addlist(update, context):
+#	In_str = update.message.text[8:].split(' ')
+#	for item in In_str:
+#		add_to_file('game_answer', item)
+#	update.message.reply_text(len(answer_list))
+
+#def load(update, context):
+#	global answer_list
+#	answer_list = load_game('game_answer')
+#	update.message.reply_text(len(answer_list))
+
+
+#def resetanswer(update, context):
+#	global answer_list
+#	if update.message.chat.id == 64798180:
+#		rewrite_file('game_answer')
+#		answer_list = load_game('game_answer')
+#		update.message.reply_text(len(answer_list))
+
+#def resetgame(update, context):
+#	global Players
+#	if update.message.chat.id == 64798180:
+#		for player in Players.keys():
+#			rewrite_file(player)
+#		Players.clear()
+#		update.message.reply_text('Game reseted!')
+
+#------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 def cheat(update, context):
-	global answer_list,Game,Players,Time_timer
+	global answer_list,Game,Players
 	#if update.message.chat.id == 64798180:
 	update.message.reply_text(answer_list)
 	update.message.reply_text(Game)
@@ -171,14 +173,11 @@ def cheat(update, context):
 		for ans in player.answer_completed:
 			update.message.reply_text(ans)
 
-
-#------------------------------------------------------------------------------------------------------------------------------------------------------------
-
 def error(update, context):
 	logger.warning('Update "%s" caused error "%s"', update, context.error)
 
 def login(update, context):
-	global Players
+	global answer_list,Game,Players
 	if not Game and len(update.message.text)>7:
 	    Players[update.message.chat.id] = Player(update.message.chat.id, update.message.text[7:])
 	    update.message.reply_text(update.message.chat.id)
