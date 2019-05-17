@@ -178,6 +178,7 @@ def error(update, context):
 
 def login(update, context):
 	global answer_list,Game,Players
+	update.message.reply_text('1')
 	if not Game and len(update.message.text)>7:
 	    Players[update.message.chat.id] = Player(update.message.chat.id, update.message.text[7:])
 	    update.message.reply_text(update.message.chat.id)
