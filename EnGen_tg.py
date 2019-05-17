@@ -257,7 +257,7 @@ def main():
     dp.add_handler(CommandHandler("login", login))
     dp.add_handler(CommandHandler("go", start_game))
     dp.add_handler(CommandHandler("stats", stats))
-    dp.add_handler(CommandHandler("cheat123", cheat))
+    #dp.add_handler(CommandHandler("cheat123", cheat))
     dp.add_handler(CommandHandler("show", show_my_ans))
     dp.add_handler(MessageHandler(Filters.text, echo))
 
