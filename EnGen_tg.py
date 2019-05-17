@@ -163,7 +163,7 @@ def cheat(update, context):
 	update.message.reply_text(len(answer_list))
 	update.message.reply_text(Game)
 	update.message.reply_text(len(Players))
-	for player in Players:
+	for player in Players.values():
 		update.message.reply_text('_______________')
 		update.message.reply_text(player.nickname)
 		for ans in player.answer:
@@ -195,7 +195,7 @@ def add_answers(update, context):
 def start_game():
 	global Game
 	Game = True
-	for player in Players:
+	for player in Players.values():
 		for ans in player.answer:
 			answer_list.add(ans)
 
@@ -223,6 +223,10 @@ def main():
     #if len(str)>5:
     #    splitted = str[5:].split(' ')
     #    tt = len(splitted)
+    #Players['q'] = Player(33, 'sanj')
+    #for player in Players.values():
+    #    for ans in player.answer:
+    #        answer_list.add(ans)
 
     #Players["q"]=2
     #tt1 = Players.__contains__("q")
