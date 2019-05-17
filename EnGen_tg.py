@@ -160,7 +160,7 @@ class Player (object):
 def cheat(update, context):
 	global answer_list,Game,Players
 	#if update.message.chat.id == 64798180:
-	update.message.reply_text(answer_list)
+	update.message.reply_text(len(answer_list))
 	update.message.reply_text(Game)
 	update.message.reply_text(len(Players))
 	update.message.reply_text(Time_timer)
