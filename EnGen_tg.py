@@ -176,7 +176,6 @@ def error(update, context):
 
 def login(update, context):
 	global answer_list,Game,Players
-	update.message.reply_text('1')
 	if not Game and len(update.message.text)>7:
 	    Players[update.message.chat.id] = Player(update.message.chat.id, update.message.text[7:])
 	    update.message.reply_text(update.message.chat.id)
@@ -194,6 +193,7 @@ def add_answers(update, context):
 def start_game():
 	global answer_list,Game,Players
 	Game = True
+	update.message.reply_text('st')
 	for player in Players.values():
 		for ans in player.answer:
 			answer_list.add(ans)
@@ -217,15 +217,19 @@ def stats(update, context):
 	update.message.reply_text(result)
 
 def main():
+    #global answer_list,Game,Players
     #str = "/add qk20 pe49 nu32 me32 hwbe4"
     #if len(str)>5:
     #    splitted = str[5:].split(' ')
     #    tt = len(splitted)
     #Players['q'] = Player(33, 'sanj')
     #for player in Players.values():
+    #    player.answer.add('zz')
+    #    player.answer.add('xx')
     #    for ans in player.answer:
     #        answer_list.add(ans)
 
+    #Game = True
     #Players["q"]=2
     #tt1 = Players.__contains__("q")
     #tt2 = Players.__contains__("w")
