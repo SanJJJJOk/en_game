@@ -190,7 +190,7 @@ def add_answers(update, context):
 			str_answer+='\n'+code_answer
 		update.message.reply_text(str_answer)
 
-def start_game():
+def start_game(update, context):
 	global answer_list,Game,Players
 	Game = True
 	update.message.reply_text('st')
