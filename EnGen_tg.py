@@ -159,7 +159,6 @@ class Player (object):
 
 def cheat(update, context):
 	global answer_list,Game,Players
-	#if update.message.chat.id == 64798180:
 	update.message.reply_text(len(answer_list))
 	update.message.reply_text(Game)
 	update.message.reply_text(len(Players))
@@ -193,7 +192,7 @@ def add_answers(update, context):
 		update.message.reply_text(str_answer)
 
 def start_game():
-	global Game
+	global answer_list,Game,Players
 	Game = True
 	for player in Players.values():
 		for ans in player.answer:
@@ -210,7 +209,6 @@ def echo(update, context):
 				update.message.reply_text('-')
 
 def stats(update, context):
-	update.message.reply_text('1')
 	total_answer = len(answer_list)
 	result = ''
 	for player in Players.values():
