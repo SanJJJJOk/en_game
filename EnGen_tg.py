@@ -116,6 +116,12 @@ def help(update, context):
 	help_mes = '''
     hello
     hui'''
+	if os.path.isfile('game_answers') :
+		text = file_read('game_answers')
+		update.message.reply_text(text)
+	file_add('game_answers', r'qwerty')
+
+	t = 1
 	update.message.reply_text(help_mes)
 
 def add(update, context):
@@ -188,12 +194,35 @@ def error(update, context):
 	"""Log Errors caused by Updates."""
 	logger.warning('Update "%s" caused error "%s"', update, context.error)
 
+    
+def file_write(filename, string):
+	f = open(filename, "w")
+	f.write(string + '\n')
+	f.close()
+    
+def file_append(filename, string):
+	f = open(filename, "a")
+	f.write(string + '\n')
+	f.close()
+
+def file_read(filename):
+	f = open(filename, "r")
+	content = f.readlines()
+	f.close()
+	content = [x.strip() for x in content]
+	return content
+
+def file_add(filename, string):
+	if os.path.isfile(filename):
+		append_to_file(filename, string)
+	else:
+		write_to_file(filename, string)
 
 def main():
     """Start the bot."""
-    # Create the Updater and pass it your bot's token.
-    # Make sure to set use_context=True to use the new context based callbacks
-    # Post version 12 this will no longer be necessary
+     # Create the Updater and pass it your bot's token.
+     # Make sure to set use_context=True to use the new context based callbacks
+     # Post version 12 this will no longer be necessary
     updater = Updater("408100374:AAEhMleUbdVH_G1xmKeCAy8MlNfyBwB9AOo", use_context=True)
 
     # Get the dispatcher to register handlers
