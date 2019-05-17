@@ -115,7 +115,7 @@ def help(update, context):
 	"""Send a message when the command /help is issued."""
 	help_mes = '''
     hello
-    hui'''
+    huiza'''
 	if os.path.isfile('game_answers') :
 		text = file_read('game_answers')
 		update.message.reply_text(text)
