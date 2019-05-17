@@ -31,7 +31,7 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 logger = logging.getLogger(__name__)
 
 #Define a global variables
-answer_list = ()
+answer_list = set()
 Game = False
 Players = {}
 Time_timer = 7200.0
@@ -41,24 +41,23 @@ Time_timer = 7200.0
 class Player (object):
 	"""docstring"""
 
-	def __init__(self, id):
+	def __init__(self, id, nickname):
 		"""Constructor"""
 		self.id = id
+		self.nickname = nickname
 		self.answer = set()
-		self.count_answer = 0
+		self.answer_completed = set()
 
-	def check_answer(self, answer_in):
-		self.answer.add(answer_in)
-		if len(self.answer) != self.count_answer:
-			self.count_answer = len(self.answer)
-			string_log = '{} - {} - {}'.format(id, answer_in, datetime.today().isoformat(sep='T'))
-			#add_to_file(self.id, string_log)
-			return(string_log)
+	def set_answer(self, answer_in):
+		self.answer_completed.add(answer_in)
+		if not self.answer_completed.__contains__(answer_in):
+			self.answer_completed.add(answer_in)
 
 	def show_stats(self):
-		return([self.id,self.answer,self.count_answer])
+		return([self.nickname,self.answer,len(self.answer_completed) - len(self.answer)])
 
-# Define support function
+
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------
 def rewrite_file(filename):
 	f = open(filename, "w")
 	f.close()
@@ -131,7 +130,6 @@ def add(update, context):
 
 def addlist(update, context):
 	In_str = update.message.text[8:].split(' ')
-	#print(In_str)
 	for item in In_str:
 		add_to_file('game_answer', item)
 	update.message.reply_text(len(answer_list))
@@ -141,10 +139,6 @@ def load(update, context):
 	answer_list = load_game('game_answer')
 	update.message.reply_text(len(answer_list))
 
-def login(update, context):
-	global Players
-	Players[update.message.chat.id] = Player(update.message.chat.id)
-	update.message.reply_text(update.message.chat.id)
 
 def resetanswer(update, context):
 	global answer_list
@@ -152,7 +146,6 @@ def resetanswer(update, context):
 		rewrite_file('game_answer')
 		answer_list = load_game('game_answer')
 		update.message.reply_text(len(answer_list))
-		#print(answer_list)
 
 def resetgame(update, context):
 	global Players
@@ -162,101 +155,94 @@ def resetgame(update, context):
 		Players.clear()
 		update.message.reply_text('Game reseted!')
 
+def cheat(update, context):
+	global answer_list,Game,Players,Time_timer
+	#if update.message.chat.id == 64798180:
+	update.message.reply_text(answer_list)
+	update.message.reply_text(Game)
+	update.message.reply_text(len(Players))
+	update.message.reply_text(Time_timer)
+	for player in Players:
+		update.message.reply_text('_______________')
+		update.message.reply_text(player.nickname)
+		for ans in player.answer:
+			update.message.reply_text(ans)
+		update.message.reply_text('---')
+		for ans in player.answer_completed:
+			update.message.reply_text(ans)
+
+
+#------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+def error(update, context):
+	logger.warning('Update "%s" caused error "%s"', update, context.error)
+
+def login(update, context):
+	global Players
+	if not Game and len(update.message.text)>7:
+	    Players[update.message.chat.id] = Player(update.message.chat.id, update.message.text[7:])
+	    update.message.reply_text(update.message.chat.id)
+
+def add_answers(update, context):
+	if not Game and len(update.message.text) > 5 and Players.__contains__(update.message.chat.id):
+		splitted = update.message.text[5:].split(' ')
+		str_answer = 'Answer:'
+		for code_answer in splitted :
+			Players[update.message.chat.id].answer.add(code_answer)
+			Players[update.message.chat.id].answer_completed.add(code_answer)
+			str_answer+='\n'+code_answer
+		update.message.reply_text(str_answer)
+
+def start_game():
+	global Game
+	Game = True
+	for player in Players:
+		for ans in player.answer:
+			answer_list.add(ans)
+
+
+def echo(update, context):
+	if Game and update.message.text.startswith('.') and update.message.chat.id > 0:
+			answer_for_check = update.message.text[1:].strip()
+			if answer_for_check in answer_list:
+				update.message.reply_text('+')
+				Players[update.message.chat.id].set_answer(answer_for_check)
+			else:
+				update.message.reply_text('-')
+
 def stats(update, context):
 	total_answer = len(answer_list)
 	result = ''
 	for player in Players.values():
 		result += '{}: {}/{}\n'.format(player.show_stats()[0], player.show_stats()[-1], total_answer)
-	#print(result)
-	update.message.reply_text(Game)
+	update.message.reply_text('{game enable=}'.format(Game))
 	update.message.reply_text(result)
 
-def cheat(update, context):
-	global answer_list,Game,Players,Time_timer
-	if update.message.chat.id == 64798180:
-		update.message.reply_text(answer_list)
-		update.message.reply_text(Game)
-		update.message.reply_text(len(Players))
-		update.message.reply_text(Time_timer)
-
-def echo(update, context):
-	"""Echo the user message."""
-	if update.message.text.startswith('.') and update.message.chat.id > 0:
-			answer_for_check = update.message.text[1:].strip()
-			if Game and answer_for_check in answer_list:
-				update.message.reply_text('+')
-				result = Players[update.message.chat.id].check_answer(answer_for_check)
-				update.message.reply_text(Players[update.message.chat.id].show_stats())
-			else:
-				update.message.reply_text('-')
-
-def error(update, context):
-	"""Log Errors caused by Updates."""
-	logger.warning('Update "%s" caused error "%s"', update, context.error)
-
-    
-def file_write(filename, string):
-	f = open(filename, "w")
-	f.write(string + '\n')
-	f.close()
-    
-def file_append(filename, string):
-	f = open(filename, "a")
-	f.write(string + '\n')
-	f.close()
-
-def file_read(filename):
-	f = open(filename, "r")
-	content = f.readlines()
-	f.close()
-	content = [x.strip() for x in content]
-	return content
-
-def file_add(filename, string):
-	if os.path.isfile(filename):
-		append_to_file(filename, string)
-	else:
-		write_to_file(filename, string)
-
 def main():
-    """Start the bot."""
-     # Create the Updater and pass it your bot's token.
-     # Make sure to set use_context=True to use the new context based callbacks
-     # Post version 12 this will no longer be necessary
-    updater = Updater("408100374:AAEhMleUbdVH_G1xmKeCAy8MlNfyBwB9AOo", use_context=True)
+    #str = "/add qk20 pe49 nu32 me32 hwbe4"
+    #if len(str)>5:
+    #    splitted = str[5:].split(' ')
+    #    tt = len(splitted)
 
-    # Get the dispatcher to register handlers
+    #Players["q"]=2
+    #tt1 = Players.__contains__("q")
+    #tt2 = Players.__contains__("w")
+    #t = 1
+
+    updater = Updater("408100374:AAEhMleUbdVH_G1xmKeCAy8MlNfyBwB9AOo", use_context=True)
     dp = updater.dispatcher
 
-    # on different commands - answer in Telegram
-    #dp.add_handler(CommandHandler("start", start))
-    dp.add_handler(CommandHandler("help", help))
-    # My commands
-    dp.add_handler(CommandHandler("start", start)) #start game
-    dp.add_handler(CommandHandler("finish", finish)) #stop game
-    dp.add_handler(CommandHandler("addlist", addlist)) #add list of answer
-    dp.add_handler(CommandHandler("add", add)) #add anwer
-    dp.add_handler(CommandHandler("load", load)) #load answer
-    dp.add_handler(CommandHandler("login", login)) #LoginUP player
-    dp.add_handler(CommandHandler("resetanswer", resetanswer)) #delet all answer
-    dp.add_handler(CommandHandler("resetgame", resetgame)) #Kick all playesrs
-    #dp.add_handler(CommandHandler("setuptest", setuptest)) #test login 3 bots
-    dp.add_handler(CommandHandler("stats", stats)) #stats of game
-    dp.add_handler(CommandHandler("cheat", cheat)) #stats of game
-
-
-    # on noncommand i.e message - echo the message on Telegram
+    dp.add_handler(CommandHandler("add", add_answers))
+    dp.add_handler(CommandHandler("login", login))
+    dp.add_handler(CommandHandler("start", start_game))
+    dp.add_handler(CommandHandler("stats", stats))
+    dp.add_handler(CommandHandler("cheat", cheat))
     dp.add_handler(MessageHandler(Filters.text, echo))
 
-    # log all errors
     dp.add_error_handler(error)
 
-    # Start the Bot
     updater.start_polling()
 
-    # Run the bot until you press Ctrl-C or the process receives SIGINT,
-    # SIGTERM or SIGABRT. This should be used most of the time, since
-    # start_polling() is non-blocking and will stop the bot gracefully.
     updater.idle()
 
 
