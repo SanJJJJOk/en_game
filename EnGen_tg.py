@@ -211,6 +211,7 @@ def echo(update, context):
 				update.message.reply_text('-')
 
 def stats(update, context):
+	update.message.reply_text('1')
 	total_answer = len(answer_list)
 	result = ''
 	for player in Players.values():
