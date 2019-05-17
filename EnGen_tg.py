@@ -163,14 +163,14 @@ def cheat(update, context):
 	update.message.reply_text(len(answer_list))
 	update.message.reply_text(Game)
 	update.message.reply_text(len(Players))
-	#for player in Players:
-	#	update.message.reply_text('_______________')
-	#	update.message.reply_text(player.nickname)
-	#	for ans in player.answer:
-	#		update.message.reply_text(ans)
-	#	update.message.reply_text('---')
-	#	for ans in player.answer_completed:
-	#		update.message.reply_text(ans)
+	for player in Players:
+		update.message.reply_text('_______________')
+		update.message.reply_text(player.nickname)
+		for ans in player.answer:
+			update.message.reply_text(ans)
+		update.message.reply_text('---')
+		for ans in player.answer_completed:
+			update.message.reply_text(ans)
 
 def error(update, context):
 	logger.warning('Update "%s" caused error "%s"', update, context.error)
