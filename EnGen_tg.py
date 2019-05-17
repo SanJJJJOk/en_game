@@ -180,14 +180,24 @@ def login(update, context):
 	if not Game and len(update.message.text)>7:
 	    Players[update.message.chat.id] = Player(update.message.chat.id, update.message.text[7:])
 	    update.message.reply_text(update.message.chat.id)
-
+        
 def add_answers(update, context):
+	global answer_list,Game,Players
 	if not Game and len(update.message.text) > 5 and Players.__contains__(update.message.chat.id):
 		splitted = update.message.text[5:].split(' ')
-		str_answer = 'Answer:'
+		str_answer = 'added:'
 		for code_answer in splitted :
-			Players[update.message.chat.id].answer.add(code_answer)
-			Players[update.message.chat.id].answer_completed.add(code_answer)
+			if not Players[update.message.chat.id].answer.__contains__(code_answer) :
+				Players[update.message.chat.id].answer.add(code_answer)
+				Players[update.message.chat.id].answer_completed.add(code_answer)
+				str_answer+='\n'+code_answer
+		update.message.reply_text(str_answer)
+
+def show_my_ans(update, context):
+	global answer_list,Game,Players
+	if not Game and Players.__contains__(update.message.chat.id):
+		str_answer = 'full list:'
+		for ans in Players[update.message.chat.id].answer :
 			str_answer+='\n'+code_answer
 		update.message.reply_text(str_answer)
 
@@ -197,10 +207,10 @@ def start_game(update, context):
 	for player in Players.values():
 		for ans in player.answer:
 			answer_list.add(ans)
-	answer_list.add('m')
 	update.message.reply_text('success')
 
 def echo(update, context):
+	global answer_list,Game,Players
 	if Game and update.message.text.startswith('.') and update.message.chat.id > 0:
 			answer_for_check = update.message.text[1:].strip()
 			if answer_for_check in answer_list:
@@ -214,7 +224,6 @@ def stats(update, context):
 	result = ''
 	for player in Players.values():
 		result += '{}: {}/{}\n'.format(player.show_stats()[0], player.show_stats()[-1], total_answer - len(player.answer))
-	update.message.reply_text(Game)
 	update.message.reply_text(result)
 
 def main():
@@ -249,6 +258,7 @@ def main():
     dp.add_handler(CommandHandler("start", start_game))
     dp.add_handler(CommandHandler("stats", stats))
     dp.add_handler(CommandHandler("cheat", cheat))
+    dp.add_handler(CommandHandler("show", show_my_ans))
     dp.add_handler(MessageHandler(Filters.text, echo))
 
     dp.add_error_handler(error)
