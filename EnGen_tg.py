@@ -194,11 +194,11 @@ def add_answers(update, context):
 def start_game(update, context):
 	global answer_list,Game,Players
 	Game = True
-	update.message.reply_text('st')
 	for player in Players.values():
 		for ans in player.answer:
 			answer_list.add(ans)
-
+	answer_list.add('m')
+	update.message.reply_text('success')
 
 def echo(update, context):
 	if Game and update.message.text.startswith('.') and update.message.chat.id > 0:
@@ -213,7 +213,7 @@ def stats(update, context):
 	total_answer = len(answer_list)
 	result = ''
 	for player in Players.values():
-		result += '{}: {}/{}\n'.format(player.show_stats()[0], player.show_stats()[-1], total_answer)
+		result += '{}: {}/{}\n'.format(player.show_stats()[0], player.show_stats()[-1], total_answer - len(player.answer))
 	update.message.reply_text(Game)
 	update.message.reply_text(result)
 
