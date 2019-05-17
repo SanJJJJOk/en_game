@@ -198,7 +198,7 @@ def show_my_ans(update, context):
 	if not Game and Players.__contains__(update.message.chat.id):
 		str_answer = 'full list:'
 		for ans in Players[update.message.chat.id].answer :
-			str_answer+='\n'+code_answer
+			str_answer+='\n'+ans
 		update.message.reply_text(str_answer)
 
 def start_game(update, context):
