@@ -238,17 +238,20 @@ def handlr(update, context):
         if text=="0":
             for i in range(7):
                 vals[i] = True
-        show(id)
+        show(update, id)
         update.message.reply_text('d11')
         return
     update.message.reply_text('d2')
     try:
+        update.message.reply_text(text[0])
+        update.message.reply_text(text[1])
+        update.message.reply_text('d3')
         i1 = int(text[0])
         i2 = int(text[1])
         vals[i1-1]=False
         vals[i2-1]=False
-        show(id)
-        update.message.reply_text('d3')
+        show(update, id)
+        update.message.reply_text('d4')
         tmp = [False, False, False, False, False, False, False]
         for i in range(7):
             if vals[i]:
@@ -262,12 +265,13 @@ def handlr(update, context):
                     continue
                 tmp[i-1]=True
                 tmp[i+1]=True
-        show(id)
+        update.message.reply_text('d5')
+        show(update, id)
     except:
         update.message.reply_text('not valid input')
 
 
-def show(id):
+def show(update, id):
     strr = ''
     for i in range(7):
         if Players[id][i]:
