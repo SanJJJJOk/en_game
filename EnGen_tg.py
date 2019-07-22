@@ -34,6 +34,7 @@ logger = logging.getLogger(__name__)
 answer_list = set()
 Game = False
 Players = {}
+BestResults = {}
 Time_timer = 7200.0
 #Time_timer = 30.0
 
@@ -177,9 +178,9 @@ def error(update, context):
 
 def login(update, context):
 	global answer_list,Game,Players
-	if not Game and len(update.message.text)>7:
-	    Players[update.message.chat.id] = Player(update.message.chat.id, update.message.text[7:])
-	    update.message.reply_text(update.message.chat.id)
+	if len(update.message.text)>7:
+	    Players[update.message.chat.id] = [True, True, True, True, True, True, True]#Player(update.message.chat.id, update.message.text[7:])
+	    #update.message.reply_text(update.message.chat.id)
         
 def add_answers(update, context):
 	global answer_list,Game,Players
@@ -226,6 +227,52 @@ def stats(update, context):
 		result += '{}: {}/{}\n'.format(player.show_stats()[0], player.show_stats()[-1], total_answer - len(player.answer))
 	update.message.reply_text(result)
 
+def handlr(update, context):
+    if not update.message.chat.id in Players:
+        Players[update.message.chat.id] = [True, True, True, True, True, True, True]
+    id = update.message.chat.id
+    vals = Players[id]
+    text = update.message.text
+    if not len(text)==2:
+        if text=='0':
+            for i in range(7):
+                vals[i] = True
+        show(id)
+        return
+    try:
+        i1 = int(text[0])
+        i2 = int(text[1])
+        vals[i1-1]=False
+        vals[i2-1]=False
+        show(id)
+        tmp = [False, False, False, False, False, False, False]
+        for i in range(7):
+            if vals[i]:
+                if i == 0:
+                    tmp[1]=True
+                    tmp[6]=True
+                    continue
+                if i == 6:
+                    tmp[0]=True
+                    tmp[5]=True
+                    continue
+                tmp[i-1]=True
+                tmp[i+1]=True
+        show(id)
+    except:
+        update.message.reply_text('not valid input')
+
+
+def show(id):
+    strr = ''
+    for i in range(7):
+        if Players[id][i]:
+            strr=strr+str(i+1)
+        else:
+            strr=strr+'x'
+    update.message.reply_text(strr)
+
+
 def main():
     #global answer_list,Game,Players
     #str = "/add qk20 pe49 nu32 me32 hwbe4"
@@ -253,13 +300,14 @@ def main():
     updater = Updater("408100374:AAEhMleUbdVH_G1xmKeCAy8MlNfyBwB9AOo", use_context=True)
     dp = updater.dispatcher
 
-    dp.add_handler(CommandHandler("add", add_answers))
+    #dp.add_handler(CommandHandler("add", add_answers))
     dp.add_handler(CommandHandler("login", login))
-    dp.add_handler(CommandHandler("go", start_game))
-    dp.add_handler(CommandHandler("stats", stats))
-    #dp.add_handler(CommandHandler("cheat123", cheat))
-    dp.add_handler(CommandHandler("show", show_my_ans))
-    dp.add_handler(MessageHandler(Filters.text, echo))
+    #dp.add_handler(CommandHandler("go", start_game))
+    #dp.add_handler(CommandHandler("stats", stats))
+    ##dp.add_handler(CommandHandler("cheat123", cheat))
+    #dp.add_handler(CommandHandler("show", show_my_ans))
+    #dp.add_handler(MessageHandler(Filters.text, echo))
+    dp.add_handler(MessageHandler(Filters.text, handlr))
 
     dp.add_error_handler(error)
 
