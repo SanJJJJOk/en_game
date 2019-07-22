@@ -230,7 +230,6 @@ def stats(update, context):
 def handlr(update, context):
     if not update.message.chat.id in Players:
         Players[update.message.chat.id] = [True, True, True, True, True, True, True]
-    update.message.reply_text('d1')
     id = update.message.chat.id
     vals = Players[id]
     text = update.message.text
@@ -239,19 +238,15 @@ def handlr(update, context):
             for i in range(7):
                 vals[i] = True
         show(update, id)
-        update.message.reply_text('d11')
         return
-    update.message.reply_text('d2')
     try:
         update.message.reply_text(text[0])
         update.message.reply_text(text[1])
-        update.message.reply_text('d3')
         i1 = int(text[0])
         i2 = int(text[1])
         vals[i1-1]=False
         vals[i2-1]=False
         show(update, id)
-        update.message.reply_text('d4')
         tmp = [False, False, False, False, False, False, False]
         for i in range(7):
             if vals[i]:
@@ -265,7 +260,7 @@ def handlr(update, context):
                     continue
                 tmp[i-1]=True
                 tmp[i+1]=True
-        update.message.reply_text('d5')
+        Players[id] = tmp
         show(update, id)
     except:
         update.message.reply_text('not valid input')
