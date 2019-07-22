@@ -237,11 +237,10 @@ def handlr(update, context):
         if text=="0":
             for i in range(7):
                 vals[i] = True
+            update.message.reply_text('0')
         show(update, id)
         return
     try:
-        update.message.reply_text(text[0])
-        update.message.reply_text(text[1])
         i1 = int(text[0])
         i2 = int(text[1])
         vals[i1-1]=False
@@ -261,9 +260,10 @@ def handlr(update, context):
                 tmp[i-1]=True
                 tmp[i+1]=True
         Players[id] = tmp
+        update.message.reply_text('+')
         show(update, id)
     except:
-        update.message.reply_text('not valid input')
+        show(update, id)
 
 
 def show(update, id):
