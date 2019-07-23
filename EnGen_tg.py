@@ -38,7 +38,7 @@ SecretHolder = {}
 def login(update, context):
 	if len(update.message.text)<7:
 	    update.message.reply_text('login is invalid')
-        return
+	    return
 	if not update.message.chat.id in Game.players:
 	    Game.players[update.message.chat.id] = Player(update.message.chat.id)
 	    update.message.reply_text('nickname is successfully created')
