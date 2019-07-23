@@ -1,7 +1,7 @@
 
 class Holder(object):
 	def __init__(self):
-		self.players = []
+		self.players = {}
 		self.games_count = 3        
 
 	def set_nickname(self, id, nick):
@@ -9,7 +9,7 @@ class Holder(object):
 
 	def show_stat(self):
 		result = []
-		for player in self.players:
+		for key, player in self.players:
 		    player_res = ''
 		    for i in range(self.games_count):
 		        if player.gamestats[i] is None:

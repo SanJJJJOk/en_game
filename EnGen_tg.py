@@ -102,7 +102,9 @@ def error(update, context):
 
 def main():
     #Game.players.append(Player('qwe'))
-    #Game.show_stat()
+    #ttt = Game.show_stat()
+    #statistics(None, None)
+    #pass
     #global answer_list,Game,Players
     #str = "/add qk20 pe49 nu32 me32 hwbe4"
     #if len(str)>5:
