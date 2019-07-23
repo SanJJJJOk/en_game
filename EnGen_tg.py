@@ -330,8 +330,8 @@ logger = logging.getLogger(__name__)
 #		for ans in player.answer_completed:
 #			update.message.reply_text(ans)
 
-#def error(update, context):
-#	logger.warning('Update "%s" caused error "%s"', update, context.error)
+def error(update, context):
+	logger.warning('Update "%s" caused error "%s"', update, context.error)
 
 #def login(update, context):
 #	global answer_list,Game,Players
