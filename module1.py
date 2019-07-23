@@ -29,7 +29,7 @@ class Holder(object):
 		if self.players[id].gamestats[gamenum - 1] is None:
 		    return 'you are not authorized to this game'
 		self.players[id].currgame = gamenum
-		return 'game # ' + gamenum
+		return 'game # ' + str(gamenum)
 		    
 	def game(self, id, message):
 		if self.players[id].currgame == 1:
