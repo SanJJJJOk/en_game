@@ -38,6 +38,7 @@ SecretHolder = {}
 def login(update, context):
 	if len(update.message.text)<7:
 	    update.message.reply_text('login is invalid')
+        return
 	if not update.message.chat.id in Game.players:
 	    Game.players[update.message.chat.id] = Player(update.message.chat.id)
 	    update.message.reply_text('nickname is successfully created')
@@ -52,6 +53,7 @@ def start(update, context):
 def play(update, context):
     if not update.message.chat.id in Game.players:
         start(update, context)
+        return
     try:
         int_message = int(update.message.text[6:])
         answer = Game.play(update.message.chat.id, int_message)
@@ -62,6 +64,7 @@ def play(update, context):
 def handlr(update, context):
     if not update.message.chat.id in Game.players:
         start(update, context)
+        return
     answer = Game.game(update.message.chat.id, update.message.text)
     for txt in answer:
         update.message.reply_text(txt)
@@ -82,6 +85,7 @@ def gamehelp(update, context):
     SecretHolder[update.message.chat.id].append(update.message.text)
     if not update.message.chat.id in Game.players:
         start(update, context)
+        return
     answer = Game.gamehelp(update.message.chat.id)
     for txt in answer:
         update.message.reply_text(txt)
