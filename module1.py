@@ -1,7 +1,7 @@
 
 class Holder(object):
 	def __init__(self):
-		self.players = {}
+		self.players = []
 		self.games_count = 3        
 
 	def set_nickname(self, id, nick):
@@ -19,7 +19,7 @@ class Holder(object):
 		                player_res=player_res+'+'
 		            else:
 		                player_res=player_res+'-'
-		    result.append(player.nickname + ':' + player_res)
+		    result.append(player.nickname + ': ' + player_res)
 		return result
 
 	def play(self, id, gamenum):

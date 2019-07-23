@@ -101,6 +101,8 @@ def error(update, context):
 	logger.warning('Update "%s" caused error "%s"', update, context.error)
 
 def main():
+    #Game.players.append(Player('qwe'))
+    #Game.show_stat()
     #global answer_list,Game,Players
     #str = "/add qk20 pe49 nu32 me32 hwbe4"
     #if len(str)>5:
