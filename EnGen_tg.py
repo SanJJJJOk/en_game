@@ -384,8 +384,8 @@ logger = logging.getLogger(__name__)
 #		result += '{}: {}/{}\n'.format(player.show_stats()[0], player.show_stats()[-1], total_answer - len(player.answer))
 #	update.message.reply_text(result)
 
-#def handlr(update, context):
-#    if not update.message.chat.id in Players:
+def handlr(update, context):
+    update.message.reply_text('0')
 #        Players[update.message.chat.id] = [True, True, True, True, True, True, True]
 #    id = update.message.chat.id
 #    vals = Players[id]
