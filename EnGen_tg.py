@@ -434,7 +434,6 @@ logger = logging.getLogger(__name__)
 
 
 def main():
-    t = Game.players
     #global answer_list,Game,Players
     #str = "/add qk20 pe49 nu32 me32 hwbe4"
     #if len(str)>5:
