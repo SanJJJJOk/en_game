@@ -19,7 +19,6 @@ bot.
 
 import logging
 import os.path
-#from module1 import *
 
 from datetime import datetime
 from threading import Timer
@@ -32,169 +31,169 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 logger = logging.getLogger(__name__)
 
 
-class Holder(object):
-	def __init__(self):
-		self.players = {}
-		self.games_count = 3        
+#class Holder(object):
+#	def __init__(self):
+#		self.players = {}
+#		self.games_count = 3        
 
-	def set_nickname(self, id, nick):
-		self.players[id].nickname = nick
+#	def set_nickname(self, id, nick):
+#		self.players[id].nickname = nick
 
-	def show_stat(self):
-		result = []
-		for player in self.players:
-		    player_res = ''
-		    for i in range(self.games_count):
-		        if player.gamestats[i] is None:
-		            player_res=player_res+'x'
-		        else:
-		            if player.gamestats[i]:
-		                player_res=player_res+'+'
-		            else:
-		                player_res=player_res+'-'
-		    result.append(player.nickname + ':' + player_res)
-		return result
+#	def show_stat(self):
+#		result = []
+#		for player in self.players:
+#		    player_res = ''
+#		    for i in range(self.games_count):
+#		        if player.gamestats[i] is None:
+#		            player_res=player_res+'x'
+#		        else:
+#		            if player.gamestats[i]:
+#		                player_res=player_res+'+'
+#		            else:
+#		                player_res=player_res+'-'
+#		    result.append(player.nickname + ':' + player_res)
+#		return result
 
-	def play(self, id, gamenum):
-		if gamenum>self.games_count or gamenum<1:
-		    return 'game does not exist'
-		if self.players[id].gamestats[gamenum - 1] is None:
-		    return 'you are not authorized to this game'
-		self.players[id].currgame = gamenum
-		return 'game # ' + gamenum
+#	def play(self, id, gamenum):
+#		if gamenum>self.games_count or gamenum<1:
+#		    return 'game does not exist'
+#		if self.players[id].gamestats[gamenum - 1] is None:
+#		    return 'you are not authorized to this game'
+#		self.players[id].currgame = gamenum
+#		return 'game # ' + gamenum
 		    
-	def game(self, id, message):
-		if self.players[id].currgame == 1:
-		    return self.__game1(id, message)
-		return ['choose game with ''/play N'' command']
+#	def game(self, id, message):
+#		if self.players[id].currgame == 1:
+#		    return self.__game1(id, message)
+#		return ['choose game with ''/play N'' command']
 		    
-	def gamehelp(self, id):
-		if self.players[id].currgame == 1:
-		    return [
-                'available commands:',
-                ' ''0'' - reset state',
-                ' ''NN''(N - number from 1 to 7) - make a move. after this you receive two messages: first - state after your move, second - state after the rabbit actions']
-		return ['choose game with ''/play <N>'' command']
+#	def gamehelp(self, id):
+#		if self.players[id].currgame == 1:
+#		    return [
+#                'available commands:',
+#                ' ''0'' - reset state',
+#                ' ''NN''(N - number from 1 to 7) - make a move. after this you receive two messages: first - state after your move, second - state after the rabbit actions']
+#		return ['choose game with ''/play <N>'' command']
 		
-	def __game1(self, id, message):
-		vals = self.players[id].game1
-		if text=="show":
-		    return [self.__game1_show(id)]
-		if not len(text)==2:
-		    if text=="0":
-		        for i in range(7):
-		            vals[i] = True
-		        return ['reseted']
-		    return ['not valid input']
-		try:
-		    i1 = int(text[0])
-		    i2 = int(text[1])
-		    if i1>7 or i1<1 or i2>7 or i2<1 or i1==i2:
-		        return ['not valid input']
-		    vals[i1-1]=False
-		    vals[i2-1]=False
-		    first_result = self.__game1_show(id)
-		    tmp = [False, False, False, False, False, False, False]
-		    for i in range(7):
-		        if vals[i]:
-		            if i == 0:
-		                tmp[1]=True
-		                tmp[6]=True
-		                continue
-		            if i == 6:
-		                tmp[0]=True
-		                tmp[5]=True
-		                continue
-		    self.players[id].game1 = tmp
-		    return [first_result, self.__game1_show(id)]
-		except:
-		    return ['not valid input']
+#	def __game1(self, id, message):
+#		vals = self.players[id].game1
+#		if text=="show":
+#		    return [self.__game1_show(id)]
+#		if not len(text)==2:
+#		    if text=="0":
+#		        for i in range(7):
+#		            vals[i] = True
+#		        return ['reseted']
+#		    return ['not valid input']
+#		try:
+#		    i1 = int(text[0])
+#		    i2 = int(text[1])
+#		    if i1>7 or i1<1 or i2>7 or i2<1 or i1==i2:
+#		        return ['not valid input']
+#		    vals[i1-1]=False
+#		    vals[i2-1]=False
+#		    first_result = self.__game1_show(id)
+#		    tmp = [False, False, False, False, False, False, False]
+#		    for i in range(7):
+#		        if vals[i]:
+#		            if i == 0:
+#		                tmp[1]=True
+#		                tmp[6]=True
+#		                continue
+#		            if i == 6:
+#		                tmp[0]=True
+#		                tmp[5]=True
+#		                continue
+#		    self.players[id].game1 = tmp
+#		    return [first_result, self.__game1_show(id)]
+#		except:
+#		    return ['not valid input']
 
-	def __game1_show(id):
-		strr = ''
-		for i in range(7):
-		    if self.players[id].game1[i]:
-		        strr=strr+str(i+1)
-		    else:
-		        strr=strr+'x'
-		return strr
+#	def __game1_show(id):
+#		strr = ''
+#		for i in range(7):
+#		    if self.players[id].game1[i]:
+#		        strr=strr+str(i+1)
+#		    else:
+#		        strr=strr+'x'
+#		return strr
 		
-class Player(object):
-	def __init__(self, id):
-		self.id = id
-		self.nickname = id
-		self.gamestats = [False, None, None]
-		self.currgame = 0
-		self.game1 = [False, False, False, False, False, False, False]
+#class Player(object):
+#	def __init__(self, id):
+#		self.id = id
+#		self.nickname = id
+#		self.gamestats = [False, None, None]
+#		self.currgame = 0
+#		self.game1 = [False, False, False, False, False, False, False]
 
 
-#Define a global variables
-answer_list = set()
-Game = Holder()
-#Players = {}
-SecretHolder = {}
-BestResults = {}
-Time_timer = 7200.0
-#Time_timer = 30.0
+##Define a global variables
+#answer_list = set()
+#Game = Holder()
+##Players = {}
+#SecretHolder = {}
+#BestResults = {}
+#Time_timer = 7200.0
+##Time_timer = 30.0
 
-def login(update, context):
-	if len(update.message.text)<7:
-	    update.message.reply_text('login is invalid')
-	if not update.message.chat.id in Game.players:
-	    Game.players[update.message.chat.id] = Player(update.message.chat.id)
-	    update.message.reply_text('nickname is successfully created')
-	else:
-	    update.message.reply_text('nickname is successfully changed')
-	Game.set_nickname(update.message.chat.id, update.message.text[7:])
+#def login(update, context):
+#	if len(update.message.text)<7:
+#	    update.message.reply_text('login is invalid')
+#	if not update.message.chat.id in Game.players:
+#	    Game.players[update.message.chat.id] = Player(update.message.chat.id)
+#	    update.message.reply_text('nickname is successfully created')
+#	else:
+#	    update.message.reply_text('nickname is successfully changed')
+#	Game.set_nickname(update.message.chat.id, update.message.text[7:])
 
 
-def start(update, context):
-	update.message.reply_text('at first create nickname with command ''/login NICK''. you can change your nickname whenever you want.')
+#def start(update, context):
+#	update.message.reply_text('at first create nickname with command ''/login NICK''. you can change your nickname whenever you want.')
 
-def play(update, context):
-    if not update.message.chat.id in Game.players:
-        start(update, context)
-    try:
-        int_message = int(update.message.text[6:])
-        answer = Game.play(update.message.chat.id, int_message)
-        update.message.reply_text(answer)
-    except:
-        update.message.reply_text('something wrong')
+#def play(update, context):
+#    if not update.message.chat.id in Game.players:
+#        start(update, context)
+#    try:
+#        int_message = int(update.message.text[6:])
+#        answer = Game.play(update.message.chat.id, int_message)
+#        update.message.reply_text(answer)
+#    except:
+#        update.message.reply_text('something wrong')
         
-def handlr(update, context):
-    update.message.reply_text('something wrong')
-    if not update.message.chat.id in Game.players:
-        start(update, context)
-    answer = Game.game(update.message.chat.id, update.message.text)
-    for txt in answer:
-        update.message.reply_text(txt)
+#def handlr(update, context):
+#    update.message.reply_text('something wrong')
+#    if not update.message.chat.id in Game.players:
+#        start(update, context)
+#    answer = Game.game(update.message.chat.id, update.message.text)
+#    for txt in answer:
+#        update.message.reply_text(txt)
         
-def statistics(update, context):
-    answer = Game.show_stat()
-    for txt in answer:
-        update.message.reply_text(txt)
+#def statistics(update, context):
+#    answer = Game.show_stat()
+#    for txt in answer:
+#        update.message.reply_text(txt)
         
-def help(update, context):
-    update.message.reply_text('1 step, register: ''/login NICK'', where NICK - your nickname')
-    update.message.reply_text('2 step, choose game: ''/play N'', where N - game number(now only 1 game is available)')
-    update.message.reply_text('3 step: play')
+#def help(update, context):
+#    update.message.reply_text('1 step, register: ''/login NICK'', where NICK - your nickname')
+#    update.message.reply_text('2 step, choose game: ''/play N'', where N - game number(now only 1 game is available)')
+#    update.message.reply_text('3 step: play')
         
-def gamehelp(update, context):
-    if not update.message.chat.id in SecretHolder:
-        SecretHolder[update.message.chat.id] = []
-    SecretHolder[update.message.chat.id].append(update.message.text)
-    if not update.message.chat.id in Game.players:
-        start(update, context)
-    answer = Game.gamehelp(update.message.chat.id)
-    for txt in answer:
-        update.message.reply_text(txt)
+#def gamehelp(update, context):
+#    if not update.message.chat.id in SecretHolder:
+#        SecretHolder[update.message.chat.id] = []
+#    SecretHolder[update.message.chat.id].append(update.message.text)
+#    if not update.message.chat.id in Game.players:
+#        start(update, context)
+#    answer = Game.gamehelp(update.message.chat.id)
+#    for txt in answer:
+#        update.message.reply_text(txt)
         
-def secret(update, context):
-    update.message.reply_text(update.message.chat.id)
-    for key, value in SecretHolder:
-        update.message.reply_text(key)
-        update.message.reply_text(', '.join(value))
-        SecretHolder[key] = []
+#def secret(update, context):
+#    update.message.reply_text(update.message.chat.id)
+#    for key, value in SecretHolder:
+#        update.message.reply_text(key)
+#        update.message.reply_text(', '.join(value))
+#        SecretHolder[key] = []
 
 # Define a class for players in game
 #class Player (object):
