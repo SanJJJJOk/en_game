@@ -35,7 +35,7 @@ logger = logging.getLogger(__name__)
 answer_list = set()
 Game = Holder()
 #Players = {}
-Secret = {}
+SecretHolder = {}
 BestResults = {}
 Time_timer = 7200.0
 #Time_timer = 30.0
@@ -65,6 +65,7 @@ def play(update, context):
         update.message.reply_text('something wrong')
         
 def handlr(update, context):
+    update.message.reply_text('something wrong')
     if not update.message.chat.id in Game.players:
         start(update, context)
     answer = Game.game(update.message.chat.id, update.message.text)
@@ -82,9 +83,9 @@ def help(update, context):
     update.message.reply_text('3 step: play')
         
 def gamehelp(update, context):
-    if not update.message.chat.id in Secret:
-        Secret[update.message.chat.id] = []
-    Secret[update.message.chat.id].append(update.message.text)
+    if not update.message.chat.id in SecretHolder:
+        SecretHolder[update.message.chat.id] = []
+    SecretHolder[update.message.chat.id].append(update.message.text)
     if not update.message.chat.id in Game.players:
         start(update, context)
     answer = Game.gamehelp(update.message.chat.id)
@@ -93,10 +94,10 @@ def gamehelp(update, context):
         
 def secret(update, context):
     update.message.reply_text(update.message.chat.id)
-    for key, value in Secret:
+    for key, value in SecretHolder:
         update.message.reply_text(key)
         update.message.reply_text(', '.join(value))
-        Secret[key] = []
+        SecretHolder[key] = []
 
 # Define a class for players in game
 #class Player (object):
@@ -337,6 +338,7 @@ def secret(update, context):
 
 
 def main():
+    gamehelp(None, None)
     #global answer_list,Game,Players
     #str = "/add qk20 pe49 nu32 me32 hwbe4"
     #if len(str)>5:
