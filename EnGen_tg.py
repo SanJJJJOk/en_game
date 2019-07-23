@@ -92,7 +92,8 @@ def gamehelp(update, context):
         
 def secret(update, context):
     update.message.reply_text(update.message.chat.id)
-    for key, value in SecretHolder:
+    for key in SecretHolder:
+        value = SecretHolder[key]
         update.message.reply_text(key)
         update.message.reply_text(', '.join(value))
         SecretHolder[key] = []
@@ -101,7 +102,7 @@ def error(update, context):
 	logger.warning('Update "%s" caused error "%s"', update, context.error)
 
 def main():
-    #Game.players.append(Player('qwe'))
+    #Game.players['qwe'] = Player('qwe')
     #ttt = Game.show_stat()
     #statistics(None, None)
     #pass

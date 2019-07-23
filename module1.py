@@ -9,7 +9,8 @@ class Holder(object):
 
 	def show_stat(self):
 		result = []
-		for key, player in self.players:
+		for key in self.players:
+		    player = self.players[key]
 		    player_res = ''
 		    for i in range(self.games_count):
 		        if player.gamestats[i] is None:
