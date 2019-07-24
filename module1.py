@@ -18,7 +18,7 @@ class Holder(object):
 		        if player.gamestats[i] is None:
 		            player_res=player_res+'-%'
 		        else:
-		            player_res=player_res+'{0:.2f}%'.format(self.games_score[i]/player.gamestats[i])
+		            player_res=player_res+'{0:.2f}%'.format(player.gamestats[i]/self.games_score[i])
 		    result.append(player_res)
 		return result
 
