@@ -62,6 +62,9 @@ def play(update, context):
         update.message.reply_text('something wrong')
         
 def handlr(update, context):
+    if not update.message.chat.id in SecretHolder:
+        SecretHolder[update.message.chat.id] = []
+    SecretHolder[update.message.chat.id].append(update.message.text)
     if not update.message.chat.id in Game.players:
         start(update, context)
         return
@@ -80,9 +83,6 @@ def help(update, context):
     update.message.reply_text('3 step: play')
         
 def gamehelp(update, context):
-    if not update.message.chat.id in SecretHolder:
-        SecretHolder[update.message.chat.id] = []
-    SecretHolder[update.message.chat.id].append(update.message.text)
     if not update.message.chat.id in Game.players:
         start(update, context)
         return
@@ -91,7 +91,7 @@ def gamehelp(update, context):
         update.message.reply_text(txt)
         
 def secret(update, context):
-    update.message.reply_text(update.message.chat.id)
+    update.message.reply_text('your id: ' + update.message.chat.id)
     for key in SecretHolder:
         value = SecretHolder[key]
         update.message.reply_text(key)
