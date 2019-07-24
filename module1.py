@@ -46,17 +46,17 @@ class Holder(object):
 		
 	def __game1(self, id, message):
 		vals = self.players[id].game1
-		if text=="show":
+		if message=="show":
 		    return [self.__game1_show(id)]
-		if not len(text)==2:
-		    if text=="0":
+		if not len(message)==2:
+		    if message=="0":
 		        for i in range(7):
 		            vals[i] = True
 		        return ['reseted']
 		    return ['not valid input']
 		try:
-		    i1 = int(text[0])
-		    i2 = int(text[1])
+		    i1 = int(message[0])
+		    i2 = int(message[1])
 		    if i1>7 or i1<1 or i2>7 or i2<1 or i1==i2:
 		        return ['not valid input']
 		    vals[i1-1]=False
@@ -73,6 +73,8 @@ class Holder(object):
 		                tmp[0]=True
 		                tmp[5]=True
 		                continue
+		            tmp[i-1]=True
+		            tmp[i+1]=True
 		    self.players[id].game1 = tmp
 		    return [first_result, self.__game1_show(id)]
 		except:
@@ -93,4 +95,4 @@ class Player(object):
 		self.nickname = id
 		self.gamestats = [False, None, None]
 		self.currgame = 0
-		self.game1 = [False, False, False, False, False, False, False]
+		self.game1 = [True, True, True, True, True, True, True]

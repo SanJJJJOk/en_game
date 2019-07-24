@@ -103,6 +103,8 @@ def error(update, context):
 
 def main():
     #Game.players['qwe'] = Player('qwe')
+    #Game.play('qwe',1)
+    #t = Game.game('qwe','12')
     #ttt = Game.show_stat()
     #statistics(None, None)
     #pass
