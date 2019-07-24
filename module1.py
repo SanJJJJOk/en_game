@@ -34,7 +34,7 @@ class Holder(object):
 	def game(self, id, message):
 		if self.players[id].currgame == 1:
 		    return self.__game1(id, message)
-		return ['choose game with ''/play N'' command']
+		return ['choose game with ''/play N'' command, where N - game number']
 		    
 	def gamehelp(self, id):
 		if self.players[id].currgame == 1:
@@ -78,7 +78,7 @@ class Holder(object):
 		except:
 		    return ['not valid input']
 
-	def __game1_show(id):
+	def __game1_show(self, id):
 		strr = ''
 		for i in range(7):
 		    if self.players[id].game1[i]:
