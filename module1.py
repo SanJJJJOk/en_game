@@ -2,7 +2,8 @@
 class Holder(object):
 	def __init__(self):
 		self.players = {}
-		self.games_count = 3        
+		self.games_count = 3   
+		self.games_score = [7,1,1]
 
 	def set_nickname(self, id, nick):
 		self.players[id].nickname = nick
@@ -11,16 +12,17 @@ class Holder(object):
 		result = []
 		for key in self.players:
 		    player = self.players[key]
-		    player_res = ''
+		    player_res = player.nickname + ':'
 		    for i in range(self.games_count):
+		        player_res=player_res+'\ngame #' + str(i+1) + ': '
 		        if player.gamestats[i] is None:
-		            player_res=player_res+'x'
+		            player_res=player_res+'-%'
 		        else:
 		            if player.gamestats[i]:
-		                player_res=player_res+'+'
+		                player_res=player_res+'{0:.2f}%'.format(self.games_score[i]/player.gamestats[i])
 		            else:
 		                player_res=player_res+'-'
-		    result.append(player.nickname + ': ' + player_res)
+		    result.append(player_res)
 		return result
 
 	def play(self, id, gamenum):
@@ -76,6 +78,12 @@ class Holder(object):
 		            tmp[i-1]=True
 		            tmp[i+1]=True
 		    self.players[id].game1 = tmp
+		    empty_count = 0#self.players[id].gamestats[0]
+		    for i in range(7):
+		        if not tmp[i]:
+		            empty_count = empty_count + 1
+		    if empty_count > self.players[id].gamestats[0]:
+		        self.players[id].gamestats[0] = empty_count
 		    return [first_result, self.__game1_show(id)]
 		except:
 		    return ['not valid input']
@@ -93,6 +101,6 @@ class Player(object):
 	def __init__(self, id):
 		self.id = id
 		self.nickname = id
-		self.gamestats = [False, None, None]
+		self.gamestats = [0, None, None]
 		self.currgame = 0
 		self.game1 = [True, True, True, True, True, True, True]
