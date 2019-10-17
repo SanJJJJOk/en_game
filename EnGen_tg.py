@@ -129,7 +129,7 @@ def olymp(update, context):
     second = get_words(input[1])
     union = list(set(first).intersection(second))
     msg = ', '.join(union)
-    update.message.reply_text(msg)
+    update.message.reply_text('.'+msg)
 
 def gibrid(update, context):
     input = update.message.text.split('.')
@@ -143,7 +143,7 @@ def gibrid(update, context):
             if i[0:3] == j[-3:] or i[-3:] == j[0:3]:
                 output_list.append(i + '-' + j)
     msg = ', '.join(union)
-    update.message.reply_text(msg)
+    update.message.reply_text('.'+msg)
 
 def get_words(word):
     url = 'http://www.sociation.org/word/{0}'.format(quote(word))
