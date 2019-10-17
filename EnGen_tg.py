@@ -37,6 +37,7 @@ logger = logging.getLogger(__name__)
 #Define a global variables
 Game = Holder()
 SecretHolder = {}
+Mode = 0
 
 def login(update, context):
 	if len(update.message.text)<7:
@@ -104,13 +105,42 @@ def secret(update, context):
 def error(update, context):
 	logger.warning('Update "%s" caused error "%s"', update, context.error)
 
+def switch_mode(update, context):
+    if Mode == 0:
+        Mode = 1
+        update.message.reply_text('switched to olymp')
+    else:
+        Mode = 1
+        update.message.reply_text('switched to gibrid')
+
+
 def do_zaebis(update, context):
+    if Mode == 0:
+        olymp(update, context)
+    else:
+        gibrid(update, context)
+
+def olymp(update, context):
     input = update.message.text.split('.')
     if len(input) != 2:
         update.message.reply_text('invalid parts')
     first = get_words(input[0])
     second = get_words(input[1])
     union = list(set(first).intersection(second))
+    msg = ', '.join(union)
+    update.message.reply_text(msg)
+
+def gibrid(update, context):
+    input = update.message.text.split('.')
+    if len(input) != 2:
+        update.message.reply_text('invalid parts')
+    first = get_words(input[0])
+    second = get_words(input[1])
+    union = []
+    for i in first:
+        for j in second:
+            if i[0:3] == j[-3:] or i[-3:] == j[0:3]:
+                output_list.append(i + '-' + j)
     msg = ', '.join(union)
     update.message.reply_text(msg)
 
@@ -164,15 +194,16 @@ def main():
     dp = updater.dispatcher
 
     #dp.add_handler(CommandHandler("add", add_answers))
-    dp.add_handler(CommandHandler("login", login))
-    dp.add_handler(CommandHandler("start", start))
-    dp.add_handler(CommandHandler("play", play))
-    dp.add_handler(CommandHandler("statistics", statistics))
-    dp.add_handler(CommandHandler("gamehelp", gamehelp))
-    dp.add_handler(CommandHandler("help", help))
-    dp.add_handler(CommandHandler("secret", secret))
+    #dp.add_handler(CommandHandler("login", login))
+    #dp.add_handler(CommandHandler("start", start))
+    #dp.add_handler(CommandHandler("play", play))
+    #dp.add_handler(CommandHandler("statistics", statistics))
+    #dp.add_handler(CommandHandler("gamehelp", gamehelp))
+    #dp.add_handler(CommandHandler("help", help))
+    #dp.add_handler(CommandHandler("secret", secret))
     #dp.add_handler(CommandHandler("show", show_my_ans))
     #dp.add_handler(MessageHandler(Filters.text, echo))
+    dp.add_handler(CommandHandler("mode", switch_mode))
     dp.add_handler(MessageHandler(Filters.text, do_zaebis))
 
     dp.add_error_handler(error)
