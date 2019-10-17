@@ -109,10 +109,10 @@ def switch_mode(update, context):
     global Mode
     if Mode == 0:
         Mode = 1
-        update.message.reply_text('switched to olymp')
+        update.message.reply_text('switched to gibrid')
     else:
         Mode = 0
-        update.message.reply_text('switched to gibrid')
+        update.message.reply_text('switched to olymp')
 
 def do_zaebis(update, context):
     global Mode
