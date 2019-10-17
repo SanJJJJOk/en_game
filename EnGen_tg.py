@@ -133,13 +133,6 @@ def get_words(word):
 
 def main():
 
-    #for t in film_list:
-    #    for ttt in t:
-    #        tt = ttt
-    #        pass
-
-    print(mystr)
-    return 0
     #Game.players['qwe'] = Player('qwe')
     #Game.play('qwe',1)
     #t = Game.game('qwe','12')
