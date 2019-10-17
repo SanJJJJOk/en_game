@@ -125,25 +125,37 @@ def olymp(update, context):
     input = update.message.text.split('.')
     if len(input) != 2:
         update.message.reply_text('invalid parts')
-    first = get_words(input[0])
-    second = get_words(input[1])
+    first = split_input(input[0])
+    second = split_input(input[1])
     union = list(set(first).intersection(second))
     msg = ', '.join(union)
     update.message.reply_text('.'+msg)
 
 def gibrid(update, context):
-    input = update.message.text.split('.')
+    input = update.message.text.strip().split('.')
     if len(input) != 2:
         update.message.reply_text('invalid parts')
-    first = get_words(input[0])
-    second = get_words(input[1])
+    first = split_input(input[0].strip())
+    second = split_input(input[1].strip())
     union = []
     for i in first:
         for j in second:
-            if i[0:3] == j[-3:] or i[-3:] == j[0:3]:
+            if i[-3:] == j[0:3]:
                 union.append(i + '-' + j)
+            if i[0:3] == j[-3:]:
+                union.append(j + '-' + i)
     msg = ', '.join(union)
     update.message.reply_text('.'+msg)
+
+def split_input(input_str):
+    input_words = input_str.split(',')
+    union = []
+    for word in input_words:
+        word_strip = word.strip()
+        ass_list = get_words(word_strip)
+        union.extend(ass_list)
+        union.append(word_strip)
+    return union
 
 def get_words(word):
     url = 'http://www.sociation.org/word/{0}'.format(quote(word))
