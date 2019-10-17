@@ -20,7 +20,7 @@ bot.
 import logging
 import os.path
 from module1 import *
-from bs4 import *
+from urllib import request
 
 from datetime import datetime
 from threading import Timer
@@ -123,10 +123,11 @@ def get_words(word):
     mystr = mybytes.decode("utf8")
     fp.close()
     
-    soup = BeautifulSoup(mystr)
-    ass_list = soup.find('ol', {'class': 'associations_list'})
-    a_list = ass_list.findAll('a')
-    return [item.string for item in a_list]
+    return []
+    #soup = BeautifulSoup(mystr)
+    #ass_list = soup.find('ol', {'class': 'associations_list'})
+    #a_list = ass_list.findAll('a')
+    #return [item.string for item in a_list]
 
 def main():
     #Game.players['qwe'] = Player('qwe')
