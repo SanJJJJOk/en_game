@@ -106,15 +106,16 @@ def error(update, context):
 	logger.warning('Update "%s" caused error "%s"', update, context.error)
 
 def switch_mode(update, context):
+    global Mode
     if Mode == 0:
         Mode = 1
         update.message.reply_text('switched to olymp')
     else:
-        Mode = 1
+        Mode = 0
         update.message.reply_text('switched to gibrid')
 
-
 def do_zaebis(update, context):
+    global Mode
     if Mode == 0:
         olymp(update, context)
     else:
