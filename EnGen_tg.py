@@ -20,6 +20,9 @@ bot.
 import logging
 import os.path
 from module1 import *
+from urllib import request
+from urllib.parse import quote
+from bs4 import BeautifulSoup
 
 from datetime import datetime
 from threading import Timer
@@ -101,7 +104,42 @@ def secret(update, context):
 def error(update, context):
 	logger.warning('Update "%s" caused error "%s"', update, context.error)
 
+def do_zaebis(update, context):
+    input = update.message.text.split('.')
+    if len(input) != 2:
+        update.message.reply_text('invalid parts')
+    first = get_words(input[0])
+    second = get_words(input[1])
+    union = list(set(first).intersection(second))
+    msg = ', '.join(union)
+    update.message.reply_text(msg)
+
+def get_words(word):
+    url = 'http://www.sociation.org/word/{0}'.format(quote(word))
+    try:
+        fp = request.urlopen(url)
+    except:
+        return []
+    mybytes = fp.read()
+    
+    mystr = mybytes.decode("utf8")
+    fp.close()
+    
+    soup = BeautifulSoup(mystr)
+    ass_list = soup.find('ol', {'class': 'associations_list'})
+    a_list = ass_list.findAll('a')
+    return [item.string for item in a_list]
+
+
 def main():
+
+    #for t in film_list:
+    #    for ttt in t:
+    #        tt = ttt
+    #        pass
+
+    print(mystr)
+    return 0
     #Game.players['qwe'] = Player('qwe')
     #Game.play('qwe',1)
     #t = Game.game('qwe','12')
@@ -144,7 +182,7 @@ def main():
     dp.add_handler(CommandHandler("secret", secret))
     #dp.add_handler(CommandHandler("show", show_my_ans))
     #dp.add_handler(MessageHandler(Filters.text, echo))
-    dp.add_handler(MessageHandler(Filters.text, handlr))
+    dp.add_handler(MessageHandler(Filters.text, do_zaebis))
 
     dp.add_error_handler(error)
 
