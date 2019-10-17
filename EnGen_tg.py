@@ -141,7 +141,7 @@ def gibrid(update, context):
     for i in first:
         for j in second:
             if i[0:3] == j[-3:] or i[-3:] == j[0:3]:
-                output_list.append(i + '-' + j)
+                union.append(i + '-' + j)
     msg = ', '.join(union)
     update.message.reply_text('.'+msg)
 
