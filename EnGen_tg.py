@@ -125,6 +125,7 @@ def olymp(update, context):
     input = update.message.text.split('.')
     if len(input) != 2:
         update.message.reply_text('invalid parts')
+        return
     first = split_input(input[0])
     second = split_input(input[1])
     union = list(set(first).intersection(second))
