@@ -21,6 +21,7 @@ import logging
 import os.path
 from module1 import *
 from urllib import request
+from bs4 import *
 from urllib.parse import quote
 
 from datetime import datetime
