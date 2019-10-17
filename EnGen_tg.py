@@ -129,7 +129,7 @@ def olymp(update, context):
     second = split_input(input[1])
     union = list(set(first).intersection(second))
     msg = ', '.join(union)
-    update.message.reply_text('.'+msg)
+    update.message.reply_text(str(len(msg)) + '\n' + msg)
 
 def gibrid(update, context):
     input = update.message.text.strip().split('.')
@@ -145,7 +145,7 @@ def gibrid(update, context):
             if i[0:3] == j[-3:]:
                 union.append(j + '-' + i)
     msg = ', '.join(union)
-    update.message.reply_text('.'+msg)
+    update.message.reply_text(str(len(msg)) + '\n' + msg)
 
 def split_input(input_str):
     input_words = input_str.split(',')
