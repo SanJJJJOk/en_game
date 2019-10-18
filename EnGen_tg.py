@@ -35,72 +35,7 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 logger = logging.getLogger(__name__)
 
 #Define a global variables
-Game = Holder()
-SecretHolder = {}
 Mode = 0
-
-def login(update, context):
-	if len(update.message.text)<7:
-	    update.message.reply_text('login is invalid')
-	    return
-	if not update.message.chat.id in Game.players:
-	    Game.players[update.message.chat.id] = Player(update.message.chat.id)
-	    update.message.reply_text('nickname is successfully created')
-	else:
-	    update.message.reply_text('nickname is successfully changed')
-	Game.set_nickname(update.message.chat.id, update.message.text[7:])
-
-
-def start(update, context):
-	update.message.reply_text('at first create nickname with command ''/login NICK''. you can change your nickname whenever you want.')
-
-def play(update, context):
-    if not update.message.chat.id in Game.players:
-        start(update, context)
-        return
-    try:
-        int_message = int(update.message.text[6:])
-        answer = Game.play(update.message.chat.id, int_message)
-        update.message.reply_text(answer)
-    except:
-        update.message.reply_text('something wrong')
-        
-def handlr(update, context):
-    if not update.message.chat.id in SecretHolder:
-        SecretHolder[update.message.chat.id] = []
-    SecretHolder[update.message.chat.id].append(update.message.text)
-    if not update.message.chat.id in Game.players:
-        start(update, context)
-        return
-    answer = Game.game(update.message.chat.id, update.message.text)
-    for txt in answer:
-        update.message.reply_text(txt)
-        
-def statistics(update, context):
-    answer = Game.show_stat()
-    for txt in answer:
-        update.message.reply_text(txt)
-        
-def help(update, context):
-    update.message.reply_text('1 step, register: ''/login NICK'', where NICK - your nickname')
-    update.message.reply_text('2 step, choose game: ''/play N'', where N - game number(now only 1 game is available)')
-    update.message.reply_text('3 step: play')
-        
-def gamehelp(update, context):
-    if not update.message.chat.id in Game.players:
-        start(update, context)
-        return
-    answer = Game.gamehelp(update.message.chat.id)
-    for txt in answer:
-        update.message.reply_text(txt)
-        
-def secret(update, context):
-    update.message.reply_text('your id: ' + update.message.chat.id)
-    for key in SecretHolder:
-        value = SecretHolder[key]
-        update.message.reply_text(key)
-        update.message.reply_text(', '.join(value))
-        SecretHolder[key] = []
 
 def error(update, context):
 	logger.warning('Update "%s" caused error "%s"', update, context.error)
@@ -121,12 +56,12 @@ def do_zaebis(update, context):
         update.message.reply_text('invalid')
         return
     union = do_beautiful(input, Mode == 0)
-    msg = ', '.join(union)
+    msg = '\n'.join(union)
     update.message.reply_text(str(len(union)) + '\n' + msg)
 
 def do_beautiful(input, is_olymp):
-    first = split_input(input[0].strip())
-    second = split_input(input[1].strip())
+    first = get_input_associations(input[0].strip())
+    second = get_input_associations(input[1].strip())
     union = []
     if is_olymp:
         union = list(set(first).intersection(second))
@@ -139,17 +74,17 @@ def do_beautiful(input, is_olymp):
                     union.append(j + '-' + i)
     return list(dict.fromkeys(union))
 
-def split_input(input_str):
+def get_input_associations(input_str):
     input_words = input_str.split(',')
     union = []
     for word in input_words:
-        word_strip = word.strip()
-        ass_list = get_words(word_strip)
-        union.extend(ass_list)
-        union.append(word_strip)
+        corrected_word = word.strip().lower()
+        associations = get_associations(corrected_word)
+        union.append(corrected_word)
+        union.extend(associations)
     return union
 
-def get_words(word):
+def get_associations(word):
     url = 'http://www.sociation.org/word/{0}'.format(quote(word))
     try:
         fp = request.urlopen(url)
@@ -166,48 +101,9 @@ def get_words(word):
     return [item.string for item in a_list]
 
 def main():
-    #Game.players['qwe'] = Player('qwe')
-    #Game.play('qwe',1)
-    #t = Game.game('qwe','12')
-    #ttt = Game.show_stat()
-    #statistics(None, None)
-    #pass
-    #global answer_list,Game,Players
-    #str = "/add qk20 pe49 nu32 me32 hwbe4"
-    #if len(str)>5:
-    #    splitted = str[5:].split(' ')
-    #    tt = len(splitted)
-
-    #Players['q'] = Player(33, 'sanj')
-    #for player in Players.values():
-    #    player.answer.add('zz')
-    #    player.answer.add('xx')
-    #    for ans in player.answer:
-    #        answer_list.add(ans)
-    
-    #Game = True
-    #for player in Players.values():
-    #    for ans in player.answer:
-    #        answer_list.add(ans)
-
-    #total_answer = len(answer_list)
-    #result = ''
-    #for player in Players.values():
-    #    result += '{}: {}/{}\n'.format(player.show_stats()[0], player.show_stats()[-1], total_answer)
-
     updater = Updater("408100374:AAEhMleUbdVH_G1xmKeCAy8MlNfyBwB9AOo", use_context=True)
     dp = updater.dispatcher
 
-    #dp.add_handler(CommandHandler("add", add_answers))
-    #dp.add_handler(CommandHandler("login", login))
-    #dp.add_handler(CommandHandler("start", start))
-    #dp.add_handler(CommandHandler("play", play))
-    #dp.add_handler(CommandHandler("statistics", statistics))
-    #dp.add_handler(CommandHandler("gamehelp", gamehelp))
-    #dp.add_handler(CommandHandler("help", help))
-    #dp.add_handler(CommandHandler("secret", secret))
-    #dp.add_handler(CommandHandler("show", show_my_ans))
-    #dp.add_handler(MessageHandler(Filters.text, echo))
     dp.add_handler(CommandHandler("mode", switch_mode))
     dp.add_handler(MessageHandler(Filters.text, do_zaebis))
 
