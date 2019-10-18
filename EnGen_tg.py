@@ -116,36 +116,27 @@ def switch_mode(update, context):
 
 def do_zaebis(update, context):
     global Mode
-    if Mode == 0:
-        olymp(update, context)
-    else:
-        gibrid(update, context)
-
-def olymp(update, context):
-    input = update.message.text.split('.')
-    if len(input) != 2:
-        update.message.reply_text('invalid parts')
-    first = split_input(input[0])
-    second = split_input(input[1])
-    union = list(set(first).intersection(second))
-    msg = ', '.join(union)
-    update.message.reply_text(str(len(msg)) + '\n' + msg)
-
-def gibrid(update, context):
     input = update.message.text.strip().split('.')
     if len(input) != 2:
         update.message.reply_text('invalid parts')
-    first = split_input(input[0].strip())
-    second = split_input(input[1].strip())
-    union = []
-    for i in first:
-        for j in second:
-            if i[-3:] == j[0:3]:
-                union.append(i + '-' + j)
-            if i[0:3] == j[-3:]:
-                union.append(j + '-' + i)
+    union = do_beautiful(input, Mode == 0)
     msg = ', '.join(union)
     update.message.reply_text(str(len(msg)) + '\n' + msg)
+
+def do_beautiful(input, is_olymp):
+    first = split_input(input[0].strip())
+    second = split_input(input[1].strip())
+    union=[]
+    if is_olymp:
+        union = list(set(first).intersection(second))
+    else:
+        for i in first:
+            for j in second:
+                if i[-3:] == j[0:3]:
+                    union.append(i + '-' + j)
+                if i[0:3] == j[-3:]:
+                    union.append(j + '-' + i)
+    return list(dict.fromkeys(union))
 
 def split_input(input_str):
     input_words = input_str.split(',')
