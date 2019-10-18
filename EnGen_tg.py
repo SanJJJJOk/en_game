@@ -119,6 +119,7 @@ def do_zaebis(update, context):
     input = update.message.text.strip().split('.')
     if len(input) != 2:
         update.message.reply_text('invalid parts')
+        return
     union = do_beautiful(input, Mode == 0)
     msg = ', '.join(union)
     update.message.reply_text(str(len(union)) + '\n' + msg)
@@ -133,8 +134,7 @@ def do_beautiful(input, is_olymp):
                 union.append(i + '-' + j)
             if i[0:3] == j[-3:]:
                 union.append(j + '-' + i)
-    msg = ', '.join(union)
-    update.message.reply_text(str(len(msg)) + '\n' + msg)
+    return list(dict.fromkeys(union))
 
 def split_input(input_str):
     input_words = input_str.split(',')
