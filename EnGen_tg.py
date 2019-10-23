@@ -35,36 +35,43 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 logger = logging.getLogger(__name__)
 
 #Define a global variables
-Mode = 0
+Holder = SettingsHolder()
 
-def error(update, context):
+#tg methods
+
+def tg_error(update, context):
 	logger.warning('Update "%s" caused error "%s"', update, context.error)
 
-def switch_mode(update, context):
-    global Mode
-    if Mode == 0:
-        Mode = 1
-        update.message.reply_text('switched to gibrid')
-    else:
-        if Mode == 1:
-            Mode = 2
-            update.message.reply_text('switched to meta')
-        else:
-            Mode = 0
-            update.message.reply_text('switched to olymp')
+def tg_switch_mode(update, context):
+    global Holder
+    if not is_authorized(update):
+        return
+    settings = Holder.get(update.message.chat.id)
+    mode = settings.next_mode()
+    update.message.reply_text('switched to ' + mode.name)
 
-
-def do_zaebis(update, context):
-    global Mode
+def tg_default(update, context):
+    mode = Holder.get(update.message.chat.id).current_mode
+    if (mode == ModeType.Nan):
+        return
     input = update.message.text.strip().split('.')
     if len(input) != 2:
-        update.message.reply_text('invalid')
+        update.message.reply_text('invalid input')
         return
-    union = do_beautiful(input, Mode)
-    msg = '\n'.join(union)
-    update.message.reply_text(str(len(union)) + '\n' + msg)
+    msg =  do_beautiful(input, mode)
+    update.message.reply_text(msg)
 
-def do_beautiful(input, mode_num):
+def is_authorized(update):
+    if update.message.chat.id in Holder.settings_by_id:
+        return True
+    else:
+        Holder.add(update.message.chat.id)
+        #update.message.reply_text('you are not authorized, please call /start')
+        #return False
+
+#----------
+
+def do_beautiful(input, mode):
     first = get_input_associations(input[0].strip())
     second = get_input_associations(input[1].strip())
     union = []
@@ -85,7 +92,45 @@ def do_beautiful(input, mode_num):
                     if meta_result:
                         union.append(i + '-' + j)
 
-    return list(dict.fromkeys(union))
+    result_union = list(dict.fromkeys(union))
+    msg = '\n'.join(result_union)
+    return str(len(result_union)) + '\n' + msg
+
+def do_action(first, second, mode):
+    if mode == ModeType.Olymp:
+        return action_olymp(first, second)
+    if mode == ModeType.Gibrid:
+        return action_gibrid(first, second)
+    if mode == ModeType.Meta:
+        return action_meta(first, second)
+    return []
+
+def action_olymp(first, second):
+    return  list(set(first).intersection(second))
+
+def action_gibrid(first, second):
+    union = []
+    for i in first:
+        for j in second:
+            if i[-3:] == j[0:3]:
+                union.append(i + '-' + j)
+            if i[0:3] == j[-3:]:
+                union.append(j + '-' + i)
+    return union
+
+def action_meta(first, second):
+    union = []
+    for word1 in first:
+        for word2 in second:
+            if len(word1) != len(word2):
+                continue
+            counter = 0
+            for i in range(0, len(word1)):
+                if word1[i]!=word2[i]:
+                    counter+=1
+            if counter == 1:
+                union.append(i + '-' + j)
+    return union
 
 def get_input_associations(input_str):
     input_words = input_str.split(',')
@@ -116,23 +161,14 @@ def get_associations(word):
     a_list = ass_list.findAll('a')
     return [item.string for item in a_list]
 
-def do_meta(word1, word2):
-    if len(word1) != len(word2):
-        return False
-    counter = 0
-    for i in range(0, len(word1)):
-        if word1[i]!=word2[i]:
-            counter+=1
-    return counter == 1
-
 def main():
     updater = Updater("408100374:AAEhMleUbdVH_G1xmKeCAy8MlNfyBwB9AOo", use_context=True)
     dp = updater.dispatcher
 
-    dp.add_handler(CommandHandler("mode", switch_mode))
+    dp.add_handler(CommandHandler("mode", tg_switch_mode))
     dp.add_handler(MessageHandler(Filters.text, do_zaebis))
 
-    dp.add_error_handler(error)
+    dp.add_error_handler(tg_error)
 
     updater.start_polling()
 
