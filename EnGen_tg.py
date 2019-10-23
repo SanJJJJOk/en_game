@@ -66,6 +66,7 @@ def is_authorized(update):
         return True
     else:
         Holder.add(update.message.chat.id)
+        return True
         #update.message.reply_text('you are not authorized, please call /start')
         #return False
 
