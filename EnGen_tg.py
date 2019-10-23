@@ -112,7 +112,7 @@ def action_meta(first, second):
                 if word1[i]!=word2[i]:
                     counter+=1
             if counter == 1:
-                union.append(i + '-' + j)
+                union.append(word1 + '-' + word2)
     return union
 
 def get_input_associations(input_str):
