@@ -166,7 +166,7 @@ def main():
     dp = updater.dispatcher
 
     dp.add_handler(CommandHandler("mode", tg_switch_mode))
-    dp.add_handler(MessageHandler(Filters.text, do_zaebis))
+    dp.add_handler(MessageHandler(Filters.text, tg_default))
 
     dp.add_error_handler(tg_error)
 
