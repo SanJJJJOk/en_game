@@ -115,7 +115,7 @@ def get_associations(word):
 
 def do_meta(word1, word2):
     if len(word1) != len(word2):
-        return false
+        return False
     counter = 0
     for i in range(0, len(word1)):
         if word1[i]!=word2[i]:
