@@ -92,9 +92,12 @@ def get_input_associations(input_str):
     union = []
     for word in input_words:
         corrected_word = word.strip().lower()
-        associations = get_associations(corrected_word)
+        if word[0]=='!':
+            word = word[1:]
+        else:
+            associations = get_associations(corrected_word)
+            union.extend(associations)
         union.append(corrected_word)
-        union.extend(associations)
     return union
 
 def get_associations(word):
