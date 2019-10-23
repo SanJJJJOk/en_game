@@ -74,27 +74,10 @@ def is_authorized(update):
 def do_beautiful(input, mode):
     first = get_input_associations(input[0].strip())
     second = get_input_associations(input[1].strip())
-    union = []
-    if mode_num == 0:
-        union = list(set(first).intersection(second))
-    else:
-        if mode_num == 1:
-            for i in first:
-                for j in second:
-                    if i[-3:] == j[0:3]:
-                        union.append(i + '-' + j)
-                    if i[0:3] == j[-3:]:
-                        union.append(j + '-' + i)
-        else:
-            for i in first:
-                for j in second:
-                    meta_result = do_meta(i,j)
-                    if meta_result:
-                        union.append(i + '-' + j)
-
-    result_union = list(dict.fromkeys(union))
-    msg = '\n'.join(result_union)
-    return str(len(result_union)) + '\n' + msg
+    action_result = do_action(first, second, mode)
+    union = list(dict.fromkeys(action_result))
+    msg = '\n'.join(union)
+    return str(len(union)) + '\n' + msg
 
 def do_action(first, second, mode):
     if mode == ModeType.Olymp:
@@ -106,7 +89,7 @@ def do_action(first, second, mode):
     return []
 
 def action_olymp(first, second):
-    return  list(set(first).intersection(second))
+    return list(set(first).intersection(second))
 
 def action_gibrid(first, second):
     union = []
