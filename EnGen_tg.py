@@ -46,8 +46,13 @@ def switch_mode(update, context):
         Mode = 1
         update.message.reply_text('switched to gibrid')
     else:
-        Mode = 0
-        update.message.reply_text('switched to olymp')
+        if Mode == 1:
+            Mode = 2
+            update.message.reply_text('switched to meta')
+        else:
+            Mode = 0
+            update.message.reply_text('switched to olymp')
+
 
 def do_zaebis(update, context):
     global Mode
@@ -55,23 +60,31 @@ def do_zaebis(update, context):
     if len(input) != 2:
         update.message.reply_text('invalid')
         return
-    union = do_beautiful(input, Mode == 0)
+    union = do_beautiful(input, Mode)
     msg = '\n'.join(union)
     update.message.reply_text(str(len(union)) + '\n' + msg)
 
-def do_beautiful(input, is_olymp):
+def do_beautiful(input, mode_num):
     first = get_input_associations(input[0].strip())
     second = get_input_associations(input[1].strip())
     union = []
-    if is_olymp:
+    if mode_num == 0:
         union = list(set(first).intersection(second))
     else:
-        for i in first:
-            for j in second:
-                if i[-3:] == j[0:3]:
-                    union.append(i + '-' + j)
-                if i[0:3] == j[-3:]:
-                    union.append(j + '-' + i)
+        if mode_num == 1:
+            for i in first:
+                for j in second:
+                    if i[-3:] == j[0:3]:
+                        union.append(i + '-' + j)
+                    if i[0:3] == j[-3:]:
+                        union.append(j + '-' + i)
+        else:
+            for i in first:
+                for j in second:
+                    meta_result = do_meta(i,j)
+                    if meta_result:
+                        union.append(i + '-' + j)
+
     return list(dict.fromkeys(union))
 
 def get_input_associations(input_str):
@@ -99,6 +112,15 @@ def get_associations(word):
     ass_list = soup.find('ol', {'class': 'associations_list'})
     a_list = ass_list.findAll('a')
     return [item.string for item in a_list]
+
+def do_meta(word1, word2):
+    if len(word1) != len(word2):
+        return false
+    counter = 0
+    for i in range(0, len(word1)):
+        if word1[i]!=word2[i]:
+            counter+=1
+    return counter == 1
 
 def main():
     updater = Updater("408100374:AAEhMleUbdVH_G1xmKeCAy8MlNfyBwB9AOo", use_context=True)
