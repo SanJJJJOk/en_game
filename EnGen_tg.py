@@ -75,9 +75,9 @@ def do_beautiful(input, mode_num):
             for i in first:
                 for j in second:
                     if i[-3:] == j[0:3]:
-                        union.append('<b>' + i + '</b>-' + j)
+                        union.append('**' + i + '**' + j)
                     if i[0:3] == j[-3:]:
-                        union.append(j + '-<b>' + i + '</b>')
+                        union.append(j + '-**' + i + '**')
         else:
             for i in first:
                 for j in second:
