@@ -1,7 +1,7 @@
 import enum
 
 class ModeType(enum.Enum):
-    Nan = 0
+    Disabled = 0
     Olymp = 1
     Gibrid = 2
     Meta = 3
@@ -19,6 +19,15 @@ class ModeType(enum.Enum):
             val = 4
         return ModeType(val)
 
+    @staticmethod
+    def get_well_known_mode_types():
+        return {
+            'olymp': ModeType.Olymp,
+            'gibrid': ModeType.Gibrid,
+            'meta': ModeType.Meta,
+            'logo': ModeType.Logo
+            }
+
 class SettingsHolder:
     def __init__(self):
         self.settings_by_id = {}
@@ -31,7 +40,7 @@ class SettingsHolder:
 
 class Settings:
     def __init__(self):
-        self.current_mode = ModeType.Nan
+        self.current_mode = ModeType.Disabled
 
     def next_mode(self):
         self.current_mode = self.current_mode.next()

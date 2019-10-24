@@ -42,21 +42,57 @@ Holder = SettingsHolder()
 def tg_error(update, context):
 	logger.warning('Update "%s" caused error "%s"', update, context.error)
 
+def tg_olymp(update, context):
+    if not is_authorized(update):
+        return
+    default_input(update, context, ModeType.Olymp)
+
+def tg_gibrid(update, context):
+    if not is_authorized(update):
+        return
+    default_input(update, context, ModeType.Gibrid)
+
+def tg_meta(update, context):
+    if not is_authorized(update):
+        return
+    default_input(update, context, ModeType.Meta)
+
+def tg_logo(update, context):
+    if not is_authorized(update):
+        return
+    default_input(update, context, ModeType.Logo)
+
 def tg_switch_mode(update, context):
     global Holder
     if not is_authorized(update):
         return
+    mode = ModeType.Disabled
     settings = Holder.get(update.message.chat.id)
-    mode = settings.next_mode()
+    mode = settings.current_mode
+    if len(update.message.text) < 7:
+        mode = settings.next_mode()
+    else:
+        prefix = update.message.text[6:]
+        newmode = is_started_with(prefix, ModeType.get_well_known_mode_types())
+        if len(newmode)==0:
+            update.message.reply_text('invalid request. mode not found')
+        else:
+            if len(newmode)>1:
+                update.message.reply_text('invalid request. more than one mode found')
+            else:
+                mode = newmode[0]
     update.message.reply_text('switched to ' + mode.name)
 
 def tg_default(update, context):
     mode = Holder.get(update.message.chat.id).current_mode
-    if (mode == ModeType.Nan):
+    if (mode == ModeType.Disabled):
         return
+    default_input(update, context, mode)
+
+def default_input(update, context, mode):
     input = update.message.text.strip().split('.')
     if len(input) != 2:
-        update.message.reply_text('invalid input')
+        update.message.reply_text('invalid request')
         return
     msg =  do_beautiful(input, mode)
     update.message.reply_text(msg)
@@ -87,6 +123,8 @@ def do_action(first, second, mode):
         return action_gibrid(first, second)
     if mode == ModeType.Meta:
         return action_meta(first, second)
+    if mode == ModeType.Logo:
+        return action_logo(first, second)
     return []
 
 def action_olymp(first, second):
@@ -145,10 +183,29 @@ def get_associations(word):
     a_list = ass_list.findAll('a')
     return [item.string for item in a_list]
 
+def is_started_with(prefix, mapper: dict):
+    result = []
+    for word, value in mapper:
+        if word.startswith(prefix):
+            result.append(value)
+    return result
+    pass
+
+def is_started_with(prefix, words: list):
+    result = []
+    for word in words:
+        if word.startswith(prefix):
+            result.append(word)
+    return result
+
 def main():
     updater = Updater("408100374:AAEhMleUbdVH_G1xmKeCAy8MlNfyBwB9AOo", use_context=True)
     dp = updater.dispatcher
 
+    dp.add_handler(CommandHandler("o", tg_olymp))
+    dp.add_handler(CommandHandler("g", tg_gibrid))
+    dp.add_handler(CommandHandler("m", tg_meta))
+    dp.add_handler(CommandHandler("l", tg_logo))
     dp.add_handler(CommandHandler("mode", tg_switch_mode))
     dp.add_handler(MessageHandler(Filters.text, tg_default))
 
