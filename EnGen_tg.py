@@ -190,7 +190,7 @@ def is_started_with(prefix, mapper: dict):
     result = []
     for key in mapper.keys():
         for word in mapper[key]:
-            if word.startswith(prefix):
+            if word.startswith(prefix.lower()):
                 result.append(key)
                 break
     return result
