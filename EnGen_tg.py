@@ -157,6 +157,34 @@ def action_meta(first, second):
                 union.append(word1 + '-' + word2)
     return union
 
+def action_logo(first, second):
+    union = []
+    for word1 in first:
+        for word2 in second:
+            long_word = ''
+            short_word = ''
+            if len(word1) == len(word2) + 1:
+                long_word = word1
+                short_word = word2
+            else:
+                if len(word2) == len(word1) + 1:
+                    long_word = word2
+                    short_word = word1
+                else:
+                    continue
+            diff_index = 0
+            for i in range(0, len(short_word)):
+                if long_word[i]!=short_word[i]:
+                    diff_index = i
+                    break
+            for i in range(diff_index, len(short_word)):
+                if long_word[i + 1]!=short_word[i]:
+                    diff_index = -1
+                    break
+            if diff_index!=-1:
+                union.append(word1 + '-' + word2)
+    return union
+
 def get_input_associations(input_str):
     input_words = input_str.split(',')
     union = []
@@ -196,6 +224,7 @@ def is_started_with(prefix, mapper: dict):
     return result
 
 def main():
+    ttt = action_logo(['qwe','asdf'],['qwrr','asfdf'])
     #test()
     #update = FakeUpdate()
     #update.message.text = '/mode o'
