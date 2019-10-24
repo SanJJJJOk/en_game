@@ -20,6 +20,7 @@ bot.
 import logging
 import os.path
 from module1 import *
+from TgTest import *
 from urllib import request
 from bs4 import *
 from urllib.parse import quote
@@ -66,7 +67,6 @@ def tg_switch_mode(update, context):
     global Holder
     if not is_authorized(update):
         return
-    mode = ModeType.Disabled
     settings = Holder.get(update.message.chat.id)
     mode = settings.current_mode
     if len(update.message.text) < 7:
@@ -76,9 +76,11 @@ def tg_switch_mode(update, context):
         newmode = is_started_with(prefix, ModeType.get_well_known_mode_types())
         if len(newmode)==0:
             update.message.reply_text('invalid request. mode not found')
+            return
         else:
             if len(newmode)>1:
                 update.message.reply_text('invalid request. more than one mode found')
+                return
             else:
                 mode = newmode[0]
     update.message.reply_text('switched to ' + mode.name)
@@ -185,20 +187,16 @@ def get_associations(word):
 
 def is_started_with(prefix, mapper: dict):
     result = []
-    for word, value in mapper:
+    for word in mapper.keys():
         if word.startswith(prefix):
-            result.append(value)
+            result.append(mapper[word])
     return result
     pass
 
-def is_started_with(prefix, words: list):
-    result = []
-    for word in words:
-        if word.startswith(prefix):
-            result.append(word)
-    return result
-
 def main():
+    #update = FakeUpdate()
+    #update.message.text = '/mode o'
+    #t = tg_switch_mode(update, None)
     updater = Updater("408100374:AAEhMleUbdVH_G1xmKeCAy8MlNfyBwB9AOo", use_context=True)
     dp = updater.dispatcher
 

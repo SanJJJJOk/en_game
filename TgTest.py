@@ -7,7 +7,7 @@ class FakeMessage:
         self.chat = FakeChat()
         self.text = ''
 
-    def reply_text(input):
+    def reply_text(self, input):
         print(input)
 
 class FakeChat:
