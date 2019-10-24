@@ -131,7 +131,7 @@ def do_beautiful(input, mode):
     if mode == ModeType.Olymp:
         res = tmp_olymp(input)
         msg = '\n'.join(res)
-        return str(len(union)) + '\n' + msg
+        return str(len(res)) + '\n' + msg
     first = get_input_associations(input[0].strip())
     second = get_input_associations(input[1].strip())
     action_result = do_action(first, second, mode)
@@ -153,9 +153,8 @@ def tmp_olymp(input):
         union.append(corrected_word)
     result = []
     for uword in union:
-        if uword[0] in input_char:
+        if uword[0] in input_chars:
             result.append(uword)
-    
     return result
 
 def do_action(first, second, mode):
