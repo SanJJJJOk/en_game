@@ -47,22 +47,38 @@ def tg_error(update, context):
 def tg_olymp(update, context):
     if not is_authorized(update):
         return
-    default_input(update, context, ModeType.Olymp)
+    input_text = update.message.text
+    if len(input_text)<4:
+        update.message.reply_text('invalid request')
+        return
+    default_input(update, context, ModeType.Olymp, input_text[3:])
 
 def tg_gibrid(update, context):
     if not is_authorized(update):
         return
-    default_input(update, context, ModeType.Gibrid)
+    input_text = update.message.text
+    if len(input_text)<4:
+        update.message.reply_text('invalid request')
+        return
+    default_input(update, context, ModeType.Gibrid, input_text[3:])
 
 def tg_meta(update, context):
     if not is_authorized(update):
         return
-    default_input(update, context, ModeType.Meta)
+    input_text = update.message.text
+    if len(input_text)<4:
+        update.message.reply_text('invalid request')
+        return
+    default_input(update, context, ModeType.Meta, input_text[3:])
 
 def tg_logo(update, context):
     if not is_authorized(update):
         return
-    default_input(update, context, ModeType.Logo)
+    input_text = update.message.text
+    if len(input_text)<4:
+        update.message.reply_text('invalid request')
+        return
+    default_input(update, context, ModeType.Logo, input_text[3:])
 
 def tg_switch_mode(update, context):
     global Holder
@@ -90,10 +106,10 @@ def tg_default(update, context):
     mode = Holder.get(update.message.chat.id).current_mode
     if (mode == ModeType.Disabled):
         return
-    default_input(update, context, mode)
+    default_input(update, context, mode, update.message.text)
 
-def default_input(update, context, mode):
-    input = update.message.text.strip().split('.')
+def default_input(update, context, mode, input_text):
+    input = input_text.strip().split('.')
     if len(input) != 2:
         update.message.reply_text('invalid request')
         return
@@ -224,7 +240,8 @@ def is_started_with(prefix, mapper: dict):
     return result
 
 def main():
-    ttt = action_logo(['qwe','asdf'],['qwrr','asfdf'])
+    #test(input())
+    #ttt = action_logo(['qwe','asdf'],['qwrr','asfdf'])
     #test()
     #update = FakeUpdate()
     #update.message.text = '/mode o'
