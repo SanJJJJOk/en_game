@@ -128,12 +128,35 @@ def is_authorized(update):
 #----------
 
 def do_beautiful(input, mode):
+    if mode == ModeType.Olymp:
+        res = tmp_olymp(input)
+        msg = '\n'.join(res)
+        return str(len(union)) + '\n' + msg
     first = get_input_associations(input[0].strip())
     second = get_input_associations(input[1].strip())
     action_result = do_action(first, second, mode)
     union = list(dict.fromkeys(action_result))
     msg = '\n'.join(union)
     return str(len(union)) + '\n' + msg
+
+def tmp_olymp(input):
+    input_chars = input[0].strip().split(',')
+    input_words = input[1].strip().split(',')
+    union = []
+    for word in input_words:
+        corrected_word = word.strip().lower()
+        if corrected_word[0]=='!':
+            corrected_word = corrected_word[1:]
+        else:
+            associations = get_associations(corrected_word)
+            union.extend(associations)
+        union.append(corrected_word)
+    result = []
+    for uword in union:
+        if uword[0] in input_char:
+            result.append(uword)
+    
+    return result
 
 def do_action(first, second, mode):
     if mode == ModeType.Olymp:
