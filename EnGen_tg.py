@@ -22,6 +22,7 @@ import os.path
 from module1 import *
 from TgTest import *
 from urllib import request
+import requests
 from bs4 import *
 from urllib.parse import quote
 
@@ -187,13 +188,15 @@ def get_associations(word):
 
 def is_started_with(prefix, mapper: dict):
     result = []
-    for word in mapper.keys():
-        if word.startswith(prefix):
-            result.append(mapper[word])
+    for key in mapper.keys():
+        for word in mapper[key]:
+            if word.startswith(prefix):
+                result.append(key)
+                break
     return result
-    pass
 
 def main():
+    #test()
     #update = FakeUpdate()
     #update.message.text = '/mode o'
     #t = tg_switch_mode(update, None)

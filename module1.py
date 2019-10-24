@@ -22,10 +22,10 @@ class ModeType(enum.Enum):
     @staticmethod
     def get_well_known_mode_types():
         return {
-            'olymp': ModeType.Olymp,
-            'gibrid': ModeType.Gibrid,
-            'meta': ModeType.Meta,
-            'logo': ModeType.Logo
+            ModeType.Olymp: ['olymp', 'олимпийка','ооо'],
+            ModeType.Gibrid: ['gibrid', 'гибриды'],
+            ModeType.Meta: ['meta', 'метаграммы'],
+            ModeType.Logo: ['logo', 'логогрифы']
             }
 
 class SettingsHolder:
