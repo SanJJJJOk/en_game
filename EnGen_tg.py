@@ -128,10 +128,10 @@ def is_authorized(update):
 #----------
 
 def do_beautiful(input, mode):
-    if mode == ModeType.Olymp:
-        res = tmp_olymp(input)
-        msg = '\n'.join(res)
-        return str(len(res)) + '\n' + msg
+    #if mode == ModeType.Olymp:
+    #    res = tmp_olymp(input)
+    #    msg = '\n'.join(res)
+    #    return str(len(res)) + '\n' + msg
     first = get_input_associations(input[0].strip())
     second = get_input_associations(input[1].strip())
     action_result = do_action(first, second, mode)
