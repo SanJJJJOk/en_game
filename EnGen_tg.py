@@ -43,7 +43,7 @@ Holder = SettingsHolder()
 #tg methods
 
 def tg_error(update, context):
-	update.message.reply_text('Update "%s" caused error "%s"', update, context.error)
+	logger.warning('Update "%s" caused error "%s"', update, context.error)
     
 def tg_olymp(update, context):
     if not is_authorized(update):
@@ -245,7 +245,7 @@ def get_input_associations(input_str, s_org):
             union.extend(associations)
             if s_org:
                 associations2 = get_associations2(corrected_word)
-                corrected_ass2 = [associations2.lower() for item in associations2]
+                corrected_ass2 = [item.lower() for item in associations2]
                 union.extend(corrected_ass2)
         union.append(corrected_word)
     return union
@@ -353,22 +353,22 @@ def is_started_with(prefix, mapper: dict):
 #    return union[random.randint(0, 3)]
 
 def main():
-    url = 'http://wordassociations.net/ru/{0}/{1}'.format(quote('ассоциации-к-слову'),quote('любовь'))
-    t = 0
-    try:
-        fp = request.urlopen(url)
-    except:
-        t = 1
-    mybytes = fp.read()
+    #url = 'http://wordassociations.net/ru/{0}/{1}'.format(quote('ассоциации-к-слову'),quote('любовь'))
+    #t = 0
+    #try:
+    #    fp = request.urlopen(url)
+    #except:
+    #    t = 1
+    #mybytes = fp.read()
     
-    mystr = mybytes.decode("utf8")
-    fp.close()
+    #mystr = mybytes.decode("utf8")
+    #fp.close()
     
-    soup = BeautifulSoup(mystr)
-    ass_list = soup.find('div', {'class': 'wordscolumn'})
-    a_list = ass_list.findAll('a')
-    ttt = [item.string for item in a_list]
-    lent = len(ttt)
+    #soup = BeautifulSoup(mystr)
+    #ass_list = soup.find('div', {'class': 'wordscolumn'})
+    #a_list = ass_list.findAll('a')
+    #ttt = [item.string for item in a_list]
+    #lent = len(ttt)
     #game = fill_game(['картошка','мыло','квартира','дом','семья','корыто','бабушка','дерево','конкурс','малина','обед'])
     #test(input())
     #ttt = action_logo(['qwe','asdf'],['qwrr','asfdf'])
