@@ -41,10 +41,16 @@ class SettingsHolder:
 class Settings:
     def __init__(self):
         self.current_mode = ModeType.Disabled
+        self.testgame = TestGame()
 
     def next_mode(self):
         self.current_mode = self.current_mode.next()
         return self.current_mode
+
+class TestGame:
+    def __init__(self):
+        self.words = []
+        self.found = []
 
 #class Holder(object):
 #	def __init__(self):

@@ -25,6 +25,7 @@ from urllib import request
 import requests
 from bs4 import *
 from urllib.parse import quote
+import random
 
 from datetime import datetime
 from threading import Timer
@@ -261,7 +262,68 @@ def is_started_with(prefix, mapper: dict):
                 break
     return result
 
+def fill_game(input):
+    global Holder
+    game = TestGame()
+    random.seed()
+
+    success = False
+    simple_range = list(range(len(input)))
+    counter = 0
+    while not success:
+        counter += 1
+        print(counter)
+        input_words = []
+        random.shuffle(simple_range)
+        for i in range(8):
+            input_words.append(input[simple_range[i]])
+        w9 = get_rand_word(input_words[0],input_words[1])
+        if w9==None:
+            continue
+        w10 = get_rand_word(input_words[2],input_words[3])
+        if w10==None:
+            continue
+        w11 = get_rand_word(input_words[4],input_words[5])
+        if w11==None:
+            continue
+        w12 = get_rand_word(input_words[6],input_words[7])
+        if w12==None:
+            continue
+        w13 = get_rand_word(w9,w10)
+        if w13==None:
+            continue
+        w14 = get_rand_word(w11,w12)
+        if w14==None:
+            continue
+        w15 = get_rand_word(w13,w14)
+        if w15==None:
+            continue
+        game.words = input_words
+        game.words.append('-')
+        game.words.append(w9)
+        game.words.append(w10)
+        game.words.append(w11)
+        game.words.append(w12)
+        game.words.append('-')
+        game.words.append(w13)
+        game.words.append(w14)
+        game.words.append('-')
+        game.words.append(w15)
+        success = True
+    return game
+
+def get_rand_word(w1,w2):
+    ass1 = get_associations(w1)
+    ass2 = get_associations(w2)
+    union = list(set(ass1).intersection(ass2))
+    if len(union)==0:
+        return None
+    if len(union)<6:
+        return union[random.randint(0, len(union) - 1)]
+    return union[random.randint(0, 3)]
+
 def main():
+    game = fill_game(['картошка','мыло','квартира','дом','семья','корыто','бабушка','дерево','конкурс','малина','обед'])
     #test(input())
     #ttt = action_logo(['qwe','asdf'],['qwrr','asfdf'])
     #test()
