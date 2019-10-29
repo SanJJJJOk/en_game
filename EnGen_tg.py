@@ -44,7 +44,7 @@ Holder = SettingsHolder()
 
 def tg_error(update, context):
 	logger.warning('Update "%s" caused error "%s"', update, context.error)
-
+    
 def tg_olymp(update, context):
     if not is_authorized(update):
         return
@@ -52,7 +52,16 @@ def tg_olymp(update, context):
     if len(input_text)<4:
         update.message.reply_text('invalid request')
         return
-    default_input(update, context, ModeType.Olymp, input_text[3:])
+    default_input(update, context, ModeType.Olymp, False, input_text[3:])
+
+def tg_olymp2(update, context):
+    if not is_authorized(update):
+        return
+    input_text = update.message.text
+    if len(input_text)<4:
+        update.message.reply_text('invalid request')
+        return
+    default_input(update, context, ModeType.Olymp, True, input_text[3:])
 
 def tg_gibrid(update, context):
     if not is_authorized(update):
@@ -61,7 +70,7 @@ def tg_gibrid(update, context):
     if len(input_text)<4:
         update.message.reply_text('invalid request')
         return
-    default_input(update, context, ModeType.Gibrid, input_text[3:])
+    default_input(update, context, ModeType.Gibrid, False, input_text[3:])
 
 def tg_meta(update, context):
     if not is_authorized(update):
@@ -70,7 +79,7 @@ def tg_meta(update, context):
     if len(input_text)<4:
         update.message.reply_text('invalid request')
         return
-    default_input(update, context, ModeType.Meta, input_text[3:])
+    default_input(update, context, ModeType.Meta, False, input_text[3:])
 
 def tg_logo(update, context):
     if not is_authorized(update):
@@ -79,7 +88,7 @@ def tg_logo(update, context):
     if len(input_text)<4:
         update.message.reply_text('invalid request')
         return
-    default_input(update, context, ModeType.Logo, input_text[3:])
+    default_input(update, context, ModeType.Logo, False, input_text[3:])
 
 def tg_switch_mode(update, context):
     global Holder
@@ -107,14 +116,14 @@ def tg_default(update, context):
     mode = Holder.get(update.message.chat.id).current_mode
     if (mode == ModeType.Disabled):
         return
-    default_input(update, context, mode, update.message.text)
+    default_input(update, context, mode, False, update.message.text)
 
-def default_input(update, context, mode, input_text):
+def default_input(update, context, mode, is_org, input_text):
     input = input_text.strip().split('.')
     if len(input) != 2:
         update.message.reply_text('invalid request')
         return
-    msg =  do_beautiful(input, mode)
+    msg =  do_beautiful(input, mode, is_org)
     update.message.reply_text(msg)
 
 def is_authorized(update):
@@ -128,13 +137,13 @@ def is_authorized(update):
 
 #----------
 
-def do_beautiful(input, mode):
+def do_beautiful(input, mode, is_org):
     #if mode == ModeType.Olymp:
     #    res = tmp_olymp(input)
     #    msg = '\n'.join(res)
     #    return str(len(res)) + '\n' + msg
-    first = get_input_associations(input[0].strip())
-    second = get_input_associations(input[1].strip())
+    first = get_input_associations(input[0].strip(), is_org)
+    second = get_input_associations(input[1].strip(), is_org)
     action_result = do_action(first, second, mode)
     union = list(dict.fromkeys(action_result))
     msg = '\n'.join(union)
@@ -224,7 +233,7 @@ def action_logo(first, second):
                 union.append(word1 + '-' + word2)
     return union
 
-def get_input_associations(input_str):
+def get_input_associations(input_str, s_org):
     input_words = input_str.split(',')
     union = []
     for word in input_words:
@@ -234,6 +243,10 @@ def get_input_associations(input_str):
         else:
             associations = get_associations(corrected_word)
             union.extend(associations)
+            if s_org:
+                associations2 = get_associations2(corrected_word)
+                corrected_ass2 = [associations2.lower() for item in associations2]
+                union.extend(corrected_ass2)
         union.append(corrected_word)
     return union
 
@@ -250,6 +263,23 @@ def get_associations(word):
     
     soup = BeautifulSoup(mystr)
     ass_list = soup.find('ol', {'class': 'associations_list'})
+    a_list = ass_list.findAll('a')
+    return [item.string for item in a_list]
+
+def get_associations2(word):
+    url = 'http://wordassociations.net/ru/{0}/{1}'.format(quote('ассоциации-к-слову'),quote(word))
+    t = 0
+    try:
+        fp = request.urlopen(url)
+    except:
+        t = 1
+    mybytes = fp.read()
+    
+    mystr = mybytes.decode("utf8")
+    fp.close()
+    
+    soup = BeautifulSoup(mystr)
+    ass_list = soup.find('div', {'class': 'wordscolumn'})
     a_list = ass_list.findAll('a')
     return [item.string for item in a_list]
 
@@ -323,6 +353,22 @@ def is_started_with(prefix, mapper: dict):
 #    return union[random.randint(0, 3)]
 
 def main():
+    url = 'http://wordassociations.net/ru/{0}/{1}'.format(quote('ассоциации-к-слову'),quote('любовь'))
+    t = 0
+    try:
+        fp = request.urlopen(url)
+    except:
+        t = 1
+    mybytes = fp.read()
+    
+    mystr = mybytes.decode("utf8")
+    fp.close()
+    
+    soup = BeautifulSoup(mystr)
+    ass_list = soup.find('div', {'class': 'wordscolumn'})
+    a_list = ass_list.findAll('a')
+    ttt = [item.string for item in a_list]
+    lent = len(ttt)
     #game = fill_game(['картошка','мыло','квартира','дом','семья','корыто','бабушка','дерево','конкурс','малина','обед'])
     #test(input())
     #ttt = action_logo(['qwe','asdf'],['qwrr','asfdf'])
@@ -333,6 +379,7 @@ def main():
     updater = Updater("408100374:AAEhMleUbdVH_G1xmKeCAy8MlNfyBwB9AOo", use_context=True)
     dp = updater.dispatcher
 
+    dp.add_handler(CommandHandler("z", tg_olymp2))
     dp.add_handler(CommandHandler("o", tg_olymp))
     dp.add_handler(CommandHandler("g", tg_gibrid))
     dp.add_handler(CommandHandler("m", tg_meta))
