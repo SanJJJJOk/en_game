@@ -43,7 +43,7 @@ Holder = SettingsHolder()
 #tg methods
 
 def tg_error(update, context):
-	logger.warning('Update "%s" caused error "%s"', update, context.error)
+	update.message.reply_text('Update "%s" caused error "%s"', update, context.error)
     
 def tg_olymp(update, context):
     if not is_authorized(update):
