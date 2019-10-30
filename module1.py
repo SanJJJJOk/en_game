@@ -2,26 +2,28 @@ import enum
 
 class ModeType(enum.Enum):
     Disabled = 0
-    Olymp = 1
-    Gibrid = 2
-    Meta = 3
-    Logo = 4
+    Special = 1
+    Olymp = 2
+    Gibrid = 3
+    Meta = 4
+    Logo = 5
 
     def next(self):
         val = self.value + 1
-        if (val == 5):
+        if (val == 6):
             val = 0
         return ModeType(val)
 
     def prev(self):
         val = self.value - 1
         if (val == -1):
-            val = 4
+            val = 5
         return ModeType(val)
 
     @staticmethod
     def get_well_known_mode_types():
         return {
+            ModeType.Special: ['special', 'специальный'],
             ModeType.Olymp: ['olymp', 'олимпийка'],
             ModeType.Gibrid: ['gibrid', 'гибриды'],
             ModeType.Meta: ['meta', 'метаграммы'],

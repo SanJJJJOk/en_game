@@ -144,7 +144,7 @@ def do_beautiful(input, mode, is_org):
         #return str(len(res)) + '\n' + msg
     first = get_input_associations(input[0].strip(), is_org)
     second = get_input_associations(input[1].strip(), is_org)
-    if mode == ModeType.Disabled:
+    if mode == ModeType.Special:
         action_g = do_action(first, second, ModeType.Gibrid)
         action_m = do_action(first, second, ModeType.Meta)
         action_l = do_action(first, second, ModeType.Logo)
