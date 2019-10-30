@@ -139,11 +139,19 @@ def is_authorized(update):
 
 def do_beautiful(input, mode, is_org):
     #if mode == ModeType.Olymp:
-    #    res = tmp_olymp(input)
-    #    msg = '\n'.join(res)
-    #    return str(len(res)) + '\n' + msg
+        #res = tmp_olymp(input)
+        #msg = '\n'.join(res)
+        #return str(len(res)) + '\n' + msg
     first = get_input_associations(input[0].strip(), is_org)
     second = get_input_associations(input[1].strip(), is_org)
+    if mode == ModeType.Disabled:
+        action_g = do_action(first, second, ModeType.Gibrid)
+        action_m = do_action(first, second, ModeType.Meta)
+        action_l = do_action(first, second, ModeType.Logo)
+        union_g = list(dict.fromkeys(action_g))
+        union_m = list(dict.fromkeys(action_m))
+        union_l = list(dict.fromkeys(action_l))
+        return str(len(union_g)) + '\n' + '\n'.join(union_g) + str(len(union_m)) + '\n' + '\n'.join(union_m) + str(len(union_l)) + '\n' + '\n'.join(union_l)
     action_result = do_action(first, second, mode)
     union = list(dict.fromkeys(action_result))
     msg = '\n'.join(union)
