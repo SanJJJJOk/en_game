@@ -151,7 +151,7 @@ def do_beautiful(input, mode, is_org):
         union_g = list(dict.fromkeys(action_g))
         union_m = list(dict.fromkeys(action_m))
         union_l = list(dict.fromkeys(action_l))
-        return str(len(union_g)) + '\n' + '\n'.join(union_g) + str(len(union_m)) + '\n' + '\n'.join(union_m) + str(len(union_l)) + '\n' + '\n'.join(union_l)
+        return str(len(union_g)) + '\n' + '\n'.join(union_g) + '\n-\n' + str(len(union_m)) + '\n' + '\n'.join(union_m) + '\n-\n' + str(len(union_l)) + '\n' + '\n'.join(union_l)
     action_result = do_action(first, second, mode)
     union = list(dict.fromkeys(action_result))
     msg = '\n'.join(union)
