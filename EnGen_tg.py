@@ -157,8 +157,6 @@ def do_zaebis(update, context):
         second = first
     first = [item.lower() for item in first]
     second = [item.lower() for item in second]
-    update.message.reply_text(str(len(first)) + '\n' + '\n'.join(first))
-    update.message.reply_text(str(len(second)) + '\n' + '\n'.join(second))
     output = []
     res_g = action_gibrid(first, second, output)
     res_m = action_meta(first, second, output)
