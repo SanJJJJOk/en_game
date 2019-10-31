@@ -26,6 +26,7 @@ import requests
 from bs4 import *
 from urllib.parse import quote
 import random
+import re
 
 from datetime import datetime
 from threading import Timer
@@ -119,9 +120,9 @@ def tg_default(update, context):
     default_input(update, context, mode, False, update.message.text)
 
 def default_input(update, context, mode, is_org, input_text):
-    #if mode == ModeType.Special:
-    #    do_zaebis(update, context)
-    #    return
+    if mode == ModeType.Special:
+        do_zaebis(update, context)
+        return
     input = input_text.strip().split('.')
     if len(input) != 2:
         update.message.reply_text('invalid request')
@@ -138,40 +139,40 @@ def is_authorized(update):
         #update.message.reply_text('you are not authorized, please call /start')
         #return False
 
-#def do_zaebis(update, context):
-#    input_text = update.message.text.strip()
-#    need_print_useless = False
-#    if input_text[0]=='!':
-#        input_text = input_text[1:]
-#        need_print_useless = True
-#    input = input_text.strip().split('.')
-#    first = []
-#    second = []
-#    if len(input)==2:
-#        first = re.findall(r"[\w']+", input[0])
-#        second = re.findall(r"[\w']+", input[1])
-#        first.extend(second)
-#    else:
-#        first = re.findall(r"[\w']+", input_text)
-#        second = first
-#    output = []
-#    res_g = action_gibrid(first, second, output)
-#    res_m = action_meta(first, second, output)
-#    res_l = action_logo(first, second, output)
-#    res_a = action_anag(first, second, output)
-#    union_g = list(dict.fromkeys(res_g))
-#    union_m = list(dict.fromkeys(res_m))
-#    union_l = list(dict.fromkeys(res_l))
-#    union_a = list(dict.fromkeys(res_a))
-#    output_str = str(len(union_g)) + '\n' + '\n'.join(union_g) + '\n-\n' + str(len(union_m)) + '\n' + '\n'.join(union_m) + '\n-\n' + str(len(union_l)) + '\n' + '\n'.join(union_l) + '\n-\n' + str(len(union_a)) + '\n' + '\n'.join(union_a)
-#    update.message.reply_text(output_str)
-#    if not need_print_useless:
-#        return
-#    union_ul = []
-#    for word in first:
-#        if not word in output:
-#            union_ul.append(word)
-#    update.message.reply_text(str(len(union_ul)) + '\n' + '\n'.join(union_ul))
+def do_zaebis(update, context):
+    input_text = update.message.text.strip()
+    need_print_useless = False
+    if input_text[0]=='!':
+        input_text = input_text[1:]
+        need_print_useless = True
+    input = input_text.strip().split('.')
+    first = []
+    second = []
+    if len(input)==2:
+        first = re.findall(r"[\w']+", input[0])
+        second = re.findall(r"[\w']+", input[1])
+        first.extend(second)
+    else:
+        first = re.findall(r"[\w']+", input_text)
+        second = first
+    output = []
+    res_g = action_gibrid(first, second, output)
+    res_m = action_meta(first, second, output)
+    res_l = action_logo(first, second, output)
+    res_a = action_anag(first, second, output)
+    union_g = list(dict.fromkeys(res_g))
+    union_m = list(dict.fromkeys(res_m))
+    union_l = list(dict.fromkeys(res_l))
+    union_a = list(dict.fromkeys(res_a))
+    output_str = str(len(union_g)) + '\n' + '\n'.join(union_g) + '\n-\n' + str(len(union_m)) + '\n' + '\n'.join(union_m) + '\n-\n' + str(len(union_l)) + '\n' + '\n'.join(union_l) + '\n-\n' + str(len(union_a)) + '\n' + '\n'.join(union_a)
+    update.message.reply_text(output_str)
+    if not need_print_useless:
+        return
+    union_ul = []
+    for word in first:
+        if not word in output:
+            union_ul.append(word)
+    update.message.reply_text(str(len(union_ul)) + '\n' + '\n'.join(union_ul))
 
 #----------
 
@@ -366,7 +367,7 @@ def main():
     #update = FakeUpdate()
     #update.message.text = "!пушка картошка семена шкаф карштока"
     #answer = do_zaebis(update, None)
-    updater = Updater("979411435:AAEHIVLx8L8CxmjIHtitaH4L1GeV_0CRJ7M", use_context=True)
+    updater = Updater("979411435:AAEHIVLx8L8CxmjIHtitaH4L1GeV_OCRJ7M", use_context=True)
     dp = updater.dispatcher
 
     dp.add_handler(CommandHandler("z", tg_olymp2))
