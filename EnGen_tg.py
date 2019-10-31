@@ -155,6 +155,8 @@ def do_zaebis(update, context):
     else:
         first = re.findall(r"[\w']+", input_text)
         second = first
+    first = [item.lower() for item in first]
+    second = [item.lower() for item in second]
     output = []
     res_g = action_gibrid(first, second, output)
     res_m = action_meta(first, second, output)
