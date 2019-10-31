@@ -26,6 +26,7 @@ import requests
 from bs4 import *
 from urllib.parse import quote
 import random
+import re
 
 from datetime import datetime
 from threading import Timer
@@ -119,6 +120,9 @@ def tg_default(update, context):
     default_input(update, context, mode, False, update.message.text)
 
 def default_input(update, context, mode, is_org, input_text):
+    if mode == ModeType.Special:
+        do_zaebis(update, context)
+        return
     input = input_text.strip().split('.')
     if len(input) != 2:
         update.message.reply_text('invalid request')
@@ -135,6 +139,41 @@ def is_authorized(update):
         #update.message.reply_text('you are not authorized, please call /start')
         #return False
 
+def do_zaebis(update, context):
+    input_text = update.message.text.strip()
+    need_print_useless = False
+    if input_text[0]=='!':
+        input_text = input_text[1:]
+        need_print_useless = True
+    input = input_text.strip().split('.')
+    first = []
+    second = []
+    if len(input)==2:
+        first = re.findall(r"[\w']+", input[0])
+        second = re.findall(r"[\w']+", input[1])
+        first.extend(second)
+    else:
+        first = re.findall(r"[\w']+", input_text)
+        second = first
+    output = []
+    res_g = action_gibrid(first, second, output)
+    res_m = action_meta(first, second, output)
+    res_l = action_logo(first, second, output)
+    res_a = action_anag(first, second, output)
+    union_g = list(dict.fromkeys(res_g))
+    union_m = list(dict.fromkeys(res_m))
+    union_l = list(dict.fromkeys(res_l))
+    union_a = list(dict.fromkeys(res_a))
+    output_str = str(len(union_g)) + '\n' + '\n'.join(union_g) + '\n-\n' + str(len(union_m)) + '\n' + '\n'.join(union_m) + '\n-\n' + str(len(union_l)) + '\n' + '\n'.join(union_l) + '\n-\n' + str(len(union_a)) + '\n' + '\n'.join(union_a)
+    update.message.reply_text(output_str)
+    if not need_print_useless:
+        return
+    union_ul = []
+    for word in first:
+        if not word in output:
+            union_ul.append(word)
+    update.message.reply_text(str(len(union_ul)) + '\n' + '\n'.join(union_ul))
+
 #----------
 
 def do_beautiful(input, mode, is_org):
@@ -144,14 +183,14 @@ def do_beautiful(input, mode, is_org):
         #return str(len(res)) + '\n' + msg
     first = get_input_associations(input[0].strip(), is_org)
     second = get_input_associations(input[1].strip(), is_org)
-    if mode == ModeType.Special:
-        action_g = do_action(first, second, ModeType.Gibrid)
-        action_m = do_action(first, second, ModeType.Meta)
-        action_l = do_action(first, second, ModeType.Logo)
-        union_g = list(dict.fromkeys(action_g))
-        union_m = list(dict.fromkeys(action_m))
-        union_l = list(dict.fromkeys(action_l))
-        return str(len(union_g)) + '\n' + '\n'.join(union_g) + '\n-\n' + str(len(union_m)) + '\n' + '\n'.join(union_m) + '\n-\n' + str(len(union_l)) + '\n' + '\n'.join(union_l)
+    #if mode == ModeType.Special:
+    #    action_g = do_action(first, second, ModeType.Gibrid)
+    #    action_m = do_action(first, second, ModeType.Meta)
+    #    action_l = do_action(first, second, ModeType.Logo)
+    #    union_g = list(dict.fromkeys(action_g))
+    #    union_m = list(dict.fromkeys(action_m))
+    #    union_l = list(dict.fromkeys(action_l))
+    #    return str(len(union_g)) + '\n' + '\n'.join(union_g) + '\n-\n' + str(len(union_m)) + '\n' + '\n'.join(union_m) + '\n-\n' + str(len(union_l)) + '\n' + '\n'.join(union_l)
     action_result = do_action(first, second, mode)
     union = list(dict.fromkeys(action_result))
     msg = '\n'.join(union)
@@ -189,17 +228,21 @@ def do_action(first, second, mode):
 def action_olymp(first, second):
     return list(set(first).intersection(second))
 
-def action_gibrid(first, second):
+def action_gibrid(first, second, output=[]):
     union = []
     for i in first:
         for j in second:
             if i[-3:] == j[0:3]:
                 union.append(i + '-' + j)
+                output.append(i)
+                output.append(j)
             if i[0:3] == j[-3:]:
                 union.append(j + '-' + i)
+                output.append(i)
+                output.append(j)
     return union
 
-def action_meta(first, second):
+def action_meta(first, second, output=[]):
     union = []
     for word1 in first:
         for word2 in second:
@@ -211,9 +254,11 @@ def action_meta(first, second):
                     counter+=1
             if counter == 1:
                 union.append(word1 + '-' + word2)
+                output.append(word1)
+                output.append(word2)
     return union
 
-def action_logo(first, second):
+def action_logo(first, second, output=[]):
     union = []
     for word1 in first:
         for word2 in second:
@@ -239,6 +284,24 @@ def action_logo(first, second):
                     break
             if diff_index!=-1:
                 union.append(word1 + '-' + word2)
+                output.append(word1)
+                output.append(word2)
+    return union
+
+def action_anag(first, second, output=[]):
+    union = []
+    for i in first:
+        for j in second:
+            if i==j or len(i)!=len(j):
+                continue
+            list1 = list(i)
+            list2 = list(j)
+            list1.sort()
+            list2.sort()
+            if list1 == list2:
+                union.append(i + '-' + j)
+                output.append(i)
+                output.append(j)
     return union
 
 def get_input_associations(input_str, s_org):
@@ -300,91 +363,11 @@ def is_started_with(prefix, mapper: dict):
                 break
     return result
 
-#def fill_game(input):
-#    global Holder
-#    game = TestGame()
-#    random.seed()
-
-#    success = False
-#    simple_range = list(range(len(input)))
-#    counter = 0
-#    while not success:
-#        counter += 1
-#        print(counter)
-#        input_words = []
-#        random.shuffle(simple_range)
-#        for i in range(8):
-#            input_words.append(input[simple_range[i]])
-#        w9 = get_rand_word(input_words[0],input_words[1])
-#        if w9==None:
-#            continue
-#        w10 = get_rand_word(input_words[2],input_words[3])
-#        if w10==None:
-#            continue
-#        w11 = get_rand_word(input_words[4],input_words[5])
-#        if w11==None:
-#            continue
-#        w12 = get_rand_word(input_words[6],input_words[7])
-#        if w12==None:
-#            continue
-#        w13 = get_rand_word(w9,w10)
-#        if w13==None:
-#            continue
-#        w14 = get_rand_word(w11,w12)
-#        if w14==None:
-#            continue
-#        w15 = get_rand_word(w13,w14)
-#        if w15==None:
-#            continue
-#        game.words = input_words
-#        game.words.append('-')
-#        game.words.append(w9)
-#        game.words.append(w10)
-#        game.words.append(w11)
-#        game.words.append(w12)
-#        game.words.append('-')
-#        game.words.append(w13)
-#        game.words.append(w14)
-#        game.words.append('-')
-#        game.words.append(w15)
-#        success = True
-#    return game
-
-#def get_rand_word(w1,w2):
-#    ass1 = get_associations(w1)
-#    ass2 = get_associations(w2)
-#    union = list(set(ass1).intersection(ass2))
-#    if len(union)==0:
-#        return None
-#    if len(union)<6:
-#        return union[random.randint(0, len(union) - 1)]
-#    return union[random.randint(0, 3)]
-
 def main():
-    #url = 'http://wordassociations.net/ru/{0}/{1}'.format(quote('ассоциации-к-слову'),quote('любовь'))
-    #t = 0
-    #try:
-    #    fp = request.urlopen(url)
-    #except:
-    #    t = 1
-    #mybytes = fp.read()
-    
-    #mystr = mybytes.decode("utf8")
-    #fp.close()
-    
-    #soup = BeautifulSoup(mystr)
-    #ass_list = soup.find('div', {'class': 'wordscolumn'})
-    #a_list = ass_list.findAll('a')
-    #ttt = [item.string for item in a_list]
-    #lent = len(ttt)
-    #game = fill_game(['картошка','мыло','квартира','дом','семья','корыто','бабушка','дерево','конкурс','малина','обед'])
-    #test(input())
-    #ttt = action_logo(['qwe','asdf'],['qwrr','asfdf'])
-    #test()
     #update = FakeUpdate()
-    #update.message.text = '/mode o'
-    #t = tg_switch_mode(update, None)
-    updater = Updater("408100374:AAEhMleUbdVH_G1xmKeCAy8MlNfyBwB9AOo", use_context=True)
+    #update.message.text = "!пушка картошка семена шкаф карштока"
+    #answer = do_zaebis(update, None)
+    updater = Updater("979411435:AAEHIVLx8L8CxmjIHtitaH4L1GeV_0CRJ7M", use_context=True)
     dp = updater.dispatcher
 
     dp.add_handler(CommandHandler("z", tg_olymp2))
