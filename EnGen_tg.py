@@ -157,6 +157,8 @@ def do_zaebis(update, context):
         second = first
     first = [item.lower() for item in first]
     second = [item.lower() for item in second]
+    update.message.reply_text(str(len(first)) + '\n' + '\n'.join(first))
+    update.message.reply_text(str(len(second)) + '\n' + '\n'.join(second))
     output = []
     res_g = action_gibrid(first, second, output)
     res_m = action_meta(first, second, output)
@@ -367,7 +369,7 @@ def is_started_with(prefix, mapper: dict):
 
 def main():
     #update = FakeUpdate()
-    #update.message.text = "!пушка картошка семена шкаф карштока"
+    #update.message.text = "!пушка картошка семена шкаф карштока.поле"
     #answer = do_zaebis(update, None)
     updater = Updater("979411435:AAEHIVLx8L8CxmjIHtitaH4L1GeV_OCRJ7M", use_context=True)
     dp = updater.dispatcher
