@@ -234,6 +234,17 @@ def action_gibrid(first, second, output=[]):
     union = []
     for i in first:
         for j in second:
+            if i[-4:] == j[0:4]:
+                union.append(i + '-' + j)
+                output.append(i)
+                output.append(j)
+            if i[0:4] == j[-4:]:
+                union.append(j + '-' + i)
+                output.append(i)
+                output.append(j)
+    union.append('---')
+    for i in first:
+        for j in second:
             if i[-3:] == j[0:3]:
                 union.append(i + '-' + j)
                 output.append(i)
