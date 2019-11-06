@@ -111,6 +111,7 @@ def tg_switch_mode(update, context):
                 return
             else:
                 mode = newmode[0]
+                settings.current_mode = mode
     update.message.reply_text('switched to ' + mode.name)
 
 def tg_default(update, context):
