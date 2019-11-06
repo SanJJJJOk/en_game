@@ -234,6 +234,8 @@ def action_gibrid(first, second, output=[]):
     union = []
     for i in first:
         for j in second:
+            if len(i)<5 and len(j)<5:
+                continue
             if i[-4:] == j[0:4]:
                 union.append(i + '-' + j)
                 output.append(i)
@@ -245,6 +247,8 @@ def action_gibrid(first, second, output=[]):
     union.append('---')
     for i in first:
         for j in second:
+            if len(i)<4 and len(j)<4:
+                continue
             if i[-3:] == j[0:3]:
                 union.append(i + '-' + j)
                 output.append(i)
