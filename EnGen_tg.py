@@ -295,7 +295,7 @@ def action_logo(first, second, output=[]):
                 if long_word[i + 1]!=short_word[i]:
                     diff_index = -1
                     break
-            if diff_index!=-1:
+            if diff_index!=-1 or long_word.startswith(short_word):
                 union.append(word1 + '-' + word2)
                 output.append(word1)
                 output.append(word2)
