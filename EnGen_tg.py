@@ -53,6 +53,17 @@ def tg_gis(update, context):
     do_search_city(update, input_text)
     return
 
+def tg_test(update, context):
+    newstr = ""
+    update.message.reply_text("hello, " + update.message.from_user.first_name + "\n"
+                              +update.message.from_user.id + "\n"
+                              +update.message.from_user.first_name + "\n"
+                              +update.message.from_user.last_name + "\n"
+                              +update.message.from_user.username + "\n")
+    for i in range(0,20):
+        newstr+="ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff-\n"
+        update.message.reply_text(newstr)
+
 def tg_olymp(update, context):
     if not is_authorized(update):
         return
@@ -146,7 +157,7 @@ def is_authorized(update):
         return True
         #update.message.reply_text('you are not authorized, please call /start')
         #return False
-
+        
 def do_search_city(update, pattern):
     output_cities = []
     for city in Gis.all_cities:
@@ -429,6 +440,7 @@ def main():
     #updater = Updater("979411435:AAEHIVLx8L8CxmjIHtitaH4L1GeV_OCRJ7M", use_context=True)
     dp = updater.dispatcher
 
+    dp.add_handler(CommandHandler("test", test))
     dp.add_handler(CommandHandler("gis", tg_gis))
     dp.add_handler(CommandHandler("z", tg_olymp2))
     dp.add_handler(CommandHandler("o", tg_olymp))
