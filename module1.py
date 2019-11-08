@@ -1,4 +1,5 @@
 import enum
+import requests
 
 class ModeType(enum.Enum):
     Disabled = 0
@@ -43,6 +44,7 @@ class SettingsHolder:
 class Settings:
     def __init__(self):
         self.current_mode = ModeType.Disabled
+        self.session = requests.session()
 
     def next_mode(self):
         self.current_mode = self.current_mode.next()

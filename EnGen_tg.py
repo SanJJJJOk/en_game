@@ -381,7 +381,28 @@ def is_started_with(prefix, mapper: dict):
                 break
     return result
 
+def en_authorize(session, login, password):
+    url = 'http://72.en.cx/Login.aspx?return=%%2f'
+    userdata = {
+        'socialAssign': 0,
+        'Login': login,
+        'Password': password,
+        'EnButton1': 'Вход',
+        'ddlNetwork': 1
+    }
+
+    resp = session.post(url, data=userdata)
+    result = False
+    if resp.history:
+        logger.info("LogIN")
+        result = True
+    else:
+        logger.info("LogOUT")
+        result = False
+    pass
+
 def main():
+    
     #update = FakeUpdate()
     #update.message.text = "!пушка картошка семена шкаф карштока.поле"
     #answer = do_zaebis(update, None)
