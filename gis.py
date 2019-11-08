@@ -2734,8 +2734,8 @@ class gis:
         self.all_cities = []
         items = self.data["result"]["items"]
         for item in items:
-            main_cities.append(item["name"].lower())
-            all_cities.append(item["name"].lower())
+            self.main_cities.append(item["name"].lower())
+            self.all_cities.append(item["name"].lower())
             satellites = item["satellites"]
             for sat_item in satellites:
-                all_cities.append(sat_item["name"].lower())
+                self.all_cities.append(sat_item["name"].lower())

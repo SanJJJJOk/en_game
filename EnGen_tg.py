@@ -21,6 +21,7 @@ import logging
 import os.path
 from module1 import *
 from TgTest import *
+from gis import *
 from urllib import request
 import requests
 from bs4 import *
@@ -40,6 +41,7 @@ logger = logging.getLogger(__name__)
 
 #Define a global variables
 Holder = SettingsHolder()
+Gis = gis()
 
 #tg methods
 
@@ -141,6 +143,15 @@ def is_authorized(update):
         #return False
 
 def do_zaebis(update, context):
+    global Gis
+    input_text = update.message.text.strip()
+    output_cities = []
+    for city in Gis.all_cities:
+        t = re.match(input_test,city)
+        if not t is None:
+            output_cities.append(city)
+    update.message.reply_text(str(len(output_cities)) + '\n' + '\n'.join(output_cities))
+    return
     input_text = update.message.text.strip()
     need_print_useless = False
     if input_text[0]=='!':
@@ -402,7 +413,9 @@ def en_authorize(session, login, password):
     pass
 
 def main():
-    
+    global Gis
+    input_text = "а.*а"
+    t = re.match(input_text,"абакан")
     #update = FakeUpdate()
     #update.message.text = "!пушка картошка семена шкаф карштока.поле"
     #answer = do_zaebis(update, None)
