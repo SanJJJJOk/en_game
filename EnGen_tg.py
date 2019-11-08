@@ -47,7 +47,12 @@ Gis = gis()
 
 def tg_error(update, context):
 	logger.warning('Update "%s" caused error "%s"', update, context.error)
-    
+
+def tg_gis(update, context):
+    input_text = update.message.text[5:]
+    do_search_city(update, input_text)
+    return
+
 def tg_olymp(update, context):
     if not is_authorized(update):
         return
@@ -142,15 +147,19 @@ def is_authorized(update):
         #update.message.reply_text('you are not authorized, please call /start')
         #return False
 
-def do_zaebis(update, context):
-    global Gis
-    input_text = update.message.text.strip()
+def do_search_city(update, pattern):
     output_cities = []
     for city in Gis.all_cities:
-        t = re.match(input_test,city)
-        if not t is None:
+        found = re.match(pattern,city)
+        if not found is None:
             output_cities.append(city)
     update.message.reply_text(str(len(output_cities)) + '\n' + '\n'.join(output_cities))
+
+def do_zaebis(update, context):
+    global Gis
+    input_text = update.message.text.strip().lower()
+    pattern = '^' + input_text.replace('*','.*') + '$'
+    do_search_city(update, pattern)
     return
     input_text = update.message.text.strip()
     need_print_useless = False
@@ -413,16 +422,14 @@ def en_authorize(session, login, password):
     pass
 
 def main():
-    global Gis
-    input_text = "а.*а"
-    t = re.match(input_text,"абакан")
     #update = FakeUpdate()
-    #update.message.text = "!пушка картошка семена шкаф карштока.поле"
+    #update.message.text = "А*ан"
     #answer = do_zaebis(update, None)
     updater = Updater("408100374:AAEhMleUbdVH_G1xmKeCAy8MlNfyBwB9AOo", use_context=True)
     #updater = Updater("979411435:AAEHIVLx8L8CxmjIHtitaH4L1GeV_OCRJ7M", use_context=True)
     dp = updater.dispatcher
 
+    dp.add_handler(CommandHandler("gis", tg_gis))
     dp.add_handler(CommandHandler("z", tg_olymp2))
     dp.add_handler(CommandHandler("o", tg_olymp))
     dp.add_handler(CommandHandler("g", tg_gibrid))
