@@ -75,7 +75,7 @@ def tg_test(update, context):
         update.message.reply_text("Error: {0}".format(str(e)))
 
     for i in range(0,100):
-        newstr+="ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff-\n"
+        newstr+="ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff" + str(i) + "\n"
         update.message.reply_text(newstr)
 
 def tg_olymp(update, context):
