@@ -55,21 +55,19 @@ def tg_gis(update, context):
 
 def tg_test(update, context):
     newstr = ""
-    update.message.reply_text("hello")
-    update.message.reply_text("hello, " + update.message.from_user.first_name + "\n")
-    update.message.reply_text("hello, " + update.message.from_user.first_name + "\n"+str(update.message.from_user.id) + "\n")
     try:
+        update.message.reply_text("hello")
+        update.message.reply_text("hello, " + update.message.from_user.first_name + "\n")
+        update.message.reply_text("hello, " + update.message.from_user.first_name + "\n"+str(update.message.from_user.id) + "\n")
         update.message.reply_text("hello, " + update.message.from_user.first_name + "\n"
                                   +str(update.message.from_user.id) + "\n")
-        raise Exception()
         update.message.reply_text("hello, " + update.message.from_user.first_name + "\n"
                                   +update.message.from_user.id + "\n"
                                   +update.message.from_user.first_name + "\n"
                                   +update.message.from_user.last_name + "\n"
                                   +update.message.from_user.username + "\n")
     except Exception as e:
-        update.message.reply_text("Error")
-        update.message.reply_text("Error({0}): {1}".format(e.errno, e.strerror))
+        update.message.reply_text("Error: {0}".format(str(e)))
 
     for i in range(0,20):
         newstr+="ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff-\n"
