@@ -71,12 +71,12 @@ def tg_test(update, context):
                                   +update.message.from_user.first_name + "\n"
                                   +update.message.from_user.last_name + "\n"
                                   +update.message.from_user.username + "\n")
+        for i in range(0,100):
+            newstr+="ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff" + str(i) + "\n"
+            update.message.reply_text(newstr)
     except Exception as e:
         update.message.reply_text("Error: {0}".format(str(e)))
 
-    for i in range(0,100):
-        newstr+="ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff" + str(i) + "\n"
-        update.message.reply_text(newstr)
 
 def tg_olymp(update, context):
     if not is_authorized(update):
