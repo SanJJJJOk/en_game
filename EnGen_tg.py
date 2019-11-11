@@ -62,6 +62,11 @@ def tg_test(update, context):
         update.message.reply_text("hello, " + update.message.from_user.first_name + "\n"
                                   +str(update.message.from_user.id) + "\n")
         update.message.reply_text("hello, " + update.message.from_user.first_name + "\n"
+                                  +str(update.message.from_user.id) + "\n"
+                                  +update.message.from_user.first_name + "\n"
+                                  +update.message.from_user.last_name + "\n"
+                                  +update.message.from_user.username + "\n")
+        update.message.reply_text("hello, " + update.message.from_user.first_name + "\n"
                                   +update.message.from_user.id + "\n"
                                   +update.message.from_user.first_name + "\n"
                                   +update.message.from_user.last_name + "\n"
@@ -69,7 +74,7 @@ def tg_test(update, context):
     except Exception as e:
         update.message.reply_text("Error: {0}".format(str(e)))
 
-    for i in range(0,20):
+    for i in range(0,100):
         newstr+="ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff-\n"
         update.message.reply_text(newstr)
 
