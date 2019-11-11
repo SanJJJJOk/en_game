@@ -57,6 +57,9 @@ def tg_test(update, context):
     newstr = ""
     update.message.reply_text("hello")
     update.message.reply_text("hello, " + update.message.from_user.first_name + "\n")
+    update.message.reply_text("hello, " + update.message.from_user.first_name + "\n"+update.message.from_user.id + "\n")
+    update.message.reply_text("hello, " + update.message.from_user.first_name + "\n"
+                              +update.message.from_user.id + "\n")
     update.message.reply_text("hello, " + update.message.from_user.first_name + "\n"
                               +update.message.from_user.id + "\n"
                               +update.message.from_user.first_name + "\n"
