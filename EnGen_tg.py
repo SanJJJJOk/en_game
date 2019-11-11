@@ -440,7 +440,7 @@ def main():
     #updater = Updater("979411435:AAEHIVLx8L8CxmjIHtitaH4L1GeV_OCRJ7M", use_context=True)
     dp = updater.dispatcher
 
-    dp.add_handler(CommandHandler("test", test))
+    dp.add_handler(CommandHandler("test", tg_test))
     dp.add_handler(CommandHandler("gis", tg_gis))
     dp.add_handler(CommandHandler("z", tg_olymp2))
     dp.add_handler(CommandHandler("o", tg_olymp))
