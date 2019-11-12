@@ -428,7 +428,6 @@ def main():
     dp = updater.dispatcher
 
     dp.add_handler(CommandHandler("test", tg_test))
-    dp.add_handler(CommandHandler("gis", tg_gis))
     dp.add_handler(CommandHandler("z", tg_olymp2))
     dp.add_handler(CommandHandler("o", tg_olymp))
     dp.add_handler(CommandHandler("g", tg_gibrid))
