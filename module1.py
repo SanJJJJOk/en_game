@@ -39,7 +39,7 @@ class ModeType(enum.Enum):
         mapper = ModeType.get_well_known_mode_types()
         for mode in mapper.keys():
             for alias in mapper[mode]:
-                if alias.startswith(prefix):
+                if alias.startswith(input_alias):
                     result.append(mode)
                     break
         return result
