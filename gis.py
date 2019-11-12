@@ -2739,3 +2739,11 @@ class gis:
             satellites = item["satellites"]
             for sat_item in satellites:
                 self.all_cities.append(sat_item["name"].lower())
+
+    def search(self, pattern):
+        output_cities = []
+        for city in Gis.all_cities:
+            found = re.match(pattern,city)
+            if not found is None:
+                output_cities.append(city)
+        return output_cities

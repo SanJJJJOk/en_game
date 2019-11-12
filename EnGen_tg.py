@@ -22,12 +22,13 @@ import os.path
 from module1 import *
 from TgTest import *
 from gis import *
-from urllib import request
-import requests
+from urllib import request, parse #it is used for sociation request
+import requests #from Ads, to create session
 from bs4 import *
 from urllib.parse import quote
 import random
 import re
+import json
 
 from datetime import datetime
 from threading import Timer
@@ -41,17 +42,11 @@ logger = logging.getLogger(__name__)
 
 #Define a global variables
 Holder = SettingsHolder()
-Gis = gis()
 
 #tg methods
 
 def tg_error(update, context):
 	logger.warning('Update "%s" caused error "%s"', update, context.error)
-
-def tg_gis(update, context):
-    input_text = update.message.text[5:]
-    do_search_city(update, input_text)
-    return
 
 def tg_test(update, context):
     newstr = ""
@@ -76,7 +71,6 @@ def tg_test(update, context):
             update.message.reply_text(newstr)
     except Exception as e:
         update.message.reply_text("Error: {0}".format(str(e)))
-
 
 def tg_olymp(update, context):
     if not is_authorized(update):
@@ -133,7 +127,7 @@ def tg_switch_mode(update, context):
         mode = settings.next_mode()
     else:
         prefix = update.message.text[6:]
-        newmode = is_started_with(prefix, ModeType.get_well_known_mode_types())
+        newmode = ModeType.get_modes_by_alias(prefix)
         if len(newmode)==0:
             update.message.reply_text('invalid request. mode not found')
             return
@@ -172,20 +166,7 @@ def is_authorized(update):
         #update.message.reply_text('you are not authorized, please call /start')
         #return False
         
-def do_search_city(update, pattern):
-    output_cities = []
-    for city in Gis.all_cities:
-        found = re.match(pattern,city)
-        if not found is None:
-            output_cities.append(city)
-    update.message.reply_text(str(len(output_cities)) + '\n' + '\n'.join(output_cities))
-
 def do_zaebis(update, context):
-    global Gis
-    input_text = update.message.text.strip().lower()
-    pattern = '^' + input_text.replace('*','.*') + '$'
-    do_search_city(update, pattern)
-    return
     input_text = update.message.text.strip()
     need_print_useless = False
     if input_text[0]=='!':
@@ -225,20 +206,8 @@ def do_zaebis(update, context):
 #----------
 
 def do_beautiful(input, mode, is_org):
-    #if mode == ModeType.Olymp:
-        #res = tmp_olymp(input)
-        #msg = '\n'.join(res)
-        #return str(len(res)) + '\n' + msg
     first = get_input_associations(input[0].strip(), is_org)
     second = get_input_associations(input[1].strip(), is_org)
-    #if mode == ModeType.Special:
-    #    action_g = do_action(first, second, ModeType.Gibrid)
-    #    action_m = do_action(first, second, ModeType.Meta)
-    #    action_l = do_action(first, second, ModeType.Logo)
-    #    union_g = list(dict.fromkeys(action_g))
-    #    union_m = list(dict.fromkeys(action_m))
-    #    union_l = list(dict.fromkeys(action_l))
-    #    return str(len(union_g)) + '\n' + '\n'.join(union_g) + '\n-\n' + str(len(union_m)) + '\n' + '\n'.join(union_m) + '\n-\n' + str(len(union_l)) + '\n' + '\n'.join(union_l)
     action_result = do_action(first, second, mode)
     union = list(dict.fromkeys(action_result))
     msg = '\n'.join(union)
@@ -367,7 +336,7 @@ def action_anag(first, second, output=[]):
                 output.append(j)
     return union
 
-def get_input_associations(input_str, s_org):
+def get_input_associations(input_str, is_org):
     input_words = input_str.split(',')
     union = []
     for word in input_words:
@@ -377,14 +346,26 @@ def get_input_associations(input_str, s_org):
         else:
             associations = get_associations(corrected_word)
             union.extend(associations)
-            if s_org:
-                associations2 = get_associations2(corrected_word)
-                corrected_ass2 = [item.lower() for item in associations2]
-                union.extend(corrected_ass2)
+            #if is_org:
+                #associations2 = get_associations2(corrected_word)
+                #corrected_ass2 = [item.lower() for item in associations2]
+                #union.extend(corrected_ass2)
         union.append(corrected_word)
     return union
 
-def get_associations(word):
+def get_associations(input_word):
+    data = parse.urlencode({
+        'word':input_word,
+        'back':False,
+        'max_count':0
+        }).encode()
+    req =  request.Request('https://sociation.org/ajax/word_associations/', data=data)
+    resp = request.urlopen(req)
+    json_resp = json.load(resp)
+    associations = json_resp['associations']
+    return [item['name'] for item in associations]
+
+def old_get_associations(word):
     url = 'http://www.sociation.org/word/{0}'.format(quote(word))
     try:
         fp = request.urlopen(url)
@@ -400,31 +381,23 @@ def get_associations(word):
     a_list = ass_list.findAll('a')
     return [item.string for item in a_list]
 
-def get_associations2(word):
-    url = 'http://wordassociations.net/ru/{0}/{1}'.format(quote('ассоциации-к-слову'),quote(word))
-    t = 0
-    try:
-        fp = request.urlopen(url)
-    except:
-        t = 1
-    mybytes = fp.read()
+#def get_associations2(word):
+#    url = 'http://wordassociations.net/ru/{0}/{1}'.format(quote('ассоциации-к-слову'),quote(word))
+#    t = 0
+#    try:
+#        fp = request.urlopen(url)
+#    except:
+#        t = 1
+#    mybytes = fp.read()
     
-    mystr = mybytes.decode("utf8")
-    fp.close()
+#    mystr = mybytes.decode("utf8")
+#    fp.close()
     
-    soup = BeautifulSoup(mystr)
-    ass_list = soup.find('div', {'class': 'wordscolumn'})
-    a_list = ass_list.findAll('a')
-    return [item.string for item in a_list]
+#    soup = BeautifulSoup(mystr)
+#    ass_list = soup.find('div', {'class': 'wordscolumn'})
+#    a_list = ass_list.findAll('a')
+#    return [item.string for item in a_list]
 
-def is_started_with(prefix, mapper: dict):
-    result = []
-    for key in mapper.keys():
-        for word in mapper[key]:
-            if word.startswith(prefix.lower()):
-                result.append(key)
-                break
-    return result
 
 def en_authorize(session, login, password):
     url = 'http://72.en.cx/Login.aspx?return=%%2f'
