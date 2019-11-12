@@ -362,24 +362,26 @@ def get_associations(input_word):
     req =  request.Request('https://sociation.org/ajax/word_associations/', data=data)
     resp = request.urlopen(req)
     json_resp = json.load(resp)
+    if not 'associations' in json_resp:
+        return []
     associations = json_resp['associations']
     return [item['name'] for item in associations]
 
-def old_get_associations(word):
-    url = 'http://www.sociation.org/word/{0}'.format(quote(word))
-    try:
-        fp = request.urlopen(url)
-    except:
-        return []
-    mybytes = fp.read()
+#def old_get_associations(word):
+#    url = 'http://www.sociation.org/word/{0}'.format(quote(word))
+#    try:
+#        fp = request.urlopen(url)
+#    except:
+#        return []
+#    mybytes = fp.read()
     
-    mystr = mybytes.decode("utf8")
-    fp.close()
+#    mystr = mybytes.decode("utf8")
+#    fp.close()
     
-    soup = BeautifulSoup(mystr)
-    ass_list = soup.find('ol', {'class': 'associations_list'})
-    a_list = ass_list.findAll('a')
-    return [item.string for item in a_list]
+#    soup = BeautifulSoup(mystr)
+#    ass_list = soup.find('ol', {'class': 'associations_list'})
+#    a_list = ass_list.findAll('a')
+#    return [item.string for item in a_list]
 
 #def get_associations2(word):
 #    url = 'http://wordassociations.net/ru/{0}/{1}'.format(quote('ассоциации-к-слову'),quote(word))
@@ -421,7 +423,6 @@ def en_authorize(session, login, password):
 
 def main():
     #update = FakeUpdate()
-    #update.message.text = "А*ан"
     #answer = do_zaebis(update, None)
     updater = Updater("408100374:AAEhMleUbdVH_G1xmKeCAy8MlNfyBwB9AOo", use_context=True)
     #updater = Updater("979411435:AAEHIVLx8L8CxmjIHtitaH4L1GeV_OCRJ7M", use_context=True)
