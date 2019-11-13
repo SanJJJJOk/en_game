@@ -139,9 +139,6 @@ def tg_default(update, context):
 
 def default_input(update, context, mode, is_org, input_text):
     try:
-        if input_text.startswith('!!!'):
-            update.message.reply_text('пошел нахуй')
-            return
         if mode == ModeType.Special:
             do_zaebis(update, context)
             return
