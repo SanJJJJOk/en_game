@@ -8,18 +8,25 @@ class ModeType(enum.Enum):
     Gibrid = 3
     Meta = 4
     Logo = 5
+    Anag = 6
+    Plus = 7
+    Matr = 8
 
     def next(self):
         val = self.value + 1
-        if (val == 6):
+        if (val == ModeType.get_modes_count()):
             val = 0
         return ModeType(val)
 
     def prev(self):
         val = self.value - 1
         if (val == -1):
-            val = 5
+            val = ModeType.get_modes_count() - 1
         return ModeType(val)
+
+    @staticmethod
+    def get_modes_count():
+        return 9
 
     @staticmethod
     def get_well_known_mode_types():
@@ -27,9 +34,12 @@ class ModeType(enum.Enum):
             ModeType.Disabled: ['disabled', 'выключено'],
             ModeType.Special: ['special', 'специальный'],
             ModeType.Olymp: ['olymp', 'олимпийка'],
-            ModeType.Gibrid: ['gibrid', 'гибриды'],
-            ModeType.Meta: ['meta', 'метаграммы'],
-            ModeType.Logo: ['logo', 'логогрифы']
+            ModeType.Gibrid: ['gibrid', 'гибрид'],
+            ModeType.Meta: ['meta', 'метаграмма'],
+            ModeType.Logo: ['logo', 'логогриф'],
+            ModeType.Anag: ['anag', 'анаграмма'],
+            ModeType.Plus: ['plus', 'плюсограмма'],
+            ModeType.Matr: ['matr', 'матрица']
             }
 
     @staticmethod

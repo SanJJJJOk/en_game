@@ -81,15 +81,6 @@ def tg_olymp(update, context):
         return
     default_input(update, context, ModeType.Olymp, False, input_text[3:])
 
-def tg_olymp2(update, context):
-    if not is_authorized(update):
-        return
-    input_text = update.message.text
-    if len(input_text)<4:
-        update.message.reply_text('invalid request')
-        return
-    default_input(update, context, ModeType.Olymp, True, input_text[3:])
-
 def tg_gibrid(update, context):
     if not is_authorized(update):
         return
@@ -133,7 +124,7 @@ def tg_switch_mode(update, context):
             return
         else:
             if len(newmode)>1:
-                update.message.reply_text('invalid request. more than one mode found')
+                update.message.reply_text('invalid request. more than one mode found:\n' + '\n'.join([str(mode_int) for mode_int in newmode]))
                 return
             else:
                 mode = newmode[0]
@@ -151,6 +142,13 @@ def default_input(update, context, mode, is_org, input_text):
         do_zaebis(update, context)
         return
     input = input_text.strip().split('.')
+    if mode == ModeType.Matr:
+        if len(input) != 3:
+            update.message.reply_text('invalid request')
+            return
+        matr_msg = do_matr(input)
+        update.message.reply_text(matr_msg)
+        return
     if len(input) != 2:
         update.message.reply_text('invalid request')
         return
@@ -213,24 +211,6 @@ def do_beautiful(input, mode, is_org):
     msg = '\n'.join(union)
     return str(len(union)) + '\n' + msg
 
-def tmp_olymp(input):
-    input_chars = input[0].strip().split(',')
-    input_words = input[1].strip().split(',')
-    union = []
-    for word in input_words:
-        corrected_word = word.strip().lower()
-        if corrected_word[0]=='!':
-            corrected_word = corrected_word[1:]
-        else:
-            associations = get_associations(corrected_word)
-            union.extend(associations)
-        union.append(corrected_word)
-    result = []
-    for uword in union:
-        if uword[0] in input_chars:
-            result.append(uword)
-    return result
-
 def do_action(first, second, mode):
     if mode == ModeType.Olymp:
         return action_olymp(first, second)
@@ -240,6 +220,10 @@ def do_action(first, second, mode):
         return action_meta(first, second)
     if mode == ModeType.Logo:
         return action_logo(first, second)
+    if mode == ModeType.Anag:
+        return action_anag(first, second)
+    if mode == ModeType.Plus:
+        return action_plus(first, second)
     return []
 
 def action_olymp(first, second):
@@ -336,6 +320,73 @@ def action_anag(first, second, output=[]):
                 output.append(j)
     return union
 
+def action_plus(first, second, output=[]):
+    union = []
+    for word1 in first:
+        for word2 in second:
+            long_word = ''
+            short_word = ''
+            if len(word1) == len(word2) + 1:
+                long_word = word1
+                short_word = word2
+            else:
+                if len(word2) == len(word1) + 1:
+                    long_word = word2
+                    short_word = word1
+                else:
+                    continue
+            long_list = list(long_word)
+            short_list = list(short_word)
+            long_list.sort()
+            short_list.sort()
+            diff_index = -2
+            for i in range(0, len(short_list)):
+                if long_list[i]!=short_list[i]:
+                    diff_index = i
+                    break
+            if diff_index==-2:
+                diff_index = -1
+            else:
+                for i in range(diff_index, len(short_list)):
+                    if long_list[i + 1]!=short_list[i]:
+                        diff_index = -2
+                        break
+            if diff_index!=-2:
+                union.append(long_list[diff_index] + ': ' + word1 + '-' + word2)
+                output.append(word1)
+                output.append(word2)
+    return union
+
+
+def do_matr(input):
+    first = get_input_associations(input[0].strip(), False)
+    second = get_input_associations(input[1].strip(), False)
+    third = get_input_associations(input[2].strip(), False)
+    action_result = action_matr(first, second, third)
+    union = list(dict.fromkeys(action_result))
+    msg = '\n'.join(union)
+    return str(len(union)) + '\n' + msg
+
+def action_matr(first, second, third, output=[]):
+    union = []
+    for i in first:
+        for j in second:
+            if i==j:
+                continue
+            for index in range(0, len(i)-2):
+                the_matr = i[index:index+3]
+                if not the_matr in j:
+                    continue
+                for k in third:
+                    if i==k or j==k:
+                        continue
+                    if the_matr in k:
+                        union.append(the_matr + ': ' + i + '-' + j + '-' + k)
+                        output.append(i)
+                        output.append(j)
+                        output.append(k)
+    return union
+
 def get_input_associations(input_str, is_org):
     input_words = input_str.split(',')
     union = []
@@ -366,22 +417,6 @@ def get_associations(input_word):
         return []
     associations = json_resp['associations']
     return [item['name'] for item in associations]
-
-#def old_get_associations(word):
-#    url = 'http://www.sociation.org/word/{0}'.format(quote(word))
-#    try:
-#        fp = request.urlopen(url)
-#    except:
-#        return []
-#    mybytes = fp.read()
-    
-#    mystr = mybytes.decode("utf8")
-#    fp.close()
-    
-#    soup = BeautifulSoup(mystr)
-#    ass_list = soup.find('ol', {'class': 'associations_list'})
-#    a_list = ass_list.findAll('a')
-#    return [item.string for item in a_list]
 
 #def get_associations2(word):
 #    url = 'http://wordassociations.net/ru/{0}/{1}'.format(quote('ассоциации-к-слову'),quote(word))
@@ -429,7 +464,6 @@ def main():
     dp = updater.dispatcher
 
     dp.add_handler(CommandHandler("test", tg_test))
-    dp.add_handler(CommandHandler("z", tg_olymp2))
     dp.add_handler(CommandHandler("o", tg_olymp))
     dp.add_handler(CommandHandler("g", tg_gibrid))
     dp.add_handler(CommandHandler("m", tg_meta))
