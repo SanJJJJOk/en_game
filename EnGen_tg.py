@@ -361,7 +361,6 @@ def action_plus(first, second, output=[]):
     union.sort()
     return union
 
-
 def do_matr(input):
     first = get_input_associations(input[0].strip(), False)
     second = get_input_associations(input[1].strip(), False)
@@ -405,6 +404,12 @@ def get_input_associations(input_str, is_org):
                 #associations2 = get_associations2(corrected_word)
                 #corrected_ass2 = [item.lower() for item in associations2]
                 #union.extend(corrected_ass2)
+        if corrected_word[0]=='!':
+            associations = get_associations(corrected_word)
+            if len(associations)>20:
+                union.extend(associations[:20])
+            else:
+                union.extend(associations)
         union.append(corrected_word)
     return union
 
