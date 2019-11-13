@@ -138,28 +138,25 @@ def tg_default(update, context):
     default_input(update, context, mode, False, update.message.text)
 
 def default_input(update, context, mode, is_org, input_text):
-    update.message.reply_text('q')
-    if mode == ModeType.Special:
-        do_zaebis(update, context)
-        return
-    input = input_text.strip().split('.')
-    if mode == ModeType.Matr:
-        if len(input) != 3:
-            update.message.reply_text('invalid request')
+    try:
+        if mode == ModeType.Special:
+            do_zaebis(update, context)
             return
-        try:
+        input = input_text.strip().split('.')
+        if mode == ModeType.Matr:
+            if len(input) != 3:
+                update.message.reply_text('invalid request')
+                return
             matr_msg = do_matr(input)
             update.message.reply_text(matr_msg)
-        except Exception as e:
-            update.message.reply_text("Error")
-            update.message.reply_text("Error: {0}".format(str(e)))
             return
-        return
-    if len(input) != 2:
-        update.message.reply_text('invalid request')
-        return
-    msg =  do_beautiful(input, mode, is_org)
-    update.message.reply_text(msg)
+        if len(input) != 2:
+            update.message.reply_text('invalid request')
+            return
+        msg =  do_beautiful(input, mode, is_org)
+        update.message.reply_text(msg)
+    except Exception as e:
+        update.message.reply_text("Error: {0}".format(str(e)))
 
 def is_authorized(update):
     if update.message.chat.id in Holder.settings_by_id:
