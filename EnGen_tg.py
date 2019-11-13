@@ -138,6 +138,7 @@ def tg_default(update, context):
     default_input(update, context, mode, False, update.message.text)
 
 def default_input(update, context, mode, is_org, input_text):
+    update.message.reply_text('q')
     if mode == ModeType.Special:
         do_zaebis(update, context)
         return
@@ -146,8 +147,13 @@ def default_input(update, context, mode, is_org, input_text):
         if len(input) != 3:
             update.message.reply_text('invalid request')
             return
-        matr_msg = do_matr(input)
-        update.message.reply_text(matr_msg)
+        try:
+            matr_msg = do_matr(input)
+            update.message.reply_text(matr_msg)
+        except Exception as e:
+            update.message.reply_text("Error")
+            update.message.reply_text("Error: {0}".format(str(e)))
+            return
         return
     if len(input) != 2:
         update.message.reply_text('invalid request')
@@ -359,16 +365,13 @@ def action_plus(first, second, output=[]):
 
 
 def do_matr(input):
-    try:
-        first = get_input_associations(input[0].strip(), False)
-        second = get_input_associations(input[1].strip(), False)
-        third = get_input_associations(input[2].strip(), False)
-        action_result = action_matr(first, second, third)
-        union = list(dict.fromkeys(action_result))
-        msg = '\n'.join(union)
-        return str(len(union)) + '\n' + msg
-    except Exception as e:
-        return "Error: {0}".format(str(e))
+    first = get_input_associations(input[0].strip(), False)
+    second = get_input_associations(input[1].strip(), False)
+    third = get_input_associations(input[2].strip(), False)
+    action_result = action_matr(first, second, third)
+    union = list(dict.fromkeys(action_result))
+    msg = '\n'.join(union)
+    return str(len(union)) + '\n' + msg
 
 def action_matr(first, second, third, output=[]):
     union = []
