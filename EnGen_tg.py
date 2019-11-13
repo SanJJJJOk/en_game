@@ -359,13 +359,16 @@ def action_plus(first, second, output=[]):
 
 
 def do_matr(input):
-    first = get_input_associations(input[0].strip(), False)
-    second = get_input_associations(input[1].strip(), False)
-    third = get_input_associations(input[2].strip(), False)
-    action_result = action_matr(first, second, third)
-    union = list(dict.fromkeys(action_result))
-    msg = '\n'.join(union)
-    return str(len(union)) + '\n' + msg
+    try:
+        first = get_input_associations(input[0].strip(), False)
+        second = get_input_associations(input[1].strip(), False)
+        third = get_input_associations(input[2].strip(), False)
+        action_result = action_matr(first, second, third)
+        union = list(dict.fromkeys(action_result))
+        msg = '\n'.join(union)
+        return str(len(union)) + '\n' + msg
+    except Exception as e:
+        return "Error: {0}".format(str(e))
 
 def action_matr(first, second, third, output=[]):
     union = []
@@ -458,6 +461,8 @@ def en_authorize(session, login, password):
 
 def main():
     #update = FakeUpdate()
+    #update.message.text = 'вампир.вампир.вампир'
+    #default_input(update, None, ModeType.Matr, False, update.message.text)
     #answer = do_zaebis(update, None)
     updater = Updater("408100374:AAEhMleUbdVH_G1xmKeCAy8MlNfyBwB9AOo", use_context=True)
     #updater = Updater("979411435:AAEHIVLx8L8CxmjIHtitaH4L1GeV_OCRJ7M", use_context=True)
