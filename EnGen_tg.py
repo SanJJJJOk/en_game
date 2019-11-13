@@ -405,6 +405,7 @@ def get_input_associations(input_str, is_org):
                 #corrected_ass2 = [item.lower() for item in associations2]
                 #union.extend(corrected_ass2)
         if corrected_word[0]=='!':
+            corrected_word = corrected_word[1:]
             associations = get_associations(corrected_word)
             if len(associations)>20:
                 union.extend(associations[:20])
