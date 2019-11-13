@@ -358,6 +358,7 @@ def action_plus(first, second, output=[]):
                 union.append(long_list[diff_index] + ': ' + word1 + '-' + word2)
                 output.append(word1)
                 output.append(word2)
+    union.sort()
     return union
 
 
