@@ -199,7 +199,7 @@ def do_zaebis(update, context, input_text, modes):
         if mode == ModeType.Matr:
             action_result = action_matr(first, first, second, output)
         else:
-            action_result = do_action(first, second, mode)
+            action_result = do_action(first, second, mode, output)
         union = list(dict.fromkeys(action_result))
         update.message.reply_text(str(mode) + ':\n' + str(len(union)) + '\n' + '\n'.join(union))
     union_ul = []
