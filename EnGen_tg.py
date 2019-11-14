@@ -460,6 +460,22 @@ def get_associations(input_word):
 #    a_list = ass_list.findAll('a')
 #    return [item.string for item in a_list]
 
+def get_yandex_tags(img_url):
+    url = 'https://yandex.ru/images/search?url={0}&rpt=imageview'.format(quote(img_url, safe=''))
+    t = 0
+    try:
+        fp = request.urlopen(url)
+    except:
+        t = 1
+    mybytes = fp.read()
+    
+    mystr = mybytes.decode("utf8")
+    fp.close()
+    
+    soup = BeautifulSoup(mystr)
+    ass_list = soup.find('div', {'class': 'tags__wrapper'})
+    a_list = ass_list.findAll('a')
+    return [item.string for item in a_list]
 
 def en_authorize(session, login, password):
     url = 'http://72.en.cx/Login.aspx?return=%%2f'
