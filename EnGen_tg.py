@@ -140,9 +140,13 @@ def tg_default(update, context):
 def default_input(update, context, mode, is_org, input_text):
     try:
         if mode == ModeType.Special:
-            do_zaebis(update, context)
+            input_text = update.message.text.strip()
+            do_zaebis(input_text, [ModeType.Gibrid,ModeType.Meta,ModeType.Logo, ModeType.Anag])
             return
         input = input_text.strip().split('.')
+        if input_text.startswith('$'):
+            do_zaebis(input_text[1:], [mode])
+            return
         if mode == ModeType.Matr:
             if len(input) != 3:
                 update.message.reply_text('invalid request')
@@ -167,8 +171,7 @@ def is_authorized(update):
         #update.message.reply_text('you are not authorized, please call /start')
         #return False
         
-def do_zaebis(update, context):
-    input_text = update.message.text.strip()
+def do_zaebis(input_text, modes):
     need_print_useless = False
     if input_text[0]=='!':
         input_text = input_text[1:]
@@ -186,23 +189,21 @@ def do_zaebis(update, context):
     first = [item.lower() for item in first]
     second = [item.lower() for item in second]
     output = []
-    res_g = action_gibrid(first, second, output)
-    res_m = action_meta(first, second, output)
-    res_l = action_logo(first, second, output)
-    res_a = action_anag(first, second, output)
-    union_g = list(dict.fromkeys(res_g))
-    union_m = list(dict.fromkeys(res_m))
-    union_l = list(dict.fromkeys(res_l))
-    union_a = list(dict.fromkeys(res_a))
-    output_str = str(len(union_g)) + '\n' + '\n'.join(union_g) + '\n-\n' + str(len(union_m)) + '\n' + '\n'.join(union_m) + '\n-\n' + str(len(union_l)) + '\n' + '\n'.join(union_l) + '\n-\n' + str(len(union_a)) + '\n' + '\n'.join(union_a)
-    update.message.reply_text(output_str)
+    for mode in modes:
+        action_result = []
+        if mode == ModeType.Matr:
+            action_result = action_matr(first, first, second, output)
+        else:
+            action_result = do_action(first, second, mode)
+        union = list(dict.fromkeys(action_result))
+        update.message.reply_text(str(mode) + ':\n' + str(len(union)) + '\n' + '\n'.join(union))
     if not need_print_useless:
         return
     union_ul = []
     for word in first:
         if not word in output:
             union_ul.append(word)
-    update.message.reply_text(str(len(union_ul)) + '\n' + '\n'.join(union_ul))
+    update.message.reply_text('useless words:\n' + str(len(union_ul)) + '\n' + '\n'.join(union_ul))
 
 #----------
 
@@ -214,19 +215,19 @@ def do_beautiful(input, mode, is_org):
     msg = '\n'.join(union)
     return str(len(union)) + '\n' + msg
 
-def do_action(first, second, mode):
+def do_action(first, second, mode, output = []):
     if mode == ModeType.Olymp:
-        return action_olymp(first, second)
+        return action_olymp(first, second, output)
     if mode == ModeType.Gibrid:
-        return action_gibrid(first, second)
+        return action_gibrid(first, second, output)
     if mode == ModeType.Meta:
-        return action_meta(first, second)
+        return action_meta(first, second, output)
     if mode == ModeType.Logo:
-        return action_logo(first, second)
+        return action_logo(first, second, output)
     if mode == ModeType.Anag:
-        return action_anag(first, second)
+        return action_anag(first, second, output)
     if mode == ModeType.Plus:
-        return action_plus(first, second)
+        return action_plus(first, second, output)
     return []
 
 def action_olymp(first, second):
