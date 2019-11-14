@@ -141,11 +141,11 @@ def default_input(update, context, mode, is_org, input_text):
     try:
         if mode == ModeType.Special:
             input_text = update.message.text.strip()
-            do_zaebis(input_text, [ModeType.Gibrid,ModeType.Meta,ModeType.Logo, ModeType.Anag])
+            do_zaebis(update, context, input_text, [ModeType.Gibrid,ModeType.Meta,ModeType.Logo, ModeType.Anag])
             return
         input = input_text.strip().split('.')
         if input_text.startswith('$'):
-            do_zaebis(input_text[1:], [mode])
+            do_zaebis(update, context, input_text[1:], [mode])
             return
         if mode == ModeType.Matr:
             if len(input) != 3:
@@ -171,7 +171,7 @@ def is_authorized(update):
         #update.message.reply_text('you are not authorized, please call /start')
         #return False
         
-def do_zaebis(input_text, modes):
+def do_zaebis(update, context, input_text, modes):
     need_print_useless = False
     if input_text[0]=='!':
         input_text = input_text[1:]
