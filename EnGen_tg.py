@@ -422,11 +422,12 @@ def get_first_associations(words, count):
     union = []
     for word in words:
         associations = get_associations(word)
+        union.append(word)
         if len(associations)>count:
             union.extend(associations[:count])
         else:
             union.extend(associations)
-    return union
+    return list(dict.fromkeys(union))
 
 def get_associations(input_word):
     data = parse.urlencode({
