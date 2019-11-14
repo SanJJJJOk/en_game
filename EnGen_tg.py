@@ -422,7 +422,7 @@ def get_first_associations(words, count):
     union = []
     for word in words:
         associations = get_associations(word)
-        if len(ass)>count:
+        if len(associations)>count:
             union.extend(associations[:count])
         else:
             union.extend(associations)
