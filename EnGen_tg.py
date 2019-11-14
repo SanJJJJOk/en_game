@@ -144,7 +144,7 @@ def default_input(update, context, mode, is_org, input_text):
             do_zaebis(update, context, input_text, [ModeType.Gibrid,ModeType.Meta,ModeType.Logo, ModeType.Anag])
             return
         input = input_text.strip().split('.')
-        if input_text.startswith('$'):
+        if input_text[0]=='$':
             do_zaebis(update, context, input_text[1:], [mode])
             return
         if mode == ModeType.Matr:
@@ -172,19 +172,24 @@ def is_authorized(update):
         #return False
         
 def do_zaebis(update, context, input_text, modes):
-    need_print_useless = False
-    if input_text[0]=='!':
+    need_associations = False
+    if input_text[0]=='$':
         input_text = input_text[1:]
-        need_print_useless = True
+        need_associations = True
     input = input_text.strip().split('.')
     first = []
     second = []
     if len(input)==2:
         first = re.findall(r"[\w']+", input[0])
         second = re.findall(r"[\w']+", input[1])
+        if need_associations:
+            first = get_first_associations(first, 5)
+            second = get_first_associations(second, 5)
         first.extend(second)
     else:
         first = re.findall(r"[\w']+", input_text)
+        if need_associations:
+            first = get_first_associations(first, 5)
         second = first
     first = [item.lower() for item in first]
     second = [item.lower() for item in second]
@@ -197,8 +202,6 @@ def do_zaebis(update, context, input_text, modes):
             action_result = do_action(first, second, mode)
         union = list(dict.fromkeys(action_result))
         update.message.reply_text(str(mode) + ':\n' + str(len(union)) + '\n' + '\n'.join(union))
-    if not need_print_useless:
-        return
     union_ul = []
     for word in first:
         if not word in output:
@@ -413,6 +416,16 @@ def get_input_associations(input_str, is_org):
             else:
                 union.extend(associations)
         union.append(corrected_word)
+    return union
+
+def get_first_associations(words, count):
+    union = []
+    for word in words:
+        associations = get_associations(word)
+        if len(ass)>count:
+            union.extend(associations[:count])
+        else:
+            union.extend(associations)
     return union
 
 def get_associations(input_word):
