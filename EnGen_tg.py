@@ -72,6 +72,25 @@ def tg_test(update, context):
     except Exception as e:
         update.message.reply_text("Error: {0}".format(str(e)))
 
+def tg_load_imgs(update, context):
+    global Holder
+    if not is_authorized(update):
+        return
+    input_text = update.message.text
+    if len(input_text)<7:
+        update.message.reply_text('invalid request')
+        return
+    input_text = input_text[6:]
+    input = input_text.strip().split(' ')
+    if len(input)==3:
+        settings = Holder.get(update.message.chat.id)
+        is_en_auth = en_authorize(settings.session, input[0], input[1])
+        if not is_en_auth:
+            update.message.reply_text('invalid credentials')
+            return
+        resp = session.get(input[2])
+
+
 def tg_olymp(update, context):
     if not is_authorized(update):
         return
@@ -140,7 +159,6 @@ def tg_default(update, context):
 def default_input(update, context, mode, is_org, input_text):
     try:
         if mode == ModeType.Special:
-            input_text = update.message.text.strip()
             do_zaebis(update, context, input_text, [ModeType.Gibrid,ModeType.Meta,ModeType.Logo, ModeType.Anag])
             return
         input = input_text.strip().split('.')
@@ -460,6 +478,27 @@ def get_associations(input_word):
 #    a_list = ass_list.findAll('a')
 #    return [item.string for item in a_list]
 
+def get_img_tags(input_text, settings):
+    soup = BeautifulSoup(input_text)
+    imgs = soup.findAll('img')
+    settings.game_imgs = [img['src'] for img in imgs]
+
+def get_words(settings):
+    img_urls = settings.game_imgs
+    output1 = []
+    output2 = []
+    for img_url in img_urls:
+        tags = get_yandex_tags(img_url)
+        for tag in tags:
+            if tag.count(' ')==0:
+                output1.append(tag)
+            tag_words = re.findall(r"[\w']+", tag)
+            output2.extend(tag_words)
+    output1 = list(dict.fromkeys(output1))
+    output2 = list(dict.fromkeys(output2))
+    settings.yandex_tags_main = output1
+    settings.yandex_tags_all = output2
+
 def get_yandex_tags(img_url):
     url = 'https://yandex.ru/images/search?url={0}&rpt=imageview'.format(quote(img_url, safe=''))
     t = 0
@@ -498,9 +537,17 @@ def en_authorize(session, login, password):
     pass
 
 def main():
+    #global pwd
+    #session = requests.session()
+    #en_authorize(session, 'SanJJJJOk', pwd)
+    ##resp = session.get('http://72.en.cx/GameScenario.aspx?gid=67242')
+    #resp = session.get('http://redray.en.cx/GameScenario.aspx?gid=67224')
+    #ttt = get_img_tags(resp.text)
+    #tttt = get_words(ttt[:20])
     #update = FakeUpdate()
-    #update.message.text = 'вампир.вампир.вампир'
-    #default_input(update, None, ModeType.Matr, False, update.message.text)
+    #update.message.text = ' '.join(tttt[1])
+    #default_input(update,None,ModeType.Special,False,update.message.text)
+
     #answer = do_zaebis(update, None)
     updater = Updater("408100374:AAEhMleUbdVH_G1xmKeCAy8MlNfyBwB9AOo", use_context=True)
     #updater = Updater("979411435:AAEHIVLx8L8CxmjIHtitaH4L1GeV_OCRJ7M", use_context=True)

@@ -68,6 +68,9 @@ class Settings:
     def __init__(self):
         self.current_mode = ModeType.Disabled
         self.session = requests.session()
+        self.game_imgs = []
+        self.yandex_tags_main = []
+        self.yandex_tags_all = []
 
     def next_mode(self):
         self.current_mode = self.current_mode.next()
