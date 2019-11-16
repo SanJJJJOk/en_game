@@ -251,7 +251,7 @@ def do_action(first, second, mode, output = []):
         return action_plus(first, second, output)
     return []
 
-def action_olymp(first, second):
+def action_olymp(first, second, output=[]):
     return list(set(first).intersection(second))
 
 def action_gibrid(first, second, output=[]):
