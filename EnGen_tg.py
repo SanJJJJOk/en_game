@@ -88,8 +88,23 @@ def tg_load_imgs(update, context):
         if not is_en_auth:
             update.message.reply_text('invalid credentials')
             return
-        resp = session.get(input[2])
+        resp = settings.session.get(input[2])
+        get_img_tags(resp, settings)
+        update.message.reply_text('images is loaded: {0} count'.format(len(settings.game_imgs)))
+        return
+    else:
+        update.message.reply_text('invalid request')
 
+def tg_yandex_img_request(update, context):
+    global Holder
+    if not is_authorized(update):
+        return
+    settings = Holder.get(update.message.chat.id)
+    search_count = len(settings.game_imgs)
+    if len(update.message.text)>6:
+        search_count = int(update.message.text[6:])
+    get_words(settings, search_count)
+    update.message.reply_text('yahoo')
 
 def tg_olymp(update, context):
     if not is_authorized(update):
@@ -483,8 +498,10 @@ def get_img_tags(input_text, settings):
     imgs = soup.findAll('img')
     settings.game_imgs = [img['src'] for img in imgs]
 
-def get_words(settings):
+def get_words(settings, search_count):
     img_urls = settings.game_imgs
+    if search_count<len(settings.game_imgs):
+        img_urls = settings.game_imgs[:search_count]
     output1 = []
     output2 = []
     for img_url in img_urls:
@@ -525,16 +542,13 @@ def en_authorize(session, login, password):
         'EnButton1': 'Вход',
         'ddlNetwork': 1
     }
-
     resp = session.post(url, data=userdata)
-    result = False
     if resp.history:
         logger.info("LogIN")
-        result = True
+        return True
     else:
         logger.info("LogOUT")
-        result = False
-    pass
+        return False
 
 def main():
     #global pwd
@@ -553,6 +567,8 @@ def main():
     #updater = Updater("979411435:AAEHIVLx8L8CxmjIHtitaH4L1GeV_OCRJ7M", use_context=True)
     dp = updater.dispatcher
 
+    dp.add_handler(CommandHandler("load", tg_load_imgs))
+    dp.add_handler(CommandHandler("find", tg_yandex_img_request))
     dp.add_handler(CommandHandler("test", tg_test))
     dp.add_handler(CommandHandler("o", tg_olymp))
     dp.add_handler(CommandHandler("g", tg_gibrid))
