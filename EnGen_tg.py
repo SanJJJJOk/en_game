@@ -129,6 +129,9 @@ def tg_print_words(update, context):
         if not is_authorized(update):
             return
         settings = Holder.get(update.message.chat.id)
+        update.message.reply_text(len(settings.game_imgs))
+        update.message.reply_text(' '.join(settings.game_imgs))
+        update.message.reply_text('\n'.join(settings.game_imgs))
         update.message.reply_text(len(settings.yandex_tags_main))
         update.message.reply_text(' '.join(settings.yandex_tags_main))
         update.message.reply_text('\n'.join(settings.yandex_tags_main))
