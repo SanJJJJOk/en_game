@@ -1,6 +1,30 @@
 import enum
 import requests
 
+class ActionParams():
+    def __init__(self, input, mode):
+        self.first = first
+        self.second = second
+        self.third = None
+
+    def __init__(self, input, mode):
+        self.first = first
+        self.second = second
+        self.third = third
+
+class TgCommands():
+    EnAuth = 'en'
+    LoadImgs = 'load'
+    ImgReq = 'find'
+    PrintWords = 'print'
+    ImgsAction = 'do'
+    Olymp = 'o'
+    Gibrid = 'g'
+    Meta = 'm'
+    Logo = 'l'
+    SwitchMode = 'mode'
+    Test = 'test'
+
 class ModeType(enum.Enum):
     Disabled = 0
     Special = 1
@@ -69,7 +93,7 @@ class Settings:
         self.current_mode = ModeType.Disabled
         self.session = requests.session()
         self.game_imgs = []
-        self.yandex_tags_main = []
+        self.yandex_tags_filtered = []
         self.yandex_tags_all = []
 
     def next_mode(self):

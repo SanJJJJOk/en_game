@@ -32,8 +32,7 @@ import json
 
 from datetime import datetime
 from threading import Timer
-from telegram.ext import *
-from telegram import *
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 
 # Enable logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -45,49 +44,52 @@ logger = logging.getLogger(__name__)
 Holder = SettingsHolder()
 
 #tg methods
-def callback(update, context):
-    update.message.reply_text('123')
-    update.message.reply_text("Error: {0}".format(str(context.error)))
+
+def tg_error(update, context):
+    update.message.reply_text('hello')
+    update.message.reply_text("Callback: {0}".format(str(context.error)))
+    logger.warning('Update "%s" caused error "%s"', update, context.error)
 
 def tg_test(update, context):
     newstr = ""
-    #try:
-    raise Exception('123')
-    update.message.reply_text("hello")
-    update.message.reply_text("hello, " + update.message.from_user.first_name + "\n")
-    update.message.reply_text("hello, " + update.message.from_user.first_name + "\n"+str(update.message.from_user.id) + "\n")
-    update.message.reply_text("hello, " + update.message.from_user.first_name + "\n"
-                                +str(update.message.from_user.id) + "\n")
-    update.message.reply_text("hello, " + update.message.from_user.first_name + "\n"
-                                +str(update.message.from_user.id) + "\n"
-                                +update.message.from_user.first_name + "\n"
-                                +update.message.from_user.last_name + "\n"
-                                +update.message.from_user.username + "\n")
-    update.message.reply_text("hello, " + update.message.from_user.first_name + "\n"
-                                +update.message.from_user.id + "\n"
-                                +update.message.from_user.first_name + "\n"
-                                +update.message.from_user.last_name + "\n"
-                                +update.message.from_user.username + "\n")
-    for i in range(0,100):
-        newstr+="ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff" + str(i) + "\n"
-        update.message.reply_text(newstr)
-    #except Exception as e:
-    #    update.message.reply_text("Error: {0}".format(str(e)))
+    try:
+        update.message.reply_text("hello")
+        update.message.reply_text("hello, " + update.message.from_user.first_name + "\n")
+        update.message.reply_text("hello, " + update.message.from_user.first_name + "\n"+str(update.message.from_user.id) + "\n")
+        update.message.reply_text("hello, " + update.message.from_user.first_name + "\n"
+                                  +str(update.message.from_user.id) + "\n")
+        update.message.reply_text("hello, " + update.message.from_user.first_name + "\n"
+                                  +str(update.message.from_user.id) + "\n"
+                                  +update.message.from_user.first_name + "\n"
+                                  +update.message.from_user.last_name + "\n"
+                                  +update.message.from_user.username + "\n")
+        update.message.reply_text("hello, " + update.message.from_user.first_name + "\n"
+                                  +update.message.from_user.id + "\n"
+                                  +update.message.from_user.first_name + "\n"
+                                  +update.message.from_user.last_name + "\n"
+                                  +update.message.from_user.username + "\n")
+        for i in range(0,100):
+            newstr+="ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff" + str(i) + "\n"
+            update.message.reply_text(newstr)
+    except Exception as e:
+        update.message.reply_text("Error: {0}".format(str(e)))
+
+def simple_message_handler(update, command, empty_is_invalid = False):
+    bot_authorize(update)
+    input_text = update.message.text
+    if len(input_text)<len(command)+3:
+        if empty_is_invalid:
+            raise Exception('command should contains arguments')
+        return None
+    return input_text[len(command)+2:]
 
 def tg_en_auth(update, context):
     global Holder
     try:
-        if not is_authorized(update):
-            return
-        input_text = update.message.text
-        if len(input_text)<5:
-            update.message.reply_text('invalid request')
-            return
-        input_text = input_text[4:]
+        input_text = simple_message_handler(update, TgCommands.EnAuth, True)
         input = input_text.strip().split(' ')
         if len(input)!=2:
-            update.message.reply_text('invalid request')
-            return
+            raise Exception('invalid request')
         settings = Holder.get(update.message.chat.id)
         is_en_auth = en_authorize(settings.session, input[0], input[1])
         update.message.reply_text(is_en_auth)
@@ -97,16 +99,10 @@ def tg_en_auth(update, context):
 def tg_load_imgs(update, context):
     global Holder
     try:
-        if not is_authorized(update):
-            return
-        input_text = update.message.text
-        if len(input_text)<7:
-            update.message.reply_text('invalid request')
-            return
-        input_text = input_text[6:]
+        input_text = simple_message_handler(update, TgCommands.LoadImgs, True)
         settings = Holder.get(update.message.chat.id)
         resp = settings.session.get(input_text)
-        get_img_tags(resp.text, settings)
+        settings.game_imgs = get_img_tags(resp.text)
         update.message.reply_text('images is loaded: {0} count'.format(len(settings.game_imgs)))
     except Exception as e:
         update.message.reply_text("Error: {0}".format(str(e)))
@@ -114,13 +110,14 @@ def tg_load_imgs(update, context):
 def tg_yandex_img_request(update, context):
     global Holder
     try:
-        if not is_authorized(update):
-            return
+        input_text = simple_message_handler(update, TgCommands.ImgReq, False)
         settings = Holder.get(update.message.chat.id)
         search_count = len(settings.game_imgs)
-        if len(update.message.text)>6:
-            search_count = int(update.message.text[6:])
-        get_words(settings, search_count)
+        if not input_text is None:
+            search_count = int(input_text)
+        result = get_words(settings.game_imgs, search_count)
+        settings.yandex_tags_filtered = result[0]
+        settings.yandex_tags_all = result[1]
         update.message.reply_text('yahoo')
     except Exception as e:
         update.message.reply_text("Error: {0}".format(str(e)))
@@ -128,21 +125,112 @@ def tg_yandex_img_request(update, context):
 def tg_print_words(update, context):
     global Holder
     try:
-        if not is_authorized(update):
-            return
+        bot_authorize(update)
         settings = Holder.get(update.message.chat.id)
         update.message.reply_text(len(settings.game_imgs))
         print_long(update, ' '.join(settings.game_imgs))
         print_long(update, '\n'.join(settings.game_imgs))
-        update.message.reply_text(len(settings.yandex_tags_main))
-        print_long(update, ' '.join(settings.yandex_tags_main))
-        print_long(update, '\n'.join(settings.yandex_tags_main))
+        update.message.reply_text(len(settings.yandex_tags_filtered))
+        print_long(update, ' '.join(settings.yandex_tags_filtered))
+        print_long(update, '\n'.join(settings.yandex_tags_filtered))
         update.message.reply_text(len(settings.yandex_tags_all))
         print_long(update, ' '.join(settings.yandex_tags_all))
         print_long(update, '\n'.join(settings.yandex_tags_all))
     except Exception as e:
         update.message.reply_text("Error: {0}".format(str(e)))
 
+def tg_imgs_action(update, context):
+    global Holder
+    try:
+        bot_authorize(update)
+        settings = Holder.get(update.message.chat.id)
+        do_ohuenno(settings.yandex_tags_filtered, settings.yandex_tags_filtered, [ModeType.Gibrid, ModeType.Meta, ModeType.Logo, ModeType.Anag], False)
+        do_ohuenno(settings.yandex_tags_all, settings.yandex_tags_all, [ModeType.Gibrid, ModeType.Meta, ModeType.Logo, ModeType.Anag], False)
+    except Exception as e:
+        update.message.reply_text("Error: {0}".format(str(e)))
+
+def tg_olymp(update, context):
+    try:
+        input_text = simple_message_handler(update, TgCommands.Olymp, True)
+        msg = default_input(input_text, ModeType.Olymp)
+        update.message.reply_text(msg)
+    except Exception as e:
+        update.message.reply_text("Error: {0}".format(str(e)))
+
+def tg_gibrid(update, context):
+    try:
+        input_text = simple_message_handler(update, TgCommands.Gibrid, True)
+        msg = default_input(input_text, ModeType.Gibrid)
+        update.message.reply_text(msg)
+    except Exception as e:
+        update.message.reply_text("Error: {0}".format(str(e)))
+
+def tg_meta(update, context):
+    try:
+        input_text = simple_message_handler(update, TgCommands.Meta, True)
+        msg = default_input(input_text, ModeType.Meta)
+        update.message.reply_text(msg)
+    except Exception as e:
+        update.message.reply_text("Error: {0}".format(str(e)))
+
+def tg_logo(update, context):
+    try:
+        input_text = simple_message_handler(update, TgCommands.Logo, True)
+        msg = default_input(input_text, ModeType.Logo)
+        update.message.reply_text(msg)
+    except Exception as e:
+        update.message.reply_text("Error: {0}".format(str(e)))
+
+def tg_switch_mode(update, context):
+    global Holder
+    try:
+        input_text = simple_message_handler(update, TgCommands.SwitchMode, False)
+        settings = Holder.get(update.message.chat.id)
+        mode = settings.current_mode
+        if input_text is None:
+            mode = settings.next_mode()
+        else:
+            newmode = ModeType.get_modes_by_alias(input_text)
+            if len(newmode)==0:
+                raise Exception('invalid request. mode not found')
+            else:
+                if len(newmode)>1:
+                    raise Exception('invalid request. more than one mode found:\n' + '\n'.join([str(mode_int) for mode_int in newmode]))
+                else:
+                    mode = newmode[0]
+                    settings.current_mode = mode
+        update.message.reply_text('switched to ' + mode.name)
+    except Exception as e:
+        update.message.reply_text("Error: {0}".format(str(e)))
+
+def tg_default(update, context):
+    try:
+        bot_authorize(update)
+        input_text = update.message.text
+        mode = Holder.get(update.message.chat.id).current_mode
+        if mode == ModeType.Disabled:
+            return
+        if mode == ModeType.Special:
+            output_messages = do_zaebis(input_text, [ModeType.Gibrid, ModeType.Meta, ModeType.Logo, ModeType.Anag])
+            for msg in output_messages:
+                update.message.reply_text(msg)
+            return
+        if input_text[0]=='$':
+            output_messages = do_zaebis(input_text[1:], [mode])
+            for msg in output_messages:
+                update.message.reply_text(msg)
+            return
+        msg = default_input(input_text, mode)
+        update.message.reply_text(msg)
+    except Exception as e:
+        update.message.reply_text("Error: {0}".format(str(e)))
+
+#def default_list_print(update, words, prefix = None):
+#    output_str = str(len(words)) + '\n' + '\n'.join(words)
+#    if not prefix in None:
+#        output_str = prefix + '\n' + output_str
+#    update.message.reply_text(output_str)
+    
 def print_long(update, input_text):
     if len(input_text) > 4096:
         for x in range(0, len(input_text), 4096):
@@ -150,118 +238,38 @@ def print_long(update, input_text):
     else:
         update.message.reply_text(info)
 
-def tg_imgs_action(update, context):
+def bot_authorize(update):
     global Holder
-    try:
-        if not is_authorized(update):
-            return
-        settings = Holder.get(update.message.chat.id)
-        do_ohuenno(settings.yandex_tags_main, settings.yandex_tags_main, [ModeType.Gibrid, ModeType.Meta, ModeType.Logo, ModeType.Anag], False)
-        do_ohuenno(settings.yandex_tags_all, settings.yandex_tags_all, [ModeType.Gibrid, ModeType.Meta, ModeType.Logo, ModeType.Anag], False)
-    except Exception as e:
-        update.message.reply_text("Error: {0}".format(str(e)))
-
-def tg_olymp(update, context):
-    if not is_authorized(update):
-        return
-    input_text = update.message.text
-    if len(input_text)<4:
-        update.message.reply_text('invalid request')
-        return
-    default_input(update, context, ModeType.Olymp, False, input_text[3:])
-
-def tg_gibrid(update, context):
-    if not is_authorized(update):
-        return
-    input_text = update.message.text
-    if len(input_text)<4:
-        update.message.reply_text('invalid request')
-        return
-    default_input(update, context, ModeType.Gibrid, False, input_text[3:])
-
-def tg_meta(update, context):
-    if not is_authorized(update):
-        return
-    input_text = update.message.text
-    if len(input_text)<4:
-        update.message.reply_text('invalid request')
-        return
-    default_input(update, context, ModeType.Meta, False, input_text[3:])
-
-def tg_logo(update, context):
-    if not is_authorized(update):
-        return
-    input_text = update.message.text
-    if len(input_text)<4:
-        update.message.reply_text('invalid request')
-        return
-    default_input(update, context, ModeType.Logo, False, input_text[3:])
-
-def tg_switch_mode(update, context):
-    global Holder
-    if not is_authorized(update):
-        return
-    settings = Holder.get(update.message.chat.id)
-    mode = settings.current_mode
-    if len(update.message.text) < 7:
-        mode = settings.next_mode()
-    else:
-        prefix = update.message.text[6:]
-        newmode = ModeType.get_modes_by_alias(prefix)
-        if len(newmode)==0:
-            update.message.reply_text('invalid request. mode not found')
-            return
-        else:
-            if len(newmode)>1:
-                update.message.reply_text('invalid request. more than one mode found:\n' + '\n'.join([str(mode_int) for mode_int in newmode]))
-                return
-            else:
-                mode = newmode[0]
-                settings.current_mode = mode
-    update.message.reply_text('switched to ' + mode.name)
-
-def tg_default(update, context):
-    mode = Holder.get(update.message.chat.id).current_mode
-    if (mode == ModeType.Disabled):
-        return
-    default_input(update, context, mode, False, update.message.text)
-
-def default_input(update, context, mode, is_org, input_text):
-    try:
-        if mode == ModeType.Special:
-            do_zaebis(update, context, input_text, [ModeType.Gibrid, ModeType.Meta, ModeType.Logo, ModeType.Anag])
-            return
-        input = input_text.strip().split('.')
-        if input_text[0]=='$':
-            do_zaebis(update, context, input_text[1:], [mode])
-            return
-        if mode == ModeType.Matr:
-            if len(input) != 3:
-                update.message.reply_text('invalid request')
-                return
-            matr_msg = do_matr(input)
-            update.message.reply_text(matr_msg)
-            return
-        if len(input) != 2:
-            update.message.reply_text('invalid request')
-            return
-        msg =  do_beautiful(input, mode, is_org)
-        update.message.reply_text(msg)
-    except Exception as e:
-        update.message.reply_text("Error: {0}".format(str(e)))
-
-def is_authorized(update):
-    if update.message.chat.id in Holder.settings_by_id:
-        return True
-    else:
+    if not update.message.chat.id in Holder.settings_by_id:
         Holder.add(update.message.chat.id)
-        return True
-        #update.message.reply_text('you are not authorized, please call /start')
-        #return False
-        
-def do_zaebis(update, context, input_text, modes):
+        return
+        #raise Exception('you are not authorized, please call /start')
+
+#----------
+
+def do_ohuenno(first, second, modes, print_needless = True):
+    needless_words = []
+    output_messages = []
+    for mode in modes:
+        action_result = []
+        if mode == ModeType.Matr:
+            action_result = action_matr(first, first, second, needless_words)
+        else:
+            action_result = do_action(first, second, mode, needless_words)
+        union = list(dict.fromkeys(action_result))
+        output_messages.append(str(mode) + ':\n' + str(len(union)) + '\n' + '\n'.join(union))
+    if not print_needless:
+        return output_messages
+    union_nl = []
+    for word in first:
+        if not word in needless_words:
+            union_nl.append(word)
+    output_messages.append('needless words:\n' + str(len(union_nl)) + '\n' + '\n'.join(union_nl))
+    return output_messages
+    
+def do_zaebis(input_text, modes):
     need_associations = False
-    if input_text[0]=='$':
+    if input_text[0]=='+':
         input_text = input_text[1:]
         need_associations = True
     input = input_text.strip().split('.')
@@ -281,41 +289,27 @@ def do_zaebis(update, context, input_text, modes):
         second = first
     first = [item.lower() for item in first]
     second = [item.lower() for item in second]
-    do_ohuenno(first, second, modes)
+    return do_ohuenno(first, second, modes)
 
-def do_ohuenno(first, second, modes, print_useless = True):
-    output = []
-    for mode in modes:
-        action_result = []
-        if mode == ModeType.Matr:
-            action_result = action_matr(first, first, second, output)
-        else:
-            action_result = do_action(first, second, mode, output)
+def default_input(input_text, mode):
+    input = input_text.strip().split('.')
+    if mode == ModeType.Matr:
+        if len(input) != 3:
+            raise Exception('invalid request')
+        first = get_input_associations(input[0].strip())
+        second = get_input_associations(input[1].strip())
+        third = get_input_associations(input[2].strip())
+        action_result = action_matr(first, second, third)
         union = list(dict.fromkeys(action_result))
-        update.message.reply_text(str(mode) + ':\n' + str(len(union)) + '\n' + '\n'.join(union))
-    if not print_useless:
+        return str(len(union)) + '\n' + '\n'.join(union)
         return
-    union_ul = []
-    for word in first:
-        if not word in output:
-            union_ul.append(word)
-    update.message.reply_text('useless words:\n' + str(len(union_ul)) + '\n' + '\n'.join(union_ul))
-    
-def default_print(update, words, prefix = None):
-    output_str = str(len(words)) + '\n' + '\n'.join(words)
-    if not prefix in None:
-        output_str = prefix + '\n' + output_str
-    update.message.reply_text(output_str)
-
-#----------
-
-def do_beautiful(input, mode, is_org):
-    first = get_input_associations(input[0].strip(), is_org)
-    second = get_input_associations(input[1].strip(), is_org)
+    if len(input) != 2:
+        raise Exception('invalid request')
+    first = get_input_associations(input[0].strip())
+    second = get_input_associations(input[1].strip())
     action_result = do_action(first, second, mode)
     union = list(dict.fromkeys(action_result))
-    msg = '\n'.join(union)
-    return str(len(union)) + '\n' + msg
+    return str(len(union)) + '\n' + '\n'.join(union)
 
 def do_action(first, second, mode, output = []):
     if mode == ModeType.Olymp:
@@ -464,15 +458,6 @@ def action_plus(first, second, output=[]):
     union.sort()
     return union
 
-def do_matr(input):
-    first = get_input_associations(input[0].strip(), False)
-    second = get_input_associations(input[1].strip(), False)
-    third = get_input_associations(input[2].strip(), False)
-    action_result = action_matr(first, second, third)
-    union = list(dict.fromkeys(action_result))
-    msg = '\n'.join(union)
-    return str(len(union)) + '\n' + msg
-
 def action_matr(first, second, third, output=[]):
     union = []
     for i in first:
@@ -493,7 +478,7 @@ def action_matr(first, second, third, output=[]):
                         output.append(k)
     return union
 
-def get_input_associations(input_str, is_org):
+def get_input_associations(input_str):
     input_words = input_str.split(',')
     union = []
     for word in input_words:
@@ -503,10 +488,6 @@ def get_input_associations(input_str, is_org):
         else:
             associations = get_associations(corrected_word)
             union.extend(associations)
-            #if is_org:
-                #associations2 = get_associations2(corrected_word)
-                #corrected_ass2 = [item.lower() for item in associations2]
-                #union.extend(corrected_ass2)
         if corrected_word[0]=='!':
             corrected_word = corrected_word[1:]
             associations = get_associations(corrected_word)
@@ -559,15 +540,14 @@ def get_associations(input_word):
 #    a_list = ass_list.findAll('a')
 #    return [item.string for item in a_list]
 
-def get_img_tags(input_text, settings):
-    soup = BeautifulSoup(input_text)
+def get_img_tags(html_text):
+    soup = BeautifulSoup(html_text)
     imgs = soup.findAll('img')
-    settings.game_imgs = [img['src'] for img in imgs]
+    return [img['src'] for img in imgs]
 
-def get_words(settings, search_count):
-    img_urls = settings.game_imgs
-    if search_count<len(settings.game_imgs):
-        img_urls = settings.game_imgs[:search_count]
+def get_words(img_urls, search_count):
+    if search_count<len(img_urls):
+        img_urls = img_urls[:search_count]
     output1 = []
     output2 = []
     for img_url in img_urls:
@@ -579,16 +559,14 @@ def get_words(settings, search_count):
             output2.extend(tag_words)
     output1 = list(dict.fromkeys(output1))
     output2 = list(dict.fromkeys(output2))
-    settings.yandex_tags_main = output1
-    settings.yandex_tags_all = output2
+    return [outptu1, output2]
 
 def get_yandex_tags(img_url):
     url = 'https://yandex.ru/images/search?url={0}&rpt=imageview'.format(quote(img_url, safe=''))
-    t = 0
     try:
         fp = request.urlopen(url)
     except:
-        t = 1
+        return []
     mybytes = fp.read()
     
     mystr = mybytes.decode("utf8")
@@ -596,6 +574,8 @@ def get_yandex_tags(img_url):
     
     soup = BeautifulSoup(mystr)
     ass_list = soup.find('div', {'class': 'tags__wrapper'})
+    if ass_list is None:
+        return []
     a_list = ass_list.findAll('a')
     return [item.string for item in a_list]
 
@@ -639,20 +619,20 @@ def main():
     #updater = Updater("979411435:AAEHIVLx8L8CxmjIHtitaH4L1GeV_OCRJ7M", use_context=True)
     dp = updater.dispatcher
 
-    dp.add_handler(CommandHandler("en", tg_en_auth))
-    dp.add_handler(CommandHandler("load", tg_load_imgs))
-    dp.add_handler(CommandHandler("find", tg_yandex_img_request))
-    dp.add_handler(CommandHandler("print", tg_print_words))
-    dp.add_handler(CommandHandler("do", tg_imgs_action))
-    dp.add_handler(CommandHandler("test", tg_test))
-    dp.add_handler(CommandHandler("o", tg_olymp))
-    dp.add_handler(CommandHandler("g", tg_gibrid))
-    dp.add_handler(CommandHandler("m", tg_meta))
-    dp.add_handler(CommandHandler("l", tg_logo))
-    dp.add_handler(CommandHandler("mode", tg_switch_mode))
+    dp.add_handler(CommandHandler(TgCommands.EnAuth, tg_en_auth))
+    dp.add_handler(CommandHandler(TgCommands.LoadImgs, tg_load_imgs))
+    dp.add_handler(CommandHandler(TgCommands.ImgReq, tg_yandex_img_request))
+    dp.add_handler(CommandHandler(TgCommands.PrintWords, tg_print_words))
+    dp.add_handler(CommandHandler(TgCommands.ImgsAction, tg_imgs_action))
+    dp.add_handler(CommandHandler(TgCommands.Olymp, tg_olymp))
+    dp.add_handler(CommandHandler(TgCommands.Gibrid, tg_gibrid))
+    dp.add_handler(CommandHandler(TgCommands.Meta, tg_meta))
+    dp.add_handler(CommandHandler(TgCommands.Logo, tg_logo))
+    dp.add_handler(CommandHandler(TgCommands.SwitchMode, tg_switch_mode))
+    dp.add_handler(CommandHandler(TgCommands.Test, tg_test))
     dp.add_handler(MessageHandler(Filters.text, tg_default))
 
-    dp.add_error_handler(callback)
+    dp.add_error_handler(tg_error)
 
     updater.start_polling()
 
