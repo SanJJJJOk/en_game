@@ -118,6 +118,7 @@ def tg_yandex_img_request(update, context):
         result = get_words(settings.game_imgs, search_count)
         settings.yandex_tags_filtered = result[0]
         settings.yandex_tags_all = result[1]
+        settings.not_found_imgs = result[2]
         update.message.reply_text('yahoo')
     except Exception as e:
         update.message.reply_text("Error: {0}".format(str(e)))
@@ -135,6 +136,8 @@ def tg_print_words(update, context):
         update.message.reply_text(len(settings.yandex_tags_all))
         print_long(update, ' '.join(settings.yandex_tags_all))
         print_long(update, '\n'.join(settings.yandex_tags_all))
+        update.message.reply_text(len(settings.not_found_imgs))
+        print_long(update, '\n'.join(settings.not_found_imgs))
     except Exception as e:
         update.message.reply_text("Error: {0}".format(str(e)))
 

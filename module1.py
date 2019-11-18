@@ -84,6 +84,7 @@ class Settings:
         self.game_imgs = []
         self.yandex_tags_filtered = []
         self.yandex_tags_all = []
+        self.not_found_imgs = []
 
     def next_mode(self):
         self.current_mode = self.current_mode.next()
