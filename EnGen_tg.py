@@ -72,6 +72,23 @@ def tg_test(update, context):
     except Exception as e:
         update.message.reply_text("Error: {0}".format(str(e)))
 
+def tg_en_auth(update, context):
+    global Holder
+    if not is_authorized(update):
+        return
+    input_text = update.message.text
+    if len(input_text)<5:
+        update.message.reply_text('invalid request')
+        return
+    input_text = input_text[4:]
+    input = input_text.strip().split(' ')
+    if len(input)!=2:
+        update.message.reply_text('invalid request')
+        return
+    settings = Holder.get(update.message.chat.id)
+    is_en_auth = en_authorize(settings.session, input[0], input[1])
+    update.message.reply_text(is_en_auth)
+
 def tg_load_imgs(update, context):
     global Holder
     if not is_authorized(update):
@@ -81,19 +98,10 @@ def tg_load_imgs(update, context):
         update.message.reply_text('invalid request')
         return
     input_text = input_text[6:]
-    input = input_text.strip().split(' ')
-    if len(input)==3:
-        settings = Holder.get(update.message.chat.id)
-        is_en_auth = en_authorize(settings.session, input[0], input[1])
-        if not is_en_auth:
-            update.message.reply_text('invalid credentials')
-            return
-        resp = settings.session.get(input[2])
-        get_img_tags(resp, settings)
-        update.message.reply_text('images is loaded: {0} count'.format(len(settings.game_imgs)))
-        return
-    else:
-        update.message.reply_text('invalid request')
+    settings = Holder.get(update.message.chat.id)
+    resp = settings.session.get(input_text)
+    get_img_tags(resp, settings)
+    update.message.reply_text('images is loaded: {0} count'.format(len(settings.game_imgs)))
 
 def tg_yandex_img_request(update, context):
     global Holder
@@ -105,6 +113,26 @@ def tg_yandex_img_request(update, context):
         search_count = int(update.message.text[6:])
     get_words(settings, search_count)
     update.message.reply_text('yahoo')
+
+def tg_print_words(update, context):
+    global Holder
+    if not is_authorized(update):
+        return
+    settings = Holder.get(update.message.chat.id)
+    update.message.reply_text(len(settings.yandex_tags_main))
+    update.message.reply_text(' '.join(settings.yandex_tags_main))
+    update.message.reply_text('\n'.join(settings.yandex_tags_main))
+    update.message.reply_text(len(settings.yandex_tags_all))
+    update.message.reply_text(' '.join(settings.yandex_tags_all))
+    update.message.reply_text('\n'.join(settings.yandex_tags_all))
+
+def tg_imgs_action(update, context):
+    global Holder
+    if not is_authorized(update):
+        return
+    settings = Holder.get(update.message.chat.id)
+    do_ohuenno(settings.yandex_tags_main, settings.yandex_tags_main, [ModeType.Gibrid, ModeType.Meta, ModeType.Logo, ModeType.Anag], False)
+    do_ohuenno(settings.yandex_tags_all, settings.yandex_tags_all, [ModeType.Gibrid, ModeType.Meta, ModeType.Logo, ModeType.Anag], False)
 
 def tg_olymp(update, context):
     if not is_authorized(update):
@@ -174,7 +202,7 @@ def tg_default(update, context):
 def default_input(update, context, mode, is_org, input_text):
     try:
         if mode == ModeType.Special:
-            do_zaebis(update, context, input_text, [ModeType.Gibrid,ModeType.Meta,ModeType.Logo, ModeType.Anag])
+            do_zaebis(update, context, input_text, [ModeType.Gibrid, ModeType.Meta, ModeType.Logo, ModeType.Anag])
             return
         input = input_text.strip().split('.')
         if input_text[0]=='$':
@@ -226,6 +254,9 @@ def do_zaebis(update, context, input_text, modes):
         second = first
     first = [item.lower() for item in first]
     second = [item.lower() for item in second]
+    do_ohuenno(first, second, modes)
+
+def do_ohuenno(first, second, modes, print_useless = True):
     output = []
     for mode in modes:
         action_result = []
@@ -235,11 +266,19 @@ def do_zaebis(update, context, input_text, modes):
             action_result = do_action(first, second, mode, output)
         union = list(dict.fromkeys(action_result))
         update.message.reply_text(str(mode) + ':\n' + str(len(union)) + '\n' + '\n'.join(union))
+    if not print_useless:
+        return
     union_ul = []
     for word in first:
         if not word in output:
             union_ul.append(word)
     update.message.reply_text('useless words:\n' + str(len(union_ul)) + '\n' + '\n'.join(union_ul))
+    
+def default_print(update, words, prefix = None):
+    output_str = str(len(words)) + '\n' + '\n'.join(words)
+    if not prefix in None:
+        output_str = prefix + '\n' + output_str
+    update.message.reply_text(output_str)
 
 #----------
 
@@ -567,8 +606,11 @@ def main():
     #updater = Updater("979411435:AAEHIVLx8L8CxmjIHtitaH4L1GeV_OCRJ7M", use_context=True)
     dp = updater.dispatcher
 
+    dp.add_handler(CommandHandler("auth", tg_en_auth))
     dp.add_handler(CommandHandler("load", tg_load_imgs))
     dp.add_handler(CommandHandler("find", tg_yandex_img_request))
+    dp.add_handler(CommandHandler("print", tg_print_words))
+    dp.add_handler(CommandHandler("do", tg_imgs_action))
     dp.add_handler(CommandHandler("test", tg_test))
     dp.add_handler(CommandHandler("o", tg_olymp))
     dp.add_handler(CommandHandler("g", tg_gibrid))
