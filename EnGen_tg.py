@@ -606,7 +606,7 @@ def main():
     #updater = Updater("979411435:AAEHIVLx8L8CxmjIHtitaH4L1GeV_OCRJ7M", use_context=True)
     dp = updater.dispatcher
 
-    dp.add_handler(CommandHandler("auth", tg_en_auth))
+    dp.add_handler(CommandHandler("en", tg_en_auth))
     dp.add_handler(CommandHandler("load", tg_load_imgs))
     dp.add_handler(CommandHandler("find", tg_yandex_img_request))
     dp.add_handler(CommandHandler("print", tg_print_words))
