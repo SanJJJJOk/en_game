@@ -158,10 +158,6 @@ def tg_imgs_action(update, context):
         output_messages = do_special_search(settings.yandex_tags_filtered, settings.yandex_tags_filtered, [ModeType.Gibrid, ModeType.Meta, ModeType.Logo, ModeType.Anag], False)
         for msg in output_messages:
             print_long(update, msg)
-        update.message.reply_text("---------------------------------")
-        output_messages = do_special_search(settings.yandex_tags_all, settings.yandex_tags_all, [ModeType.Gibrid, ModeType.Meta, ModeType.Logo, ModeType.Anag], False)
-        for msg in output_messages:
-            print_long(update, msg)
     except Exception as e:
         update.message.reply_text("Error: {0}".format(str(e)))
 
