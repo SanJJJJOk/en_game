@@ -597,12 +597,16 @@ def get_words(img_urls, search_count):
         if len(tags)==0:
             output3.append(img_url)
         for tag in tags:
-            if tag.count(' ')==0:
-                output1.append(tag.lower())
             tag_words = re.findall(r"[\w']+", tag)
-            output2.extend([tag_word.lower() for tag_word in tag_words])
-    output1 = list(dict.fromkeys(output1))
+            corrected_words = [tag_word.lower() for tag_word in tag_words]
+            output2.extend(corrected_words)
     output2 = list(dict.fromkeys(output2))
+    for word in output2:
+        if len(word)<2:
+            continue
+        if (word[0]>='a' and word[0]<='z') or (word[0]>='0' and word[0]<='9'):
+            continue
+        output1.append(word)
     return [output1, output2, output3]
 
 def get_yandex_tags(img_url):
