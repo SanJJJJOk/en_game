@@ -583,7 +583,8 @@ def get_associations(input_word):
 def get_img_tags(html_text):
     soup = BeautifulSoup(html_text)
     imgs = soup.findAll('img')
-    return [img['src'] for img in imgs]
+    imgs_urls = [img['src'] for img in imgs]
+    return list(dict.fromkeys(imgs_urls))
 
 def get_words(img_urls, search_count):
     if search_count<len(img_urls):
