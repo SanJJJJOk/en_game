@@ -33,7 +33,9 @@ import json
 from datetime import datetime
 from threading import Timer
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, Dispatcher
-
+from telegram import TelegramError, Update
+from telegram.ext.handler import Handler
+from telegram.ext.callbackcontext import CallbackContext
 
 # Enable logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -45,7 +47,7 @@ logger = logging.getLogger(__name__)
 Holder = SettingsHolder()
 
 #tg methods
-def callback(update: Dispatcher.Update, context: Dispatcher.CallbackContext):
+def callback(update: Update, context: CallbackContext):
     update.message.reply_text('123')
     update.message.reply_text("Error: {0}".format(str(context.error)))
 
