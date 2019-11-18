@@ -104,7 +104,7 @@ def tg_load_imgs(update, context):
         input_text = input_text[6:]
         settings = Holder.get(update.message.chat.id)
         resp = settings.session.get(input_text)
-        get_img_tags(resp, settings)
+        get_img_tags(resp.text, settings)
         update.message.reply_text('images is loaded: {0} count'.format(len(settings.game_imgs)))
     except Exception as e:
         update.message.reply_text("Error: {0}".format(str(e)))
