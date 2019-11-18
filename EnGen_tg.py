@@ -83,6 +83,15 @@ def simple_message_handler(update, command, empty_is_invalid = False):
         return None
     return input_text[len(command)+2:]
 
+def tg_reload_session(update, context):
+    global Holder
+    try:
+        bot_authorize(update)
+        settings = Holder.get(update.message.chat.id)
+        settings.session = requests.session()
+    except Exception as e:
+        update.message.reply_text("Error: {0}".format(str(e)))
+
 def tg_en_auth(update, context):
     global Holder
     try:
@@ -653,6 +662,7 @@ def main():
     #updater = Updater("979411435:AAEHIVLx8L8CxmjIHtitaH4L1GeV_OCRJ7M", use_context=True)
     dp = updater.dispatcher
 
+    dp.add_handler(CommandHandler(TgCommands.ReloadSession, tg_reload_session))
     dp.add_handler(CommandHandler(TgCommands.EnAuth, tg_en_auth))
     dp.add_handler(CommandHandler(TgCommands.LoadImgs, tg_load_imgs))
     dp.add_handler(CommandHandler(TgCommands.ImgReq, tg_yandex_img_request))

@@ -2,6 +2,7 @@ import enum
 import requests
 
 class TgCommands():
+    ReloadSession = 'reconnect'
     EnAuth = 'en'
     LoadImgs = 'load'
     ImgReq = 'find'
