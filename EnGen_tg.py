@@ -597,9 +597,9 @@ def get_words(img_urls, search_count):
             output3.append(img_url)
         for tag in tags:
             if tag.count(' ')==0:
-                output1.append(tag)
+                output1.append(tag.lower())
             tag_words = re.findall(r"[\w']+", tag)
-            output2.extend(tag_words)
+            output2.extend([tag_word.lower() for tag_word in tag_words])
     output1 = list(dict.fromkeys(output1))
     output2 = list(dict.fromkeys(output2))
     return [output1, output2, output3]
