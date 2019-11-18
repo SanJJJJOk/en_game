@@ -46,31 +46,32 @@ Holder = SettingsHolder()
 #tg methods
 
 def tg_error(update, context):
-	logger.warning('Update "%s" caused error "%s"', update, context.error)
+    update.message.reply_text("Error: {0}".format(str(e)))
 
 def tg_test(update, context):
     newstr = ""
-    try:
-        update.message.reply_text("hello")
-        update.message.reply_text("hello, " + update.message.from_user.first_name + "\n")
-        update.message.reply_text("hello, " + update.message.from_user.first_name + "\n"+str(update.message.from_user.id) + "\n")
-        update.message.reply_text("hello, " + update.message.from_user.first_name + "\n"
-                                  +str(update.message.from_user.id) + "\n")
-        update.message.reply_text("hello, " + update.message.from_user.first_name + "\n"
-                                  +str(update.message.from_user.id) + "\n"
-                                  +update.message.from_user.first_name + "\n"
-                                  +update.message.from_user.last_name + "\n"
-                                  +update.message.from_user.username + "\n")
-        update.message.reply_text("hello, " + update.message.from_user.first_name + "\n"
-                                  +update.message.from_user.id + "\n"
-                                  +update.message.from_user.first_name + "\n"
-                                  +update.message.from_user.last_name + "\n"
-                                  +update.message.from_user.username + "\n")
-        for i in range(0,100):
-            newstr+="ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff" + str(i) + "\n"
-            update.message.reply_text(newstr)
-    except Exception as e:
-        update.message.reply_text("Error: {0}".format(str(e)))
+    #try:
+    raise Exception()
+    update.message.reply_text("hello")
+    update.message.reply_text("hello, " + update.message.from_user.first_name + "\n")
+    update.message.reply_text("hello, " + update.message.from_user.first_name + "\n"+str(update.message.from_user.id) + "\n")
+    update.message.reply_text("hello, " + update.message.from_user.first_name + "\n"
+                                +str(update.message.from_user.id) + "\n")
+    update.message.reply_text("hello, " + update.message.from_user.first_name + "\n"
+                                +str(update.message.from_user.id) + "\n"
+                                +update.message.from_user.first_name + "\n"
+                                +update.message.from_user.last_name + "\n"
+                                +update.message.from_user.username + "\n")
+    update.message.reply_text("hello, " + update.message.from_user.first_name + "\n"
+                                +update.message.from_user.id + "\n"
+                                +update.message.from_user.first_name + "\n"
+                                +update.message.from_user.last_name + "\n"
+                                +update.message.from_user.username + "\n")
+    for i in range(0,100):
+        newstr+="ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff" + str(i) + "\n"
+        update.message.reply_text(newstr)
+    #except Exception as e:
+    #    update.message.reply_text("Error: {0}".format(str(e)))
 
 def tg_en_auth(update, context):
     global Holder
@@ -118,7 +119,6 @@ def tg_yandex_img_request(update, context):
         search_count = len(settings.game_imgs)
         if len(update.message.text)>6:
             search_count = int(update.message.text[6:])
-        update.message.reply_text(str(search_count))
         get_words(settings, search_count)
         update.message.reply_text('yahoo')
     except Exception as e:
@@ -131,14 +131,14 @@ def tg_print_words(update, context):
             return
         settings = Holder.get(update.message.chat.id)
         update.message.reply_text(len(settings.game_imgs))
-        update.message.reply_text(' '.join(settings.game_imgs[:10]))
-        update.message.reply_text('\n'.join(settings.game_imgs[:10]))
+        print_long(update, ' '.join(settings.game_imgs))
+        print_long(update, '\n'.join(settings.game_imgs))
         update.message.reply_text(len(settings.yandex_tags_main))
-        update.message.reply_text(' '.join(settings.yandex_tags_main))
-        update.message.reply_text('\n'.join(settings.yandex_tags_main))
+        print_long(update, ' '.join(settings.yandex_tags_main))
+        print_long(update, '\n'.join(settings.yandex_tags_main))
         update.message.reply_text(len(settings.yandex_tags_all))
-        update.message.reply_text(' '.join(settings.yandex_tags_all))
-        update.message.reply_text('\n'.join(settings.yandex_tags_all))
+        print_long(update, ' '.join(settings.yandex_tags_all))
+        print_long(update, '\n'.join(settings.yandex_tags_all))
     except Exception as e:
         update.message.reply_text("Error: {0}".format(str(e)))
 
