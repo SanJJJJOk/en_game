@@ -161,7 +161,7 @@ def tg_gibrid(update, context):
     try:
         input_text = simple_message_handler(update, TgCommands.Gibrid, True)
         msg = default_input(input_text, ModeType.Gibrid)
-        print_long(msg)
+        update.message.reply_text(msg)
     except Exception as e:
         update.message.reply_text("Error: {0}".format(str(e)))
 
@@ -370,10 +370,13 @@ def action_meta(first, second, output=[]):
             for i in range(0, len(word1)):
                 if word1[i]!=word2[i]:
                     counter+=1
-            if counter == 1:
-                union.append(word1 + '-' + word2)
-                output.append(word1)
-                output.append(word2)
+            if counter != 1:
+                continue
+            if word2 + '-' + word1 in union:
+                continue
+            union.append(word1 + '-' + word2)
+            output.append(word1)
+            output.append(word2)
     return union
 
 def action_logo(first, second, output=[]):
@@ -400,11 +403,13 @@ def action_logo(first, second, output=[]):
                 if long_word[i + 1]!=short_word[i]:
                     diff_index = -1
                     break
-            if diff_index!=-1 or long_word.startswith(short_word):
-                if not word2 + '-' + word1 in union:
-                    union.append(word1 + '-' + word2)
-                    output.append(word1)
-                    output.append(word2)
+            if diff_index==-1 and not long_word.startswith(short_word):
+                continue
+            if word2 + '-' + word1 in union:
+                continue
+            union.append(word1 + '-' + word2)
+            output.append(word1)
+            output.append(word2)
     return union
 
 def action_anag(first, second, output=[]):
@@ -417,11 +422,13 @@ def action_anag(first, second, output=[]):
             list2 = list(j)
             list1.sort()
             list2.sort()
-            if list1 == list2:
-                if not j + '-' + i in union:
-                    union.append(i + '-' + j)
-                    output.append(i)
-                    output.append(j)
+            if list1 != list2:
+                continue
+            if j + '-' + i in union:
+                continue
+            union.append(i + '-' + j)
+            output.append(i)
+            output.append(j)
     return union
 
 def action_plus(first, second, output=[]):
@@ -455,11 +462,13 @@ def action_plus(first, second, output=[]):
                     if long_list[i + 1]!=short_list[i]:
                         diff_index = -2
                         break
-            if diff_index!=-2:
-                if not long_list[diff_index] + ': ' + word2 + '-' + word1 in union:
-                    union.append(long_list[diff_index] + ': ' + word1 + '-' + word2)
-                    output.append(word1)
-                    output.append(word2)
+            if diff_index==-2:
+                continue
+            if long_list[diff_index] + ': ' + word2 + '-' + word1 in union:
+                continue
+            union.append(long_list[diff_index] + ': ' + word1 + '-' + word2)
+            output.append(word1)
+            output.append(word2)
     union.sort()
     return union
 
@@ -476,12 +485,14 @@ def action_matr(first, second, third, output=[]):
                 for k in third:
                     if i==k or j==k:
                         continue
-                    if the_matr in k:
-                        if not is_matr_exist(the_matr,i,j,k,union):
-                            union.append(the_matr + ': ' + i + '-' + j + '-' + k)
-                            output.append(i)
-                            output.append(j)
-                            output.append(k)
+                    if not the_matr in k:
+                        continue
+                    if is_matr_exist(the_matr,i,j,k,union):
+                        continue
+                    union.append(the_matr + ': ' + i + '-' + j + '-' + k)
+                    output.append(i)
+                    output.append(j)
+                    output.append(k)
     return union
 
 def is_matr_exist(the_matr,i,j,k,union):
