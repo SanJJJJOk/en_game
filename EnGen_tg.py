@@ -161,7 +161,7 @@ def tg_gibrid(update, context):
     try:
         input_text = simple_message_handler(update, TgCommands.Gibrid, True)
         msg = default_input(input_text, ModeType.Gibrid)
-        update.message.reply_text(msg)
+        print_long(msg)
     except Exception as e:
         update.message.reply_text("Error: {0}".format(str(e)))
 
