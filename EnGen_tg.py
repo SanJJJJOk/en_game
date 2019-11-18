@@ -593,8 +593,17 @@ def get_words(img_urls, search_count):
     output3 = []
     for img_url in img_urls:
         tags = get_yandex_tags(img_url)
-        if len(tags)==0:
-            output3.append(img_url)
+        if len(tags)==0 and len(output3)==0:
+            url = 'https://yandex.ru/images/search?url={0}&rpt=imageview'.format(quote(img_url, safe=''))
+            try:
+                fp = request.urlopen(url)
+            except:
+                output3.append('00000000')
+            
+            mybytes = fp.read()
+            mystr = mybytes.decode("utf8")
+            fp.close()
+            output3.append(mystr)
         for tag in tags:
             if tag.count(' ')==0:
                 output1.append(tag)
