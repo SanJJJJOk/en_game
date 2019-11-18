@@ -131,13 +131,13 @@ def tg_print_words(update, context):
         update.message.reply_text(len(settings.game_imgs))
         print_long(update, '\n'.join(settings.game_imgs))
         update.message.reply_text(len(settings.yandex_tags_filtered))
-        print_long(update, ' '.join(settings.yandex_tags_filtered))
-        print_long(update, '\n'.join(settings.yandex_tags_filtered))
+        print_long(update, '-\n' + ' '.join(settings.yandex_tags_filtered))
+        print_long(update, '-\n' + '\n'.join(settings.yandex_tags_filtered))
         update.message.reply_text(len(settings.yandex_tags_all))
-        print_long(update, ' '.join(settings.yandex_tags_all))
-        print_long(update, '\n'.join(settings.yandex_tags_all))
+        print_long(update, '-\n' + ' '.join(settings.yandex_tags_all))
+        print_long(update, '-\n' + '\n'.join(settings.yandex_tags_all))
         update.message.reply_text(len(settings.not_found_imgs))
-        print_long(update, '\n'.join(settings.not_found_imgs))
+        print_long(update, '-\n' + '\n'.join(settings.not_found_imgs))
     except Exception as e:
         update.message.reply_text("Error: {0}".format(str(e)))
 
