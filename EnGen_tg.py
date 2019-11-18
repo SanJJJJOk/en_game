@@ -141,6 +141,13 @@ def tg_print_words(update, context):
     except Exception as e:
         update.message.reply_text("Error: {0}".format(str(e)))
 
+def print_long(update, input_text):
+    if len(input_text) > 4096:
+        for x in range(0, len(input_text), 4096):
+            update.message.reply_text(input_text[x:x+4096])
+    else:
+        update.message.reply_text(info)
+
 def tg_imgs_action(update, context):
     global Holder
     try:
