@@ -46,7 +46,7 @@ Holder = SettingsHolder()
 #tg methods
 
 def tg_error(update, context):
-    update.message.reply_text("Error: {0}".format(str(e)))
+    update.message.reply_text("Error: {0}".format(str(context.error)))
 
 def tg_test(update, context):
     newstr = ""
