@@ -32,10 +32,8 @@ import json
 
 from datetime import datetime
 from threading import Timer
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, Dispatcher
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, Dispatcher, CallbackContext
 from telegram import TelegramError, Update
-from telegram.ext.handler import Handler
-from telegram.ext.callbackcontext import CallbackContext
 
 # Enable logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
