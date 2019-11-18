@@ -74,65 +74,80 @@ def tg_test(update, context):
 
 def tg_en_auth(update, context):
     global Holder
-    if not is_authorized(update):
-        return
-    input_text = update.message.text
-    if len(input_text)<5:
-        update.message.reply_text('invalid request')
-        return
-    input_text = input_text[4:]
-    input = input_text.strip().split(' ')
-    if len(input)!=2:
-        update.message.reply_text('invalid request')
-        return
-    settings = Holder.get(update.message.chat.id)
-    is_en_auth = en_authorize(settings.session, input[0], input[1])
-    update.message.reply_text(is_en_auth)
+    try:
+        if not is_authorized(update):
+            return
+        input_text = update.message.text
+        if len(input_text)<5:
+            update.message.reply_text('invalid request')
+            return
+        input_text = input_text[4:]
+        input = input_text.strip().split(' ')
+        if len(input)!=2:
+            update.message.reply_text('invalid request')
+            return
+        settings = Holder.get(update.message.chat.id)
+        is_en_auth = en_authorize(settings.session, input[0], input[1])
+        update.message.reply_text(is_en_auth)
+    except Exception as e:
+        update.message.reply_text("Error: {0}".format(str(e)))
 
 def tg_load_imgs(update, context):
     global Holder
-    if not is_authorized(update):
-        return
-    input_text = update.message.text
-    if len(input_text)<7:
-        update.message.reply_text('invalid request')
-        return
-    input_text = input_text[6:]
-    settings = Holder.get(update.message.chat.id)
-    resp = settings.session.get(input_text)
-    get_img_tags(resp, settings)
-    update.message.reply_text('images is loaded: {0} count'.format(len(settings.game_imgs)))
+    try:
+        if not is_authorized(update):
+            return
+        input_text = update.message.text
+        if len(input_text)<7:
+            update.message.reply_text('invalid request')
+            return
+        input_text = input_text[6:]
+        settings = Holder.get(update.message.chat.id)
+        resp = settings.session.get(input_text)
+        get_img_tags(resp, settings)
+        update.message.reply_text('images is loaded: {0} count'.format(len(settings.game_imgs)))
+    except Exception as e:
+        update.message.reply_text("Error: {0}".format(str(e)))
 
 def tg_yandex_img_request(update, context):
     global Holder
-    if not is_authorized(update):
-        return
-    settings = Holder.get(update.message.chat.id)
-    search_count = len(settings.game_imgs)
-    if len(update.message.text)>6:
-        search_count = int(update.message.text[6:])
-    get_words(settings, search_count)
-    update.message.reply_text('yahoo')
+    try:
+        if not is_authorized(update):
+            return
+        settings = Holder.get(update.message.chat.id)
+        search_count = len(settings.game_imgs)
+        if len(update.message.text)>6:
+            search_count = int(update.message.text[6:])
+        get_words(settings, search_count)
+        update.message.reply_text('yahoo')
+    except Exception as e:
+        update.message.reply_text("Error: {0}".format(str(e)))
 
 def tg_print_words(update, context):
     global Holder
-    if not is_authorized(update):
-        return
-    settings = Holder.get(update.message.chat.id)
-    update.message.reply_text(len(settings.yandex_tags_main))
-    update.message.reply_text(' '.join(settings.yandex_tags_main))
-    update.message.reply_text('\n'.join(settings.yandex_tags_main))
-    update.message.reply_text(len(settings.yandex_tags_all))
-    update.message.reply_text(' '.join(settings.yandex_tags_all))
-    update.message.reply_text('\n'.join(settings.yandex_tags_all))
+    try:
+        if not is_authorized(update):
+            return
+        settings = Holder.get(update.message.chat.id)
+        update.message.reply_text(len(settings.yandex_tags_main))
+        update.message.reply_text(' '.join(settings.yandex_tags_main))
+        update.message.reply_text('\n'.join(settings.yandex_tags_main))
+        update.message.reply_text(len(settings.yandex_tags_all))
+        update.message.reply_text(' '.join(settings.yandex_tags_all))
+        update.message.reply_text('\n'.join(settings.yandex_tags_all))
+    except Exception as e:
+        update.message.reply_text("Error: {0}".format(str(e)))
 
 def tg_imgs_action(update, context):
     global Holder
-    if not is_authorized(update):
-        return
-    settings = Holder.get(update.message.chat.id)
-    do_ohuenno(settings.yandex_tags_main, settings.yandex_tags_main, [ModeType.Gibrid, ModeType.Meta, ModeType.Logo, ModeType.Anag], False)
-    do_ohuenno(settings.yandex_tags_all, settings.yandex_tags_all, [ModeType.Gibrid, ModeType.Meta, ModeType.Logo, ModeType.Anag], False)
+    try:
+        if not is_authorized(update):
+            return
+        settings = Holder.get(update.message.chat.id)
+        do_ohuenno(settings.yandex_tags_main, settings.yandex_tags_main, [ModeType.Gibrid, ModeType.Meta, ModeType.Logo, ModeType.Anag], False)
+        do_ohuenno(settings.yandex_tags_all, settings.yandex_tags_all, [ModeType.Gibrid, ModeType.Meta, ModeType.Logo, ModeType.Anag], False)
+    except Exception as e:
+        update.message.reply_text("Error: {0}".format(str(e)))
 
 def tg_olymp(update, context):
     if not is_authorized(update):
