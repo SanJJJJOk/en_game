@@ -118,6 +118,7 @@ def tg_yandex_img_request(update, context):
         search_count = len(settings.game_imgs)
         if len(update.message.text)>6:
             search_count = int(update.message.text[6:])
+        update.message.reply_text(str(search_count))
         get_words(settings, search_count)
         update.message.reply_text('yahoo')
     except Exception as e:
@@ -616,9 +617,15 @@ def en_authorize(session, login, password):
 
 def main():
     #global pwd
+    #settings = Settings()
     #session = requests.session()
+    #settings.session = session
     #en_authorize(session, 'SanJJJJOk', pwd)
-    ##resp = session.get('http://72.en.cx/GameScenario.aspx?gid=67242')
+    #resp = session.get('http://ahtubinsk.en.cx/GameScenario.aspx?gid=67067')
+    #get_img_tags(resp.text, settings)
+    #get_words(settings, 10)
+
+    #resp = session.get('http://72.en.cx/GameScenario.aspx?gid=67242')
     #resp = session.get('http://redray.en.cx/GameScenario.aspx?gid=67224')
     #ttt = get_img_tags(resp.text)
     #tttt = get_words(ttt[:20])
