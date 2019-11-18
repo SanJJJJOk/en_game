@@ -1,17 +1,6 @@
 import enum
 import requests
 
-class ActionParams():
-    def __init__(self, input, mode):
-        self.first = first
-        self.second = second
-        self.third = None
-
-    def __init__(self, input, mode):
-        self.first = first
-        self.second = second
-        self.third = third
-
 class TgCommands():
     EnAuth = 'en'
     LoadImgs = 'load'

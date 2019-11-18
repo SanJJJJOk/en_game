@@ -211,14 +211,16 @@ def tg_default(update, context):
         if mode == ModeType.Disabled:
             return
         if mode == ModeType.Special:
-            output_messages = do_zaebis(input_text, [ModeType.Gibrid, ModeType.Meta, ModeType.Logo, ModeType.Anag])
+            parsed = special_parse(input_text)
+            output_messages = do_special_search(parsed[0], parsed[1], [ModeType.Gibrid, ModeType.Meta, ModeType.Logo, ModeType.Anag])
             for msg in output_messages:
-                update.message.reply_text(msg)
+                print_long(msg)
             return
         if input_text[0]=='$':
-            output_messages = do_zaebis(input_text[1:], [mode])
+            parsed = special_parse(input_text[1:])
+            output_messages = do_special_search(parsed[0], parsed[1], [mode])
             for msg in output_messages:
-                update.message.reply_text(msg)
+                print_long(msg)
             return
         msg = default_input(input_text, mode)
         update.message.reply_text(msg)
@@ -247,7 +249,7 @@ def bot_authorize(update):
 
 #----------
 
-def do_ohuenno(first, second, modes, print_needless = True):
+def do_special_search(first, second, modes, print_needless = True):
     needless_words = []
     output_messages = []
     for mode in modes:
@@ -267,7 +269,7 @@ def do_ohuenno(first, second, modes, print_needless = True):
     output_messages.append('needless words:\n' + str(len(union_nl)) + '\n' + '\n'.join(union_nl))
     return output_messages
     
-def do_zaebis(input_text, modes):
+def special_parse(input_text):
     need_associations = False
     if input_text[0]=='+':
         input_text = input_text[1:]
@@ -289,24 +291,24 @@ def do_zaebis(input_text, modes):
         second = first
     first = [item.lower() for item in first]
     second = [item.lower() for item in second]
-    return do_ohuenno(first, second, modes)
+    return [first, second]
 
 def default_input(input_text, mode):
     input = input_text.strip().split('.')
     if mode == ModeType.Matr:
         if len(input) != 3:
             raise Exception('invalid request')
-        first = get_input_associations(input[0].strip())
-        second = get_input_associations(input[1].strip())
-        third = get_input_associations(input[2].strip())
+        first = parse_and_get_associations(input[0])
+        second = parse_and_get_associations(input[1])
+        third = parse_and_get_associations(input[2])
         action_result = action_matr(first, second, third)
         union = list(dict.fromkeys(action_result))
         return str(len(union)) + '\n' + '\n'.join(union)
         return
     if len(input) != 2:
         raise Exception('invalid request')
-    first = get_input_associations(input[0].strip())
-    second = get_input_associations(input[1].strip())
+    first = parse_and_get_associations(input[0])
+    second = parse_and_get_associations(input[1])
     action_result = do_action(first, second, mode)
     union = list(dict.fromkeys(action_result))
     return str(len(union)) + '\n' + '\n'.join(union)
@@ -399,9 +401,10 @@ def action_logo(first, second, output=[]):
                     diff_index = -1
                     break
             if diff_index!=-1 or long_word.startswith(short_word):
-                union.append(word1 + '-' + word2)
-                output.append(word1)
-                output.append(word2)
+                if not word2 + '-' + word1 in union:
+                    union.append(word1 + '-' + word2)
+                    output.append(word1)
+                    output.append(word2)
     return union
 
 def action_anag(first, second, output=[]):
@@ -415,9 +418,10 @@ def action_anag(first, second, output=[]):
             list1.sort()
             list2.sort()
             if list1 == list2:
-                union.append(i + '-' + j)
-                output.append(i)
-                output.append(j)
+                if not j + '-' + i in union:
+                    union.append(i + '-' + j)
+                    output.append(i)
+                    output.append(j)
     return union
 
 def action_plus(first, second, output=[]):
@@ -452,9 +456,10 @@ def action_plus(first, second, output=[]):
                         diff_index = -2
                         break
             if diff_index!=-2:
-                union.append(long_list[diff_index] + ': ' + word1 + '-' + word2)
-                output.append(word1)
-                output.append(word2)
+                if not long_list[diff_index] + ': ' + word2 + '-' + word1 in union:
+                    union.append(long_list[diff_index] + ': ' + word1 + '-' + word2)
+                    output.append(word1)
+                    output.append(word2)
     union.sort()
     return union
 
@@ -472,14 +477,22 @@ def action_matr(first, second, third, output=[]):
                     if i==k or j==k:
                         continue
                     if the_matr in k:
-                        union.append(the_matr + ': ' + i + '-' + j + '-' + k)
-                        output.append(i)
-                        output.append(j)
-                        output.append(k)
+                        if not is_matr_exist(the_matr,i,j,k,union):
+                            union.append(the_matr + ': ' + i + '-' + j + '-' + k)
+                            output.append(i)
+                            output.append(j)
+                            output.append(k)
     return union
 
-def get_input_associations(input_str):
-    input_words = input_str.split(',')
+def is_matr_exist(the_matr,i,j,k,union):
+    return (the_matr + ': ' + j + '-' + i + '-' + k in union
+    or the_matr + ': ' + k + '-' + i + '-' + j in union
+    or the_matr + ': ' + i + '-' + k + '-' + j in union
+    or the_matr + ': ' + j + '-' + k + '-' + i in union
+    or the_matr + ': ' + k + '-' + j + '-' + i in union)
+
+def parse_and_get_associations(input_str):
+    input_words = input_str.strip().split(',')
     union = []
     for word in input_words:
         corrected_word = word.strip().lower()
