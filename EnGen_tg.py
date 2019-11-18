@@ -32,7 +32,8 @@ import json
 
 from datetime import datetime
 from threading import Timer
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, Dispatcher
+
 
 # Enable logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -44,8 +45,7 @@ logger = logging.getLogger(__name__)
 Holder = SettingsHolder()
 
 #tg methods
-
-def tg_error(update, context):
+def callback(update: Dispatcher.Update, context: Dispatcher.CallbackContext):
     update.message.reply_text('123')
     update.message.reply_text("Error: {0}".format(str(context.error)))
 
@@ -652,7 +652,7 @@ def main():
     dp.add_handler(CommandHandler("mode", tg_switch_mode))
     dp.add_handler(MessageHandler(Filters.text, tg_default))
 
-    dp.add_error_handler(tg_error)
+    dp.add_error_handler(callback)
 
     updater.start_polling()
 
