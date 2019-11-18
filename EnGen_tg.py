@@ -128,7 +128,6 @@ def tg_print_words(update, context):
         bot_authorize(update)
         settings = Holder.get(update.message.chat.id)
         update.message.reply_text(len(settings.game_imgs))
-        print_long(update, ' '.join(settings.game_imgs))
         print_long(update, '\n'.join(settings.game_imgs))
         update.message.reply_text(len(settings.yandex_tags_filtered))
         print_long(update, ' '.join(settings.yandex_tags_filtered))
@@ -238,7 +237,7 @@ def print_long(update, input_text):
         for x in range(0, len(input_text), 4096):
             update.message.reply_text(input_text[x:x+4096])
     else:
-        update.message.reply_text(info)
+        update.message.reply_text(input_text)
 
 def bot_authorize(update):
     global Holder
@@ -574,8 +573,11 @@ def get_words(img_urls, search_count):
         img_urls = img_urls[:search_count]
     output1 = []
     output2 = []
+    output3 = []
     for img_url in img_urls:
         tags = get_yandex_tags(img_url)
+        if len(tags)==0:
+            output3.append(img_url)
         for tag in tags:
             if tag.count(' ')==0:
                 output1.append(tag)
@@ -583,7 +585,7 @@ def get_words(img_urls, search_count):
             output2.extend(tag_words)
     output1 = list(dict.fromkeys(output1))
     output2 = list(dict.fromkeys(output2))
-    return [outptu1, output2]
+    return [output1, output2, output3]
 
 def get_yandex_tags(img_url):
     url = 'https://yandex.ru/images/search?url={0}&rpt=imageview'.format(quote(img_url, safe=''))
