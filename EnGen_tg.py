@@ -598,8 +598,7 @@ def get_words(img_urls, search_count):
             output3.append(img_url)
         for tag in tags:
             tag_words = re.findall(r"[\w']+", tag)
-            corrected_words = [tag_word.lower() for tag_word in tag_words]
-            output2.extend(corrected_words)
+            output2.extend([tag_word.lower() for tag_word in tag_words])
     output2 = list(dict.fromkeys(output2))
     for word in output2:
         if len(word)<2:
