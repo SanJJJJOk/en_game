@@ -119,7 +119,7 @@ def tg_load_imgs(update, context):
 def tg_yandex_img_request(update, context):
     global Holder
     try:
-        input_text = simple_message_handler(update, TgCommands.ImgReq, False)
+        input_text = simple_message_handler(update, TgCommands.PrintWords, False)
         settings = Holder.get(update.message.chat.id)
         start_from_index = 0#len(settings.game_imgs)
         if not input_text is None:
