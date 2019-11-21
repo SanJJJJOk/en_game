@@ -121,14 +121,14 @@ def tg_yandex_img_request(update, context):
     try:
         input_text = simple_message_handler(update, TgCommands.ImgReq, False)
         settings = Holder.get(update.message.chat.id)
-        search_count = len(settings.game_imgs)
+        start_from_index = 0#len(settings.game_imgs)
         if not input_text is None:
-            search_count = int(input_text)
-        result = get_words(settings.game_imgs, search_count)
+            start_from_index = int(input_text)
+        result = get_words(settings.game_imgs, start_from_index)
         settings.yandex_tags_filtered = result[0]
         settings.yandex_tags_all = result[1]
         settings.not_found_imgs = result[2]
-        update.message.reply_text('yahoo')
+        update.message.reply_text('yahoo, not parsed:' + str(len(result[2])))
     except Exception as e:
         update.message.reply_text("Error: {0}".format(str(e)))
 
@@ -226,13 +226,13 @@ def tg_default(update, context):
             parsed = special_parse(input_text)
             output_messages = do_special_search(parsed[0], parsed[1], [ModeType.Gibrid, ModeType.Meta, ModeType.Logo, ModeType.Anag])
             for msg in output_messages:
-                print_long(msg)
+                print_long(update, msg)
             return
         if input_text[0]=='$':
             parsed = special_parse(input_text[1:])
             output_messages = do_special_search(parsed[0], parsed[1], [mode])
             for msg in output_messages:
-                print_long(msg)
+                print_long(update, msg)
             return
         msg = default_input(input_text, mode)
         update.message.reply_text(msg)
@@ -582,9 +582,9 @@ def get_img_tags(html_text):
     imgs_urls = [img['src'] for img in imgs]
     return list(dict.fromkeys(imgs_urls))
 
-def get_words(img_urls, search_count):
-    if search_count<len(img_urls):
-        img_urls = img_urls[:search_count]
+def get_words(img_urls, start_from_index):
+    if start_from_index<len(img_urls):
+        img_urls = img_urls[start_from_index:]
     output1 = []
     output2 = []
     output3 = []
