@@ -1,6 +1,20 @@
 import enum
 import requests
 
+class TgCommands():
+    ReloadSession = 'reconnect'
+    EnAuth = 'en'
+    LoadImgs = 'load'
+    ImgReq = 'find'
+    PrintWords = 'print'
+    ImgsAction = 'do'
+    Olymp = 'o'
+    Gibrid = 'g'
+    Meta = 'm'
+    Logo = 'l'
+    SwitchMode = 'mode'
+    Test = 'test'
+
 class ModeType(enum.Enum):
     Disabled = 0
     Special = 1
@@ -69,8 +83,9 @@ class Settings:
         self.current_mode = ModeType.Disabled
         self.session = requests.session()
         self.game_imgs = []
-        self.yandex_tags_main = []
+        self.yandex_tags_filtered = []
         self.yandex_tags_all = []
+        self.not_found_imgs = []
 
     def next_mode(self):
         self.current_mode = self.current_mode.next()
