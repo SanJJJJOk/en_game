@@ -119,7 +119,7 @@ def tg_load_imgs(update, context):
 def tg_yandex_img_request(update, context):
     global Holder
     try:
-        input_text = simple_message_handler(update, TgCommands.PrintWords, False)
+        input_text = simple_message_handler(update, TgCommands.ImgReq, False)
         settings = Holder.get(update.message.chat.id)
         start_from_index = 0#len(settings.game_imgs)
         if not input_text is None:
@@ -135,14 +135,14 @@ def tg_yandex_img_request(update, context):
 def tg_print_words(update, context):
     global Holder
     try:
-        input_text = simple_message_handler(update, TgCommands.ImgReq, False)
+        input_text = simple_message_handler(update, TgCommands.PrintWords, False)
         settings = Holder.get(update.message.chat.id)
         update.message.reply_text(len(settings.game_imgs))
         print_long(update, '\n'.join(settings.game_imgs))
         update.message.reply_text(len(settings.yandex_tags_filtered))
         print_long(update, '-\n' + ' '.join(settings.yandex_tags_filtered))
-        print_long(update, '-\n' + '\n'.join(settings.yandex_tags_filtered))
         if input_text.startswith('a'):
+            print_long(update, '-\n' + '\n'.join(settings.yandex_tags_filtered))
             update.message.reply_text(len(settings.yandex_tags_all))
             print_long(update, '-\n' + ' '.join(settings.yandex_tags_all))
             print_long(update, '-\n' + '\n'.join(settings.yandex_tags_all))
