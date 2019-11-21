@@ -135,16 +135,17 @@ def tg_yandex_img_request(update, context):
 def tg_print_words(update, context):
     global Holder
     try:
-        bot_authorize(update)
+        input_text = simple_message_handler(update, TgCommands.ImgReq, False)
         settings = Holder.get(update.message.chat.id)
         update.message.reply_text(len(settings.game_imgs))
         print_long(update, '\n'.join(settings.game_imgs))
         update.message.reply_text(len(settings.yandex_tags_filtered))
         print_long(update, '-\n' + ' '.join(settings.yandex_tags_filtered))
         print_long(update, '-\n' + '\n'.join(settings.yandex_tags_filtered))
-        update.message.reply_text(len(settings.yandex_tags_all))
-        print_long(update, '-\n' + ' '.join(settings.yandex_tags_all))
-        print_long(update, '-\n' + '\n'.join(settings.yandex_tags_all))
+        if input_text.startswith('a'):
+            update.message.reply_text(len(settings.yandex_tags_all))
+            print_long(update, '-\n' + ' '.join(settings.yandex_tags_all))
+            print_long(update, '-\n' + '\n'.join(settings.yandex_tags_all))
         update.message.reply_text(len(settings.not_found_imgs))
         print_long(update, '-\n' + '\n'.join(settings.not_found_imgs))
     except Exception as e:
