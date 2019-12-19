@@ -339,6 +339,8 @@ def do_action(first, second, mode, output = []):
         return action_anag(first, second, output)
     if mode == ModeType.Plus:
         return action_plus(first, second, output)
+    if mode == ModeType.Bruk:
+        return action_bruk(first, second, output)
     return []
 
 def action_olymp(first, second, output=[]):
@@ -417,6 +419,43 @@ def action_logo(first, second, output=[]):
                     diff_index = -1
                     break
             if diff_index==-1 and not long_word.startswith(short_word):
+                continue
+            if word2 + '-' + word1 in union:
+                continue
+            union.append(word1 + '-' + word2)
+            output.append(word1)
+            output.append(word2)
+    return union
+    
+def action_bruk(first, second, output=[]):
+    union = []
+    for word1 in first:
+        for word2 in second:
+            if len(word1)==1 or len(word2)==1:
+                continue
+            long_word = ''
+            short_word = ''
+            if len(word1) == len(word2) + 1:
+                long_word = word1
+                short_word = word2
+            else:
+                if len(word2) == len(word1) + 1:
+                    long_word = word2
+                    short_word = word1
+                else:
+                    continue
+            diff_index = 0
+            for i in range(0, len(short_word)):
+                if long_word[i]!=short_word[i]:
+                    diff_index = i
+                    break
+            diff_index+=1
+            if diff_index<len(short_word):
+                for i in range(diff_index, len(short_word)):
+                    if long_word[i + 1]!=short_word[i]:
+                        diff_index = -1
+                        break
+            if diff_index==-1 and not long_word.startswith(short_word[:-1]):
                 continue
             if word2 + '-' + word1 in union:
                 continue

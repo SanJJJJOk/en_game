@@ -25,6 +25,7 @@ class ModeType(enum.Enum):
     Anag = 6
     Plus = 7
     Matr = 8
+    Bruk = 9
 
     def next(self):
         val = self.value + 1
@@ -40,7 +41,7 @@ class ModeType(enum.Enum):
 
     @staticmethod
     def get_modes_count():
-        return 9
+        return 10
 
     @staticmethod
     def get_well_known_mode_types():
@@ -53,7 +54,8 @@ class ModeType(enum.Enum):
             ModeType.Logo: ['logo', 'логогриф'],
             ModeType.Anag: ['anag', 'анаграмма'],
             ModeType.Plus: ['plus', 'плюсограмма'],
-            ModeType.Matr: ['matr', 'матрица']
+            ModeType.Matr: ['matr', 'матрица'],
+            ModeType.Bruk: ['bruk', 'брюква']
             }
 
     @staticmethod
