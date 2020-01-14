@@ -121,30 +121,31 @@ def tg_yandex_img_request(update, context):
     try:
         input_text = simple_message_handler(update, TgCommands.ImgReq, False)
         settings = Holder.get(update.message.chat.id)
-        search_count = len(settings.game_imgs)
+        start_from_index = 0#len(settings.game_imgs)
         if not input_text is None:
-            search_count = int(input_text)
-        result = get_words(settings.game_imgs, search_count)
+            start_from_index = int(input_text)
+        result = get_words(settings.game_imgs, start_from_index)
         settings.yandex_tags_filtered = result[0]
         settings.yandex_tags_all = result[1]
         settings.not_found_imgs = result[2]
-        update.message.reply_text('yahoo')
+        update.message.reply_text('yahoo, not parsed:' + str(len(result[2])))
     except Exception as e:
         update.message.reply_text("Error: {0}".format(str(e)))
 
 def tg_print_words(update, context):
     global Holder
     try:
-        bot_authorize(update)
+        input_text = simple_message_handler(update, TgCommands.PrintWords, False)
         settings = Holder.get(update.message.chat.id)
         update.message.reply_text(len(settings.game_imgs))
         print_long(update, '\n'.join(settings.game_imgs))
         update.message.reply_text(len(settings.yandex_tags_filtered))
         print_long(update, '-\n' + ' '.join(settings.yandex_tags_filtered))
-        print_long(update, '-\n' + '\n'.join(settings.yandex_tags_filtered))
-        update.message.reply_text(len(settings.yandex_tags_all))
-        print_long(update, '-\n' + ' '.join(settings.yandex_tags_all))
-        print_long(update, '-\n' + '\n'.join(settings.yandex_tags_all))
+        if input_text.startswith('a'):
+            print_long(update, '-\n' + '\n'.join(settings.yandex_tags_filtered))
+            update.message.reply_text(len(settings.yandex_tags_all))
+            print_long(update, '-\n' + ' '.join(settings.yandex_tags_all))
+            print_long(update, '-\n' + '\n'.join(settings.yandex_tags_all))
         update.message.reply_text(len(settings.not_found_imgs))
         print_long(update, '-\n' + '\n'.join(settings.not_found_imgs))
     except Exception as e:
@@ -232,13 +233,13 @@ def tg_default(update, context):
             parsed = special_parse(input_text)
             output_messages = do_special_search(parsed[0], parsed[1], [ModeType.Gibrid, ModeType.Meta, ModeType.Logo, ModeType.Anag])
             for msg in output_messages:
-                print_long(msg)
+                print_long(update, msg)
             return
         if input_text[0]=='$':
             parsed = special_parse(input_text[1:])
             output_messages = do_special_search(parsed[0], parsed[1], [mode])
             for msg in output_messages:
-                print_long(msg)
+                print_long(update, msg)
             return
         msg = default_input(input_text, mode)
         update.message.reply_text(msg)
@@ -344,6 +345,8 @@ def do_action(first, second, mode, output = []):
         return action_anag(first, second, output)
     if mode == ModeType.Plus:
         return action_plus(first, second, output)
+    if mode == ModeType.Bruk:
+        return action_bruk(first, second, output)
     return []
 
 def action_olymp(first, second, output=[]):
@@ -422,6 +425,43 @@ def action_logo(first, second, output=[]):
                     diff_index = -1
                     break
             if diff_index==-1 and not long_word.startswith(short_word):
+                continue
+            if word2 + '-' + word1 in union:
+                continue
+            union.append(word1 + '-' + word2)
+            output.append(word1)
+            output.append(word2)
+    return union
+    
+def action_bruk(first, second, output=[]):
+    union = []
+    for word1 in first:
+        for word2 in second:
+            if len(word1)==1 or len(word2)==1:
+                continue
+            long_word = ''
+            short_word = ''
+            if len(word1) == len(word2) + 1:
+                long_word = word1
+                short_word = word2
+            else:
+                if len(word2) == len(word1) + 1:
+                    long_word = word2
+                    short_word = word1
+                else:
+                    continue
+            diff_index = 0
+            for i in range(0, len(short_word)):
+                if long_word[i]!=short_word[i]:
+                    diff_index = i
+                    break
+            diff_index+=1
+            if diff_index<len(short_word):
+                for i in range(diff_index, len(short_word)):
+                    if long_word[i + 1]!=short_word[i]:
+                        diff_index = -1
+                        break
+            if diff_index==-1 and not long_word.startswith(short_word[:-1]):
                 continue
             if word2 + '-' + word1 in union:
                 continue
@@ -588,9 +628,9 @@ def get_img_tags(html_text):
     imgs_urls = [img['src'] for img in imgs]
     return list(dict.fromkeys(imgs_urls))
 
-def get_words(img_urls, search_count):
-    if search_count<len(img_urls):
-        img_urls = img_urls[:search_count]
+def get_words(img_urls, start_from_index):
+    if start_from_index<len(img_urls):
+        img_urls = img_urls[start_from_index:]
     output1 = []
     output2 = []
     output3 = []
