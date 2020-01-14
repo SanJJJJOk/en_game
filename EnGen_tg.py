@@ -228,12 +228,6 @@ def tg_default(update, context):
             if 'мускари' in answer or ('холодильная' in answer and '40' in answer):
                 update.message.reply_text('да, мускари, холодильная 40')
                 return
-            if 'балкан' in answer or ('октября' in answer and '3' in answer):
-                update.message.reply_text('да, балкан, 50ло 3 с хуем')
-                return
-            if 'магеллан' in answer or ('октября' in answer and '14' in answer):
-                update.message.reply_text('да, магеллан, пох на каком адресе')
-                return
             update.message.reply_text('нет')
             return
             parsed = special_parse(input_text)
