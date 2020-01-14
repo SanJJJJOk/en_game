@@ -224,12 +224,12 @@ def tg_default(update, context):
         if mode == ModeType.Disabled:
             return
         if mode == ModeType.Special:
-            answer = input_text.lower()
-            if 'мускари' in answer or ('холодильная' in answer and '40' in answer):
-                update.message.reply_text('да, мускари, холодильная 40')
-                return
-            update.message.reply_text('нет')
-            return
+            #answer = input_text.lower()
+            #if 'мускари' in answer or ('холодильная' in answer and '40' in answer):
+            #    update.message.reply_text('да, мускари, холодильная 40')
+            #    return
+            #update.message.reply_text('нет')
+            #return
             parsed = special_parse(input_text)
             output_messages = do_special_search(parsed[0], parsed[1], [ModeType.Gibrid, ModeType.Meta, ModeType.Logo, ModeType.Anag])
             for msg in output_messages:
