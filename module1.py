@@ -70,9 +70,21 @@ class ModeType(enum.Enum):
                     break
         return result
 
-class SettingsHolder:
+class GlobalHolder:
     def __init__(self):
         self.settings_by_id = {}
+        self.modes_actions = {
+            ModeType.Disabled: ['disabled', 'выключено'],
+            ModeType.Special: ['special', 'специальный'],
+            ModeType.Olymp: ['olymp', 'олимпийка'],
+            ModeType.Gibrid: ['gibrid', 'гибрид'],
+            ModeType.Meta: ['meta', 'метаграмма'],
+            ModeType.Logo: ['logo', 'логогриф'],
+            ModeType.Anag: ['anag', 'анаграмма'],
+            ModeType.Plus: ['plus', 'плюсограмма'],
+            ModeType.Matr: ['matr', 'матрица'],
+            ModeType.Bruk: ['bruk', 'брюква']
+            }
 
     def add(self, id):
         self.settings_by_id[id] = Settings()
@@ -92,3 +104,30 @@ class Settings:
     def next_mode(self):
         self.current_mode = self.current_mode.next()
         return self.current_mode
+
+class Result:
+    def __init__(self, is_success, message, value):
+        self.is_success = is_success
+        self.message = message
+        self.value = value
+        
+    @classmethod
+    def success(cls, value):
+        return cls(True, "", value)
+
+    @classmethod
+    def failed(cls, message):
+        return cls(False, message, [])
+
+class ParseHelper:
+    def __init__(self):
+        pass
+
+    @staticmethod
+    def simple_parse_to_input(text, count):
+        if text[0]=='$':
+            parsed = special_parse(input_text[1:])
+            output_messages = do_special_search(parsed[0], parsed[1], [mode])
+            for msg in output_messages:
+                print_long(update, msg)
+            return
