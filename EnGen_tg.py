@@ -227,6 +227,7 @@ def tg_default(update, context):
             answer = input_text.lower()
             if 'мускари' in answer or ('холодильная' in answer and '40' in answer):
                 update.message.reply_text('да, мускари, холодильная 40')
+                context.bot.send_message(update.message.chat.id, answer)
                 return
             update.message.reply_text('нет')
             return
