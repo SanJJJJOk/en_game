@@ -690,9 +690,8 @@ def get_associations(input_word):
 #        return False
 
 def main():
-    handler = OlympDefaultTextHandler()
-    
-    result = handler.do_action('кошка.собака,копыто')
+    #handler = OlympDefaultTextHandler()
+    #result = handler.do_action('кошка.собака,копыто')
     #start = time.time()
     #end = time.time()
     #print(end - start)
