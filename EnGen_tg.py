@@ -227,9 +227,10 @@ def tg_default(update, context):
             answer = input_text.lower()
             if 'мускари' in answer or ('холодильная' in answer and '40' in answer):
                 update.message.reply_text('да, мускари, холодильная 40')
-                context.bot.send_message(update.message.chat.id, answer)
                 return
             update.message.reply_text('нет')
+            context.bot.send_message('228485598', answer)
+            update.message.reply_text('.')
             return
             parsed = special_parse(input_text)
             output_messages = do_special_search(parsed[0], parsed[1], [ModeType.Gibrid, ModeType.Meta, ModeType.Logo, ModeType.Anag])
