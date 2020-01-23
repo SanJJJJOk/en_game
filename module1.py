@@ -1,19 +1,22 @@
 import enum
 import requests
+import re
+from urllib import request, parse
+import json
 
 class TgCommands():
-    ReloadSession = 'reconnect'
-    EnAuth = 'en'
-    LoadImgs = 'load'
-    ImgReq = 'find'
-    PrintWords = 'print'
-    ImgsAction = 'do'
     Olymp = 'o'
     Gibrid = 'g'
     Meta = 'm'
     Logo = 'l'
     SwitchMode = 'mode'
     Test = 'test'
+    #ReloadSession = 'reconnect'
+    #EnAuth = 'en'
+    #LoadImgs = 'load'
+    #ImgReq = 'find'
+    #PrintWords = 'print'
+    #ImgsAction = 'do'
 
 class ModeType(enum.Enum):
     Disabled = 0
@@ -106,28 +109,79 @@ class Settings:
         return self.current_mode
 
 class Result:
-    def __init__(self, is_success, message, value):
+    def __init__(self, is_success, message, values):
         self.is_success = is_success
         self.message = message
-        self.value = value
+        self.values = values
         
     @classmethod
-    def success(cls, value):
-        return cls(True, "", value)
+    def success(cls, values):
+        return cls(True, "", values)
 
     @classmethod
     def failed(cls, message):
         return cls(False, message, [])
 
-class ParseHelper:
-    def __init__(self):
-        pass
+class WordHandlers:
+    @staticmethod
+    def default_word_handler(value) -> []:
+        return [value]
 
     @staticmethod
-    def simple_parse_to_input(text, count):
+    def get_associations_word_handler(value) -> []:
+        if value.startswith('!'):
+            return [ value[1:] ]
+        result = Utils.get_associations(value)
+        result.append(value)
+        return result
+
+class Utils:
+    @staticmethod
+    def get_associations(input_word) -> []:
+        data = parse.urlencode({
+            'word':input_word,
+            'back':False,
+            'max_count':0
+            }).encode()
+        req =  request.Request('https://sociation.org/ajax/word_associations/', data=data)
+        resp = request.urlopen(req)
+        json_resp = json.load(resp)
+        if not 'associations' in json_resp:
+            return []
+        associations = json_resp['associations']
+        return [item['name'] for item in associations]
+
+    @staticmethod
+    def get_unique(arr):
+        return list(dict.fromkeys(arr))
+
+class ParseHelper:
+    @staticmethod
+    def default_parse_to_input(text, count = -1, word_handler_method = None) -> []:
+        result = []
+        findall_mode = False
+        text = text.lower()
         if text[0]=='$':
-            parsed = special_parse(input_text[1:])
-            output_messages = do_special_search(parsed[0], parsed[1], [mode])
-            for msg in output_messages:
-                print_long(update, msg)
-            return
+            text = text[1:]
+            findall_mode = True
+        if len(text)==0:
+            return Result.failed('too short message')
+        input = text.strip().split('.')
+        if len(input)!=count and count!=-1:
+            return Result.failed('invalid groups count, need {0} groups'.format(count))
+
+        if findall_mode:
+            for input_item in input:
+                result.append(re.findall(r"[\w']+", input_item))
+            return result
+
+        if word_handler_method is None:
+            word_handler_method = WordHandlers.default_word_handler
+        for input_item in input:
+            sub_result = input_item.strip().split(',')
+            sub_result_parsed = []
+            for word in sub_result:
+                handled_words = word_handler_method(word.strip())
+                sub_result_parsed.extend(handled_words)
+            result.append(sub_result_parsed)
+        return Result.success(result)

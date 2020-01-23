@@ -18,6 +18,7 @@ bot.
 """
 
 import logging
+from OlympDefaultTextHandler import OlympDefaultTextHandler
 import os.path
 from module1 import *
 from TgTest import *
@@ -29,6 +30,7 @@ from urllib.parse import quote
 import random
 import re
 import json
+import time
 
 from datetime import datetime
 from threading import Timer
@@ -83,84 +85,84 @@ def simple_message_handler(update, command, empty_is_invalid = False):
         return None
     return input_text[len(command)+2:]
 
-def tg_reload_session(update, context):
-    global Holder
-    try:
-        bot_authorize(update)
-        settings = Holder.get(update.message.chat.id)
-        settings.session = requests.session()
-    except Exception as e:
-        update.message.reply_text("Error: {0}".format(str(e)))
+#def tg_reload_session(update, context):
+#    global Holder
+#    try:
+#        bot_authorize(update)
+#        settings = Holder.get(update.message.chat.id)
+#        settings.session = requests.session()
+#    except Exception as e:
+#        update.message.reply_text("Error: {0}".format(str(e)))
 
-def tg_en_auth(update, context):
-    global Holder
-    try:
-        input_text = simple_message_handler(update, TgCommands.EnAuth, True)
-        input = input_text.strip().split(' ')
-        if len(input)!=2:
-            raise Exception('invalid request')
-        settings = Holder.get(update.message.chat.id)
-        is_en_auth = en_authorize(settings.session, input[0], input[1])
-        update.message.reply_text(is_en_auth)
-    except Exception as e:
-        update.message.reply_text("Error: {0}".format(str(e)))
+#def tg_en_auth(update, context):
+#    global Holder
+#    try:
+#        input_text = simple_message_handler(update, TgCommands.EnAuth, True)
+#        input = input_text.strip().split(' ')
+#        if len(input)!=2:
+#            raise Exception('invalid request')
+#        settings = Holder.get(update.message.chat.id)
+#        is_en_auth = en_authorize(settings.session, input[0], input[1])
+#        update.message.reply_text(is_en_auth)
+#    except Exception as e:
+#        update.message.reply_text("Error: {0}".format(str(e)))
 
-def tg_load_imgs(update, context):
-    global Holder
-    try:
-        input_text = simple_message_handler(update, TgCommands.LoadImgs, True)
-        settings = Holder.get(update.message.chat.id)
-        resp = settings.session.get(input_text)
-        settings.game_imgs = get_img_tags(resp.text)
-        update.message.reply_text('images is loaded: {0} count'.format(len(settings.game_imgs)))
-    except Exception as e:
-        update.message.reply_text("Error: {0}".format(str(e)))
+#def tg_load_imgs(update, context):
+#    global Holder
+#    try:
+#        input_text = simple_message_handler(update, TgCommands.LoadImgs, True)
+#        settings = Holder.get(update.message.chat.id)
+#        resp = settings.session.get(input_text)
+#        settings.game_imgs = get_img_tags(resp.text)
+#        update.message.reply_text('images is loaded: {0} count'.format(len(settings.game_imgs)))
+#    except Exception as e:
+#        update.message.reply_text("Error: {0}".format(str(e)))
 
-def tg_yandex_img_request(update, context):
-    global Holder
-    try:
-        input_text = simple_message_handler(update, TgCommands.ImgReq, False)
-        settings = Holder.get(update.message.chat.id)
-        start_from_index = 0#len(settings.game_imgs)
-        if not input_text is None:
-            start_from_index = int(input_text)
-        result = get_words(settings.game_imgs, start_from_index)
-        settings.yandex_tags_filtered = result[0]
-        settings.yandex_tags_all = result[1]
-        settings.not_found_imgs = result[2]
-        update.message.reply_text('yahoo, not parsed:' + str(len(result[2])))
-    except Exception as e:
-        update.message.reply_text("Error: {0}".format(str(e)))
+#def tg_yandex_img_request(update, context):
+#    global Holder
+#    try:
+#        input_text = simple_message_handler(update, TgCommands.ImgReq, False)
+#        settings = Holder.get(update.message.chat.id)
+#        start_from_index = 0#len(settings.game_imgs)
+#        if not input_text is None:
+#            start_from_index = int(input_text)
+#        result = get_words(settings.game_imgs, start_from_index)
+#        settings.yandex_tags_filtered = result[0]
+#        settings.yandex_tags_all = result[1]
+#        settings.not_found_imgs = result[2]
+#        update.message.reply_text('yahoo, not parsed:' + str(len(result[2])))
+#    except Exception as e:
+#        update.message.reply_text("Error: {0}".format(str(e)))
 
-def tg_print_words(update, context):
-    global Holder
-    try:
-        input_text = simple_message_handler(update, TgCommands.PrintWords, False)
-        settings = Holder.get(update.message.chat.id)
-        update.message.reply_text(len(settings.game_imgs))
-        print_long(update, '\n'.join(settings.game_imgs))
-        update.message.reply_text(len(settings.yandex_tags_filtered))
-        print_long(update, '-\n' + ' '.join(settings.yandex_tags_filtered))
-        if input_text.startswith('a'):
-            print_long(update, '-\n' + '\n'.join(settings.yandex_tags_filtered))
-            update.message.reply_text(len(settings.yandex_tags_all))
-            print_long(update, '-\n' + ' '.join(settings.yandex_tags_all))
-            print_long(update, '-\n' + '\n'.join(settings.yandex_tags_all))
-        update.message.reply_text(len(settings.not_found_imgs))
-        print_long(update, '-\n' + '\n'.join(settings.not_found_imgs))
-    except Exception as e:
-        update.message.reply_text("Error: {0}".format(str(e)))
+#def tg_imgs_action(update, context):
+#    global Holder
+#    try:
+#        bot_authorize(update)
+#        settings = Holder.get(update.message.chat.id)
+#        output_messages = do_special_search(settings.yandex_tags_filtered, settings.yandex_tags_filtered, [ModeType.Gibrid, ModeType.Meta, ModeType.Logo, ModeType.Anag], False)
+#        for msg in output_messages:
+#            print_long(update, msg)
+#    except Exception as e:
+#        update.message.reply_text("Error: {0}".format(str(e)))
 
-def tg_imgs_action(update, context):
-    global Holder
-    try:
-        bot_authorize(update)
-        settings = Holder.get(update.message.chat.id)
-        output_messages = do_special_search(settings.yandex_tags_filtered, settings.yandex_tags_filtered, [ModeType.Gibrid, ModeType.Meta, ModeType.Logo, ModeType.Anag], False)
-        for msg in output_messages:
-            print_long(update, msg)
-    except Exception as e:
-        update.message.reply_text("Error: {0}".format(str(e)))
+#def tg_print_words(update, context):
+#    global Holder
+#    try:
+#        input_text = simple_message_handler(update, TgCommands.PrintWords, False)
+#        settings = Holder.get(update.message.chat.id)
+#        update.message.reply_text(len(settings.game_imgs))
+#        print_long(update, '\n'.join(settings.game_imgs))
+#        update.message.reply_text(len(settings.yandex_tags_filtered))
+#        print_long(update, '-\n' + ' '.join(settings.yandex_tags_filtered))
+#        if input_text.startswith('a'):
+#            print_long(update, '-\n' + '\n'.join(settings.yandex_tags_filtered))
+#            update.message.reply_text(len(settings.yandex_tags_all))
+#            print_long(update, '-\n' + ' '.join(settings.yandex_tags_all))
+#            print_long(update, '-\n' + '\n'.join(settings.yandex_tags_all))
+#        update.message.reply_text(len(settings.not_found_imgs))
+#        print_long(update, '-\n' + '\n'.join(settings.not_found_imgs))
+#    except Exception as e:
+#        update.message.reply_text("Error: {0}".format(str(e)))
 
 def tg_olymp(update, context):
     try:
@@ -624,70 +626,76 @@ def get_associations(input_word):
 #    a_list = ass_list.findAll('a')
 #    return [item.string for item in a_list]
 
-def get_img_tags(html_text):
-    soup = BeautifulSoup(html_text)
-    imgs = soup.findAll('img')
-    imgs_urls = [img['src'] for img in imgs]
-    return list(dict.fromkeys(imgs_urls))
+#def get_img_tags(html_text):
+#    soup = BeautifulSoup(html_text)
+#    imgs = soup.findAll('img')
+#    imgs_urls = [img['src'] for img in imgs]
+#    return list(dict.fromkeys(imgs_urls))
 
-def get_words(img_urls, start_from_index):
-    if start_from_index<len(img_urls):
-        img_urls = img_urls[start_from_index:]
-    output1 = []
-    output2 = []
-    output3 = []
-    for img_url in img_urls:
-        tags = get_yandex_tags(img_url)
-        if len(tags)==0:
-            output3.append(img_url)
-        for tag in tags:
-            tag_words = re.findall(r"[\w']+", tag)
-            output2.extend([tag_word.lower() for tag_word in tag_words])
-    output2 = list(dict.fromkeys(output2))
-    for word in output2:
-        if len(word)<2:
-            continue
-        if (word[0]>='a' and word[0]<='z') or (word[0]>='0' and word[0]<='9'):
-            continue
-        output1.append(word)
-    return [output1, output2, output3]
+#def get_words(img_urls, start_from_index):
+#    if start_from_index<len(img_urls):
+#        img_urls = img_urls[start_from_index:]
+#    output1 = []
+#    output2 = []
+#    output3 = []
+#    for img_url in img_urls:
+#        tags = get_yandex_tags(img_url)
+#        if len(tags)==0:
+#            output3.append(img_url)
+#        for tag in tags:
+#            tag_words = re.findall(r"[\w']+", tag)
+#            output2.extend([tag_word.lower() for tag_word in tag_words])
+#    output2 = list(dict.fromkeys(output2))
+#    for word in output2:
+#        if len(word)<2:
+#            continue
+#        if (word[0]>='a' and word[0]<='z') or (word[0]>='0' and word[0]<='9'):
+#            continue
+#        output1.append(word)
+#    return [output1, output2, output3]
 
-def get_yandex_tags(img_url):
-    url = 'https://yandex.ru/images/search?url={0}&rpt=imageview'.format(quote(img_url, safe=''))
-    try:
-        fp = request.urlopen(url)
-    except:
-        return []
-    mybytes = fp.read()
+#def get_yandex_tags(img_url):
+#    url = 'https://yandex.ru/images/search?url={0}&rpt=imageview'.format(quote(img_url, safe=''))
+#    try:
+#        fp = request.urlopen(url)
+#    except:
+#        return []
+#    mybytes = fp.read()
     
-    mystr = mybytes.decode("utf8")
-    fp.close()
+#    mystr = mybytes.decode("utf8")
+#    fp.close()
     
-    soup = BeautifulSoup(mystr)
-    ass_list = soup.find('div', {'class': 'tags__wrapper'})
-    if ass_list is None:
-        return []
-    a_list = ass_list.findAll('a')
-    return [item.string for item in a_list]
+#    soup = BeautifulSoup(mystr)
+#    ass_list = soup.find('div', {'class': 'tags__wrapper'})
+#    if ass_list is None:
+#        return []
+#    a_list = ass_list.findAll('a')
+#    return [item.string for item in a_list]
 
-def en_authorize(session, login, password):
-    url = 'http://72.en.cx/Login.aspx?return=%%2f'
-    userdata = {
-        'socialAssign': 0,
-        'Login': login,
-        'Password': password,
-        'EnButton1': 'Вход',
-        'ddlNetwork': 1
-    }
-    resp = session.post(url, data=userdata)
-    if resp.history:
-        logger.info("LogIN")
-        return True
-    else:
-        logger.info("LogOUT")
-        return False
+#def en_authorize(session, login, password):
+#    url = 'http://72.en.cx/Login.aspx?return=%%2f'
+#    userdata = {
+#        'socialAssign': 0,
+#        'Login': login,
+#        'Password': password,
+#        'EnButton1': 'Вход',
+#        'ddlNetwork': 1
+#    }
+#    resp = session.post(url, data=userdata)
+#    if resp.history:
+#        logger.info("LogIN")
+#        return True
+#    else:
+#        logger.info("LogOUT")
+#        return False
 
 def main():
+    handler = OlympDefaultTextHandler()
+    
+    result = handler.do_action('кошка.собака,копыто')
+    #start = time.time()
+    #end = time.time()
+    #print(end - start)
     #global pwd
     #settings = Settings()
     #session = requests.session()
@@ -710,12 +718,12 @@ def main():
     #updater = Updater("979411435:AAEHIVLx8L8CxmjIHtitaH4L1GeV_OCRJ7M", use_context=True)
     dp = updater.dispatcher
 
-    dp.add_handler(CommandHandler(TgCommands.ReloadSession, tg_reload_session))
-    dp.add_handler(CommandHandler(TgCommands.EnAuth, tg_en_auth))
-    dp.add_handler(CommandHandler(TgCommands.LoadImgs, tg_load_imgs))
-    dp.add_handler(CommandHandler(TgCommands.ImgReq, tg_yandex_img_request))
-    dp.add_handler(CommandHandler(TgCommands.PrintWords, tg_print_words))
-    dp.add_handler(CommandHandler(TgCommands.ImgsAction, tg_imgs_action))
+    #dp.add_handler(CommandHandler(TgCommands.ReloadSession, tg_reload_session))
+    #dp.add_handler(CommandHandler(TgCommands.EnAuth, tg_en_auth))
+    #dp.add_handler(CommandHandler(TgCommands.LoadImgs, tg_load_imgs))
+    #dp.add_handler(CommandHandler(TgCommands.ImgReq, tg_yandex_img_request))
+    #dp.add_handler(CommandHandler(TgCommands.PrintWords, tg_print_words))
+    #dp.add_handler(CommandHandler(TgCommands.ImgsAction, tg_imgs_action))
     dp.add_handler(CommandHandler(TgCommands.Olymp, tg_olymp))
     dp.add_handler(CommandHandler(TgCommands.Gibrid, tg_gibrid))
     dp.add_handler(CommandHandler(TgCommands.Meta, tg_meta))
