@@ -129,7 +129,7 @@ class WordHandlers:
 
     @staticmethod
     def get_associations_word_handler(value) -> []:
-        if value.startswith('!'):
+        if value.startswith('!') or value.startswith('%'):
             return [ value[1:] ]
         result = Utils.get_associations(value)
         result.append(value)
@@ -154,8 +154,20 @@ class Utils:
     @staticmethod
     def get_unique(arr):
         return list(dict.fromkeys(arr))
+    
+    @staticmethod
+    def do_actions(text, count, values_handlers, word_handler) -> Result:
+        input_result = Utils.default_parse_to_input(text, count, word_handler)
+        if not input_result.is_success:
+            return input_result
+        result = []
+        for values_handler in values_handlers:
+            union = values_handler(input_result.values)
+            unique_union = Utils.get_unique(union)
+            result.append(str(len(unique_union)))
+            result.append('\n'.join(unique_union))
+        return Result.success(result)
 
-class ParseHelper:
     @staticmethod
     def default_parse_to_input(text, count = -1, word_handler_method = None) -> []:
         result = []
@@ -173,7 +185,7 @@ class ParseHelper:
         if findall_mode:
             for input_item in input:
                 result.append(re.findall(r"[\w']+", input_item))
-            return result
+            return Result.success(result)
 
         if word_handler_method is None:
             word_handler_method = WordHandlers.default_word_handler

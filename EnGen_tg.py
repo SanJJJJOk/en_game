@@ -18,7 +18,7 @@ bot.
 """
 
 import logging
-from OlympDefaultTextHandler import OlympDefaultTextHandler
+from OlympDefaultTextHandler import *
 import os.path
 from module1 import *
 from TgTest import *
@@ -690,11 +690,20 @@ def get_associations(input_word):
 #        return False
 
 def main():
-    #handler = OlympDefaultTextHandler()
-    #result = handler.do_action('кошка.собака,копыто')
-    #start = time.time()
-    #end = time.time()
-    #print(end - start)
+    handler = SimpleTwoListsDefaultTextHandler()
+    start = time.time()
+    
+    #input = 'кошка.собака,копыто'.strip().split('.')
+    #first = parse_and_get_associations(input[0])
+    #second = parse_and_get_associations(input[1])
+    #action_result = do_action(first, second, ModeType.Olymp)
+    #union = list(dict.fromkeys(action_result))
+    #action_result = do_action(first, second, ModeType.Gibrid)
+    #union = list(dict.fromkeys(action_result))
+
+    #result = handler.do_action('кошка.собака,копыто', [ValuesHandlers.gibrid_3_values_handler, ValuesHandlers.olymp_values_handler, ValuesHandlers.gibrid_4_values_handler])
+    end = time.time()
+    print(end - start)
     #global pwd
     #settings = Settings()
     #session = requests.session()
