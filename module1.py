@@ -11,61 +11,55 @@ class TgCommands():
     Logo = 'l'
     SwitchMode = 'mode'
     Test = 'test'
-    #ReloadSession = 'reconnect'
-    #EnAuth = 'en'
-    #LoadImgs = 'load'
-    #ImgReq = 'find'
-    #PrintWords = 'print'
-    #ImgsAction = 'do'
 
 class ModeType(enum.Enum):
     Disabled = 0
     Special = 1
     Olymp = 2
-    Gibrid = 3
-    Meta = 4
-    Logo = 5
-    Anag = 6
-    Plus = 7
-    Matr = 8
-    Bruk = 9
+    Gibrid3 = 3
+    Gibrid4 = 4
+    Meta = 5
+    Logo = 6
+    Anag = 7
+    Plus = 8
+    Matr = 9
+    Bruk = 10
+    Combined = 11
 
     def next(self):
         val = self.value + 1
-        if (val == ModeType.get_modes_count()):
+        if (val == ModeTypeExt.modes_count):
             val = 0
         return ModeType(val)
 
     def prev(self):
         val = self.value - 1
         if (val == -1):
-            val = ModeType.get_modes_count() - 1
+            val = ModeTypeExt.modes_count - 1
         return ModeType(val)
 
-    @staticmethod
-    def get_modes_count():
-        return 10
-
-    @staticmethod
-    def get_well_known_mode_types():
-        return {
+class ModeTypeExt:
+    modes_count = 12
+    aliases_by_modes = {
             ModeType.Disabled: ['disabled', 'выключено'],
             ModeType.Special: ['special', 'специальный'],
             ModeType.Olymp: ['olymp', 'олимпийка'],
-            ModeType.Gibrid: ['gibrid', 'гибрид'],
+            ModeType.Gibrid3: ['gibrid3', 'гибрид3', 'g3', 'г3'],
+            ModeType.Gibrid4: ['gibrid4', 'гибрид4', 'g4', 'г4'],
             ModeType.Meta: ['meta', 'метаграмма'],
             ModeType.Logo: ['logo', 'логогриф'],
             ModeType.Anag: ['anag', 'анаграмма'],
             ModeType.Plus: ['plus', 'плюсограмма'],
             ModeType.Matr: ['matr', 'матрица'],
-            ModeType.Bruk: ['bruk', 'брюква']
+            ModeType.Bruk: ['bruk', 'брюква'],
+            ModeType.Combined: ['combined', 'комбинированный', 'all']
             }
-
+    
     @staticmethod
-    def get_modes_by_alias(input):
+    def get_modes_by_alias(input) -> []:
         result = []
         input_alias = input.lower()
-        mapper = ModeType.get_well_known_mode_types()
+        mapper = Utils.aliases_by_modes
         for mode in mapper.keys():
             for alias in mapper[mode]:
                 if alias.startswith(input_alias):
@@ -76,18 +70,20 @@ class ModeType(enum.Enum):
 class GlobalHolder:
     def __init__(self):
         self.settings_by_id = {}
-        self.modes_actions = {
-            ModeType.Disabled: ['disabled', 'выключено'],
-            ModeType.Special: ['special', 'специальный'],
-            ModeType.Olymp: ['olymp', 'олимпийка'],
-            ModeType.Gibrid: ['gibrid', 'гибрид'],
-            ModeType.Meta: ['meta', 'метаграмма'],
-            ModeType.Logo: ['logo', 'логогриф'],
-            ModeType.Anag: ['anag', 'анаграмма'],
-            ModeType.Plus: ['plus', 'плюсограмма'],
-            ModeType.Matr: ['matr', 'матрица'],
-            ModeType.Bruk: ['bruk', 'брюква']
-            }
+        self.default_text_handlers_by_modes = {
+                ModeType.Disabled: None,
+                ModeType.Special: None,
+                ModeType.Olymp: OlympModeDefaultTextHandler(),
+                ModeType.Gibrid3: None,
+                ModeType.Gibrid4: None,
+                ModeType.Meta: None,
+                ModeType.Logo: None,
+                ModeType.Anag: None,
+                ModeType.Plus: None,
+                ModeType.Matr: None,
+                ModeType.Bruk: None,
+                ModeType.Combined: None
+                }
 
     def add(self, id):
         self.settings_by_id[id] = Settings()
@@ -98,11 +94,6 @@ class GlobalHolder:
 class Settings:
     def __init__(self):
         self.current_mode = ModeType.Disabled
-        self.session = requests.session()
-        self.game_imgs = []
-        self.yandex_tags_filtered = []
-        self.yandex_tags_all = []
-        self.not_found_imgs = []
 
     def next_mode(self):
         self.current_mode = self.current_mode.next()
@@ -122,18 +113,6 @@ class Result:
     def failed(cls, message):
         return cls(False, message, [])
 
-class WordHandlers:
-    @staticmethod
-    def default_word_handler(value) -> []:
-        return [value]
-
-    @staticmethod
-    def get_associations_word_handler(value) -> []:
-        if value.startswith('!') or value.startswith('%'):
-            return [ value[1:] ]
-        result = Utils.get_associations(value)
-        result.append(value)
-        return result
 
 class Utils:
     @staticmethod
@@ -156,44 +135,101 @@ class Utils:
         return list(dict.fromkeys(arr))
     
     @staticmethod
-    def do_actions(text, count, values_handlers, word_handler) -> Result:
-        input_result = Utils.default_parse_to_input(text, count, word_handler)
-        if not input_result.is_success:
-            return input_result
+    def simple_parse_to_input(text, count = -1) -> Result:
         result = []
-        for values_handler in values_handlers:
-            union = values_handler(input_result.values)
-            unique_union = Utils.get_unique(union)
-            result.append(str(len(unique_union)))
-            result.append('\n'.join(unique_union))
-        return Result.success(result)
-
-    @staticmethod
-    def default_parse_to_input(text, count = -1, word_handler_method = None) -> []:
-        result = []
-        findall_mode = False
-        text = text.lower()
+        findall = False
+        text = text.strip().lower()
         if text[0]=='$':
             text = text[1:]
-            findall_mode = True
+            findall = True
+
         if len(text)==0:
             return Result.failed('too short message')
         input = text.strip().split('.')
         if len(input)!=count and count!=-1:
             return Result.failed('invalid groups count, need {0} groups'.format(count))
 
-        if findall_mode:
-            for input_item in input:
-                result.append(re.findall(r"[\w']+", input_item))
-            return Result.success(result)
+        if findall:
+            result = [ re.findall(r"[\w']+", input_item) for input_item in input ]
+        else:
+            result = [ Utils.simple_parse_to_words(input_item) for input_item in input ]
 
-        if word_handler_method is None:
-            word_handler_method = WordHandlers.default_word_handler
-        for input_item in input:
-            sub_result = input_item.strip().split(',')
-            sub_result_parsed = []
-            for word in sub_result:
-                handled_words = word_handler_method(word.strip())
-                sub_result_parsed.extend(handled_words)
-            result.append(sub_result_parsed)
         return Result.success(result)
+
+    @staticmethod
+    def simple_parse_to_words(text) -> []:
+        input = text.strip().split(',')
+        result = []
+        for input_item in input:
+            correct_word = input_item.strip()
+            if correct_word.startswith('!') or correct_word.startswith('%'):
+                correct_word = correct_word[1:]
+            else:
+                ass = Utils.get_associations(correct_word)
+                result.extend(ass)
+            result.append(correct_word)
+        return result
+
+class ValuesHandlers:
+    @staticmethod
+    def dummy_values_handler(values):
+        return values
+    
+    @staticmethod
+    def olymp_values_handler(values):
+        return list(set(values[0]).intersection(values[1]))
+    
+    @staticmethod
+    def gibrid_3_values_handler(values):
+        union = []
+        first = values[0]
+        second = values[1]
+        for i in first:
+            for j in second:
+                if len(i)<4 and len(j)<4:
+                    continue
+                if i[-3:] == j[0:3]:
+                    if not j + '-' + i in union:
+                        union.append(i + '-' + j)
+                if i[0:3] == j[-3:]:
+                    if not i + '-' + j in union:
+                        union.append(j + '-' + i)
+        return union
+    
+    @staticmethod
+    def gibrid_4_values_handler(values):
+        union = []
+        first = values[0]
+        second = values[1]
+        for i in first:
+            for j in second:
+                if len(i)<5 and len(j)<5:
+                    continue
+                if i[-4:] == j[0:4]:
+                    if not j + '-' + i in union:
+                        union.append(i + '-' + j)
+                if i[0:4] == j[-4:]:
+                    if not i + '-' + j in union:
+                        union.append(j + '-' + i)
+        return union
+
+class BaseSimpleModeDefaultTextHandler:
+    def __init__(self):
+        self.count = -1
+        self.values_handler = ValuesHandlers.dummy_values_handler
+
+    def do_action(self, text) -> Result:
+        input_result = Utils.simple_parse_to_input(text, self.count)
+        if not input_result.is_success:
+            return input_result
+        
+        union = self.values_handler(input_result.values)
+        unique_union = Utils.get_unique(union)
+        values = [ str(len(unique_union)), '\n'.join(unique_union) ]
+        return Result.success(values)
+
+class OlympModeDefaultTextHandler(BaseSimpleModeDefaultTextHandler):
+    def __init__(self):
+        super().__init__()
+        self.count = 2
+        self.values_handler = ValuesHandlers.olymp_values_handler

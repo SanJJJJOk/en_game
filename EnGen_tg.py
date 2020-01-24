@@ -18,7 +18,6 @@ bot.
 """
 
 import logging
-from OlympDefaultTextHandler import *
 import os.path
 from module1 import *
 from TgTest import *
@@ -31,6 +30,7 @@ import random
 import re
 import json
 import time
+from class1 import class1
 
 from datetime import datetime
 from threading import Timer
@@ -174,8 +174,8 @@ def tg_olymp(update, context):
 
 def tg_gibrid(update, context):
     try:
-        input_text = simple_message_handler(update, TgCommands.Gibrid, True)
-        msg = default_input(input_text, ModeType.Gibrid)
+        input_text = simple_message_handler(update, TgCommands.Gibrid3, True)
+        msg = default_input(input_text, ModeType.Gibrid3)
         update.message.reply_text(msg)
     except Exception as e:
         update.message.reply_text("Error: {0}".format(str(e)))
@@ -205,12 +205,14 @@ def tg_switch_mode(update, context):
         if input_text is None:
             mode = settings.next_mode()
         else:
-            newmode = ModeType.get_modes_by_alias(input_text)
+            newmode = Utils.get_modes_by_alias(input_text)
             if len(newmode)==0:
-                raise Exception('invalid request. mode not found')
+                update.message.reply_text('mode not found')
+                return
             else:
                 if len(newmode)>1:
-                    raise Exception('invalid request. more than one mode found:\n' + '\n'.join([str(mode_int) for mode_int in newmode]))
+                    update.message.reply_text('more than one mode found:\n' + '\n'.join([str(mode_int) for mode_int in newmode]))
+                    return
                 else:
                     mode = newmode[0]
                     settings.current_mode = mode
@@ -222,40 +224,16 @@ def tg_default(update, context):
     try:
         bot_authorize(update)
         input_text = update.message.text
-        mode = Holder.get(update.message.chat.id).current_mode
+        settings = Holder.get(update.message.chat.id)
+        mode = settings.current_mode
         if mode == ModeType.Disabled:
             return
-        if mode == ModeType.Special:
-            answer = input_text.lower()
-            if 'мускари' in answer or ('холодильная' in answer and '40' in answer):
-                update.message.reply_text('да, мускари, холодильная 40')
-                context.bot.send_message('228485598', '_____________________________________' + answer)
-                return
-            update.message.reply_text('нет')
-            context.bot.send_message('228485598', answer)
-            return
-            parsed = special_parse(input_text)
-            output_messages = do_special_search(parsed[0], parsed[1], [ModeType.Gibrid, ModeType.Meta, ModeType.Logo, ModeType.Anag])
-            for msg in output_messages:
-                print_long(update, msg)
-            return
-        if input_text[0]=='$':
-            parsed = special_parse(input_text[1:])
-            output_messages = do_special_search(parsed[0], parsed[1], [mode])
-            for msg in output_messages:
-                print_long(update, msg)
-            return
+
         msg = default_input(input_text, mode)
-        update.message.reply_text(msg)
+        print_long(update, msg)
     except Exception as e:
         update.message.reply_text("Error: {0}".format(str(e)))
 
-#def default_list_print(update, words, prefix = None):
-#    output_str = str(len(words)) + '\n' + '\n'.join(words)
-#    if not prefix in None:
-#        output_str = prefix + '\n' + output_str
-#    update.message.reply_text(output_str)
-    
 def print_long(update, input_text):
     if len(input_text) > 4096:
         for x in range(0, len(input_text), 4096):
@@ -272,91 +250,26 @@ def bot_authorize(update):
 
 #----------
 
-def do_special_search(first, second, modes, print_needless = True):
-    needless_words = []
-    output_messages = []
-    for mode in modes:
-        action_result = []
-        if mode == ModeType.Matr:
-            action_result = action_matr(first, first, second, needless_words)
-        else:
-            action_result = do_action(first, second, mode, needless_words)
-        union = list(dict.fromkeys(action_result))
-        output_messages.append(str(mode) + ':\n' + str(len(union)) + '\n' + '\n'.join(union))
-    if not print_needless:
-        return output_messages
-    union_nl = []
-    for word in first:
-        if not word in needless_words:
-            union_nl.append(word)
-    output_messages.append('needless words:\n' + str(len(union_nl)) + '\n' + '\n'.join(union_nl))
-    return output_messages
-    
-def special_parse(input_text):
-    need_associations = False
-    if input_text[0]=='+':
-        input_text = input_text[1:]
-        need_associations = True
-    input = input_text.strip().split('.')
-    first = []
-    second = []
-    if len(input)==2:
-        first = re.findall(r"[\w']+", input[0])
-        second = re.findall(r"[\w']+", input[1])
-        if need_associations:
-            first = get_first_associations(first, 5)
-            second = get_first_associations(second, 5)
-        first.extend(second)
-    else:
-        first = re.findall(r"[\w']+", input_text)
-        if need_associations:
-            first = get_first_associations(first, 5)
-        second = first
-    first = [item.lower() for item in first]
-    second = [item.lower() for item in second]
-    return [first, second]
-
-def default_input(input_text, mode):
-    input = input_text.strip().split('.')
-    if mode == ModeType.Matr:
-        if len(input) != 3:
-            raise Exception('invalid request')
-        first = parse_and_get_associations(input[0])
-        second = parse_and_get_associations(input[1])
-        third = parse_and_get_associations(input[2])
-        action_result = action_matr(first, second, third)
-        union = list(dict.fromkeys(action_result))
-        return str(len(union)) + '\n' + '\n'.join(union)
-        return
-    if len(input) != 2:
-        raise Exception('invalid request')
-    first = parse_and_get_associations(input[0])
-    second = parse_and_get_associations(input[1])
-    action_result = do_action(first, second, mode)
-    union = list(dict.fromkeys(action_result))
-    return str(len(union)) + '\n' + '\n'.join(union)
-
-def do_action(first, second, mode, output = []):
-    if mode == ModeType.Olymp:
-        return action_olymp(first, second, output)
-    if mode == ModeType.Gibrid:
-        return action_gibrid(first, second, output)
-    if mode == ModeType.Meta:
-        return action_meta(first, second, output)
-    if mode == ModeType.Logo:
-        return action_logo(first, second, output)
-    if mode == ModeType.Anag:
-        return action_anag(first, second, output)
-    if mode == ModeType.Plus:
-        return action_plus(first, second, output)
-    if mode == ModeType.Bruk:
-        return action_bruk(first, second, output)
-    return []
-
 def action_olymp(first, second, output=[]):
     return list(set(first).intersection(second))
 
-def action_gibrid(first, second, output=[]):
+def action_gibrid3(first, second, output=[]):
+    union = []
+    for i in first:
+        for j in second:
+            if len(i)<4 and len(j)<4:
+                continue
+            if i[-3:] == j[0:3]:
+                union.append(i + '-' + j)
+                output.append(i)
+                output.append(j)
+            if i[0:3] == j[-3:]:
+                union.append(j + '-' + i)
+                output.append(i)
+                output.append(j)
+    return union
+
+def action_gibrid4(first, second, output=[]):
     union = []
     for i in first:
         for j in second:
@@ -367,19 +280,6 @@ def action_gibrid(first, second, output=[]):
                 output.append(i)
                 output.append(j)
             if i[0:4] == j[-4:]:
-                union.append(j + '-' + i)
-                output.append(i)
-                output.append(j)
-    union.append('---')
-    for i in first:
-        for j in second:
-            if len(i)<4 and len(j)<4:
-                continue
-            if i[-3:] == j[0:3]:
-                union.append(i + '-' + j)
-                output.append(i)
-                output.append(j)
-            if i[0:3] == j[-3:]:
                 union.append(j + '-' + i)
                 output.append(i)
                 output.append(j)
@@ -564,133 +464,9 @@ def is_matr_exist(the_matr,i,j,k,union):
     or the_matr + ': ' + j + '-' + k + '-' + i in union
     or the_matr + ': ' + k + '-' + j + '-' + i in union)
 
-def parse_and_get_associations(input_str):
-    input_words = input_str.strip().split(',')
-    union = []
-    for word in input_words:
-        corrected_word = word.strip().lower()
-        if corrected_word[0]=='!':
-            corrected_word = corrected_word[1:]
-        else:
-            associations = get_associations(corrected_word)
-            union.extend(associations)
-        if corrected_word[0]=='!':
-            corrected_word = corrected_word[1:]
-            associations = get_associations(corrected_word)
-            if len(associations)>20:
-                union.extend(associations[:20])
-            else:
-                union.extend(associations)
-        union.append(corrected_word)
-    return union
-
-def get_first_associations(words, count):
-    union = []
-    for word in words:
-        associations = get_associations(word)
-        union.append(word)
-        if len(associations)>count:
-            union.extend(associations[:count])
-        else:
-            union.extend(associations)
-    return list(dict.fromkeys(union))
-
-def get_associations(input_word):
-    data = parse.urlencode({
-        'word':input_word,
-        'back':False,
-        'max_count':0
-        }).encode()
-    req =  request.Request('https://sociation.org/ajax/word_associations/', data=data)
-    resp = request.urlopen(req)
-    json_resp = json.load(resp)
-    if not 'associations' in json_resp:
-        return []
-    associations = json_resp['associations']
-    return [item['name'] for item in associations]
-
-#def get_associations2(word):
-#    url = 'http://wordassociations.net/ru/{0}/{1}'.format(quote('ассоциации-к-слову'),quote(word))
-#    t = 0
-#    try:
-#        fp = request.urlopen(url)
-#    except:
-#        t = 1
-#    mybytes = fp.read()
-    
-#    mystr = mybytes.decode("utf8")
-#    fp.close()
-    
-#    soup = BeautifulSoup(mystr)
-#    ass_list = soup.find('div', {'class': 'wordscolumn'})
-#    a_list = ass_list.findAll('a')
-#    return [item.string for item in a_list]
-
-#def get_img_tags(html_text):
-#    soup = BeautifulSoup(html_text)
-#    imgs = soup.findAll('img')
-#    imgs_urls = [img['src'] for img in imgs]
-#    return list(dict.fromkeys(imgs_urls))
-
-#def get_words(img_urls, start_from_index):
-#    if start_from_index<len(img_urls):
-#        img_urls = img_urls[start_from_index:]
-#    output1 = []
-#    output2 = []
-#    output3 = []
-#    for img_url in img_urls:
-#        tags = get_yandex_tags(img_url)
-#        if len(tags)==0:
-#            output3.append(img_url)
-#        for tag in tags:
-#            tag_words = re.findall(r"[\w']+", tag)
-#            output2.extend([tag_word.lower() for tag_word in tag_words])
-#    output2 = list(dict.fromkeys(output2))
-#    for word in output2:
-#        if len(word)<2:
-#            continue
-#        if (word[0]>='a' and word[0]<='z') or (word[0]>='0' and word[0]<='9'):
-#            continue
-#        output1.append(word)
-#    return [output1, output2, output3]
-
-#def get_yandex_tags(img_url):
-#    url = 'https://yandex.ru/images/search?url={0}&rpt=imageview'.format(quote(img_url, safe=''))
-#    try:
-#        fp = request.urlopen(url)
-#    except:
-#        return []
-#    mybytes = fp.read()
-    
-#    mystr = mybytes.decode("utf8")
-#    fp.close()
-    
-#    soup = BeautifulSoup(mystr)
-#    ass_list = soup.find('div', {'class': 'tags__wrapper'})
-#    if ass_list is None:
-#        return []
-#    a_list = ass_list.findAll('a')
-#    return [item.string for item in a_list]
-
-#def en_authorize(session, login, password):
-#    url = 'http://72.en.cx/Login.aspx?return=%%2f'
-#    userdata = {
-#        'socialAssign': 0,
-#        'Login': login,
-#        'Password': password,
-#        'EnButton1': 'Вход',
-#        'ddlNetwork': 1
-#    }
-#    resp = session.post(url, data=userdata)
-#    if resp.history:
-#        logger.info("LogIN")
-#        return True
-#    else:
-#        logger.info("LogOUT")
-#        return False
-
 def main():
-    handler = SimpleTwoListsDefaultTextHandler()
+    t = class1()
+    handler = Utils.default_text_handlers_by_modes[ModeType.Olymp]
     start = time.time()
     
     #input = 'кошка.собака,копыто'.strip().split('.')
@@ -701,7 +477,7 @@ def main():
     #action_result = do_action(first, second, ModeType.Gibrid)
     #union = list(dict.fromkeys(action_result))
 
-    #result = handler.do_action('кошка.собака,копыто', [ValuesHandlers.gibrid_3_values_handler, ValuesHandlers.olymp_values_handler, ValuesHandlers.gibrid_4_values_handler])
+    result = handler.do_action('кошка.собака,копыто')
     end = time.time()
     print(end - start)
     #global pwd
@@ -726,12 +502,6 @@ def main():
     #updater = Updater("979411435:AAEHIVLx8L8CxmjIHtitaH4L1GeV_OCRJ7M", use_context=True)
     dp = updater.dispatcher
 
-    #dp.add_handler(CommandHandler(TgCommands.ReloadSession, tg_reload_session))
-    #dp.add_handler(CommandHandler(TgCommands.EnAuth, tg_en_auth))
-    #dp.add_handler(CommandHandler(TgCommands.LoadImgs, tg_load_imgs))
-    #dp.add_handler(CommandHandler(TgCommands.ImgReq, tg_yandex_img_request))
-    #dp.add_handler(CommandHandler(TgCommands.PrintWords, tg_print_words))
-    #dp.add_handler(CommandHandler(TgCommands.ImgsAction, tg_imgs_action))
     dp.add_handler(CommandHandler(TgCommands.Olymp, tg_olymp))
     dp.add_handler(CommandHandler(TgCommands.Gibrid, tg_gibrid))
     dp.add_handler(CommandHandler(TgCommands.Meta, tg_meta))
