@@ -61,14 +61,14 @@ class GlobalHolder:
                 ModeType.Disabled: None,
                 ModeType.Special: None,
                 ModeType.Olymp: OlympModeDefaultTextHandler(),
-                ModeType.Gibrid3: None,
-                ModeType.Gibrid4: None,
-                ModeType.Meta: None,
-                ModeType.Logo: None,
-                ModeType.Anag: None,
-                ModeType.Plus: None,
-                ModeType.Matr: None,
-                ModeType.Bruk: None,
+                ModeType.Gibrid3: Gibrid3ModeDefaultTextHandler(),
+                ModeType.Gibrid4: Gibrid4ModeDefaultTextHandler(),
+                ModeType.Meta: MetaModeDefaultTextHandler(),
+                ModeType.Logo: LogoModeDefaultTextHandler(),
+                ModeType.Anag: AnagModeDefaultTextHandler(),
+                ModeType.Plus: PlusModeDefaultTextHandler(),
+                ModeType.Matr: MatrModeDefaultTextHandler(),
+                ModeType.Bruk: BrukModeDefaultTextHandler(),
                 ModeType.Combined: None
                 }
 
@@ -184,7 +184,7 @@ class ValuesHandlers:
                     if not i + '-' + j in union:
                         union.append(j + '-' + i)
         return union
-    
+
     @staticmethod
     def gibrid_4_values_handler(values):
         union = []
@@ -200,6 +200,189 @@ class ValuesHandlers:
                 if i[0:4] == j[-4:]:
                     if not i + '-' + j in union:
                         union.append(j + '-' + i)
+        return union
+
+    @staticmethod
+    def meta_values_handler(values):
+        union = []
+        first = values[0]
+        second = values[1]
+        for word1 in first:
+            for word2 in second:
+                if len(word1) != len(word2):
+                    continue
+                counter = 0
+                for i in range(0, len(word1)):
+                    if word1[i]!=word2[i]:
+                        counter+=1
+                if counter != 1:
+                    continue
+                if word2 + '-' + word1 in union:
+                    continue
+                union.append(word1 + '-' + word2)
+        return union
+    
+    @staticmethod
+    def logo_values_handler(values):
+        union = []
+        first = values[0]
+        second = values[1]
+        for word1 in first:
+            for word2 in second:
+                long_word = ''
+                short_word = ''
+                if len(word1) == len(word2) + 1:
+                    long_word = word1
+                    short_word = word2
+                else:
+                    if len(word2) == len(word1) + 1:
+                        long_word = word2
+                        short_word = word1
+                    else:
+                        continue
+                diff_index = 0
+                for i in range(0, len(short_word)):
+                    if long_word[i]!=short_word[i]:
+                        diff_index = i
+                        break
+                for i in range(diff_index, len(short_word)):
+                    if long_word[i + 1]!=short_word[i]:
+                        diff_index = -1
+                        break
+                if diff_index==-1 and not long_word.startswith(short_word):
+                    continue
+                if word2 + '-' + word1 in union:
+                    continue
+                union.append(word1 + '-' + word2)
+        return union
+        
+    @staticmethod
+    def bruk_values_handler(values):
+        union = []
+        first = values[0]
+        second = values[1]
+        for word1 in first:
+            for word2 in second:
+                if len(word1)==1 or len(word2)==1:
+                    continue
+                long_word = ''
+                short_word = ''
+                if len(word1) == len(word2) + 1:
+                    long_word = word1
+                    short_word = word2
+                else:
+                    if len(word2) == len(word1) + 1:
+                        long_word = word2
+                        short_word = word1
+                    else:
+                        continue
+                diff_index = 0
+                for i in range(0, len(short_word)):
+                    if long_word[i]!=short_word[i]:
+                        diff_index = i
+                        break
+                diff_index+=1
+                if diff_index<len(short_word):
+                    for i in range(diff_index, len(short_word)):
+                        if long_word[i + 1]!=short_word[i]:
+                            diff_index = -1
+                            break
+                if diff_index==-1 and not long_word.startswith(short_word[:-1]):
+                    continue
+                if word2 + '-' + word1 in union:
+                    continue
+                union.append(word1 + '-' + word2)
+        return union
+
+    @staticmethod
+    def anag_values_handler(values):
+        union = []
+        first = values[0]
+        second = values[1]
+        for i in first:
+            for j in second:
+                if i==j or len(i)!=len(j):
+                    continue
+                list1 = list(i)
+                list2 = list(j)
+                list1.sort()
+                list2.sort()
+                if list1 != list2:
+                    continue
+                if j + '-' + i in union:
+                    continue
+                union.append(i + '-' + j)
+        return union
+        
+    @staticmethod
+    def plus_values_handler(values):
+        union = []
+        first = values[0]
+        second = values[1]
+        for word1 in first:
+            for word2 in second:
+                long_word = ''
+                short_word = ''
+                if len(word1) == len(word2) + 1:
+                    long_word = word1
+                    short_word = word2
+                else:
+                    if len(word2) == len(word1) + 1:
+                        long_word = word2
+                        short_word = word1
+                    else:
+                        continue
+                long_list = list(long_word)
+                short_list = list(short_word)
+                long_list.sort()
+                short_list.sort()
+                diff_index = -2
+                for i in range(0, len(short_list)):
+                    if long_list[i]!=short_list[i]:
+                        diff_index = i
+                        break
+                if diff_index==-2:
+                    diff_index = -1
+                else:
+                    for i in range(diff_index, len(short_list)):
+                        if long_list[i + 1]!=short_list[i]:
+                            diff_index = -2
+                            break
+                if diff_index==-2:
+                    continue
+                if long_list[diff_index] + ': ' + word2 + '-' + word1 in union:
+                    continue
+                union.append(long_list[diff_index] + ': ' + word1 + '-' + word2)
+        union.sort()
+        return union
+
+    @staticmethod
+    def matr_values_handler(values):
+        union = []
+        first = values[0]
+        second = values[1]
+        third = values[2]
+        for i in first:
+            for j in second:
+                if i==j:
+                    continue
+                for index in range(0, len(i)-2):
+                    the_matr = i[index:index+3]
+                    if not the_matr in j:
+                        continue
+                    for k in third:
+                        if i==k or j==k:
+                            continue
+                        if not the_matr in k:
+                            continue
+                        is_matr_exist = (the_matr + ': ' + j + '-' + i + '-' + k in union
+                                        or the_matr + ': ' + k + '-' + i + '-' + j in union
+                                        or the_matr + ': ' + i + '-' + k + '-' + j in union
+                                        or the_matr + ': ' + j + '-' + k + '-' + i in union
+                                        or the_matr + ': ' + k + '-' + j + '-' + i in union)
+                        if is_matr_exist:
+                            continue
+                        union.append(the_matr + ': ' + i + '-' + j + '-' + k)
         return union
 
 class BaseSimpleModeDefaultTextHandler:
@@ -222,3 +405,51 @@ class OlympModeDefaultTextHandler(BaseSimpleModeDefaultTextHandler):
         super().__init__()
         self.count = 2
         self.values_handler = ValuesHandlers.olymp_values_handler
+        
+class Gibrid3ModeDefaultTextHandler(BaseSimpleModeDefaultTextHandler):
+    def __init__(self):
+        super().__init__()
+        self.count = 2
+        self.values_handler = ValuesHandlers.gibrid_3_values_handler
+        
+class Gibrid4ModeDefaultTextHandler(BaseSimpleModeDefaultTextHandler):
+    def __init__(self):
+        super().__init__()
+        self.count = 2
+        self.values_handler = ValuesHandlers.gibrid_4_values_handler
+        
+class MetaModeDefaultTextHandler(BaseSimpleModeDefaultTextHandler):
+    def __init__(self):
+        super().__init__()
+        self.count = 2
+        self.values_handler = ValuesHandlers.meta_values_handler
+        
+class LogoModeDefaultTextHandler(BaseSimpleModeDefaultTextHandler):
+    def __init__(self):
+        super().__init__()
+        self.count = 2
+        self.values_handler = ValuesHandlers.logo_values_handler
+        
+class BrukModeDefaultTextHandler(BaseSimpleModeDefaultTextHandler):
+    def __init__(self):
+        super().__init__()
+        self.count = 2
+        self.values_handler = ValuesHandlers.bruk_values_handler
+        
+class AnagModeDefaultTextHandler(BaseSimpleModeDefaultTextHandler):
+    def __init__(self):
+        super().__init__()
+        self.count = 2
+        self.values_handler = ValuesHandlers.anag_values_handler
+        
+class PlusModeDefaultTextHandler(BaseSimpleModeDefaultTextHandler):
+    def __init__(self):
+        super().__init__()
+        self.count = 2
+        self.values_handler = ValuesHandlers.plus_values_handler
+        
+class MatrModeDefaultTextHandler(BaseSimpleModeDefaultTextHandler):
+    def __init__(self):
+        super().__init__()
+        self.count = 3
+        self.values_handler = ValuesHandlers.matr_values_handler
