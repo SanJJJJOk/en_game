@@ -434,7 +434,7 @@ def main():
     #default_input(update,None,ModeType.Special,False,update.message.text)
 
     #answer = do_zaebis(update, None)
-    updater = Updater("408100374:AAEhMleUbdVH_G1xmKeCAy8MlNfyBwB9AOo", use_context=True)
+    updater = Updater("979411435:AAEHIVLx8L8CxmjIHtitaH4L1GeV_OCRJ7M", use_context=True)
     #updater = Updater("979411435:AAEHIVLx8L8CxmjIHtitaH4L1GeV_OCRJ7M", use_context=True)
     dp = updater.dispatcher
 
