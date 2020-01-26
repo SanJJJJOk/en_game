@@ -132,7 +132,7 @@ def tg_switch_mode(update, context):
                 else:
                     mode = newmodes[0]
                     settings.current_mode = mode
-        update.message.reply_text('switched to ' + mode.name)
+        update.message.reply_text('switched to ' + ModeType.aliases_by_modes[mode][0])
     except Exception as e:
         update.message.reply_text("Error: {0}".format(str(e)))
 
