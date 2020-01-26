@@ -466,3 +466,29 @@ class MatrModeDefaultTextHandler(BaseSimpleModeDefaultTextHandler):
         super().__init__()
         self.count = 3
         self.values_handler = ValuesHandlers.matr_values_handler
+        
+class CombinedModeDefaultTextHandler():
+    def __init__(self):
+        self.combined_values_handlers = [
+            ValuesHandlers.olymp_values_handler,
+            ValuesHandlers.gibrid_3_values_handler,
+            ValuesHandlers.gibrid_4_values_handler,
+            ValuesHandlers.meta_values_handler,
+            ValuesHandlers.logo_values_handler,
+            ValuesHandlers.bruk_values_handler,
+            ValuesHandlers.anag_values_handler,
+            ValuesHandlers.plus_values_handler
+        ]
+        
+    def do_action(self, text) -> Result:
+        input_result = Utils.simple_parse_to_input(text, 2)
+        if not input_result.is_success:
+            return input_result
+
+        values = []
+        for values_handler in self.combined_values_handlers:
+            union = values_handler(input_result.values)
+            unique_union = Utils.get_unique(union)
+            values.append(str(len(unique_union)))
+            values.append('\n'.join(unique_union))
+        return Result.success(values)
