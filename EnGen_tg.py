@@ -189,6 +189,7 @@ def tg_default(update, context):
 def print_long(update, input_text):
     if len(input_text) == 0:
         update.message.reply_text('-')
+        return
     if len(input_text) > 4096:
         for x in range(0, len(input_text), 4096):
             update.message.reply_text(input_text[x:x+4096])
