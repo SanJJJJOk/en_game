@@ -146,6 +146,7 @@ def tg_default(update, context):
         result = default_input(update.message.text, mode)
         if not result.is_success:
             print_long(update, "failed:\n" + result.message)
+            return
         for msg in result.values:
             print_long(update, msg)
     except Exception as e:
