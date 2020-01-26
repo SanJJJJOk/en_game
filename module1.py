@@ -11,6 +11,8 @@ class TgCommands():
     Logo = 'l'
     SwitchMode = 'mode'
     Test = 'test'
+    Start = 'start'
+    Modes = 'modes'
 
 class ModeType():
     Disabled = 0
@@ -163,7 +165,7 @@ class Utils:
         for input_item in input:
             correct_word = input_item.strip()
             if correct_word.startswith('!') or correct_word.startswith('%'):
-                correct_word = correct_word[1:]
+                correct_word = correct_word[1:].strip()
             else:
                 ass = Utils.get_associations(correct_word)
                 result.extend(ass)
