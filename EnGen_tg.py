@@ -22,15 +22,13 @@ import os.path
 from module1 import *
 from TgTest import *
 from gis import *
-from urllib import request, parse #it is used for sociation request
-import requests #from Ads, to create session
+from urllib import request, parse
 from bs4 import *
 from urllib.parse import quote
 import random
 import re
 import json
 import time
-from class1 import class1
 
 from datetime import datetime
 from threading import Timer
@@ -76,97 +74,10 @@ def tg_test(update, context):
     except Exception as e:
         update.message.reply_text("Error: {0}".format(str(e)))
 
-def simple_message_handler(update, command, empty_is_invalid = False):
-    bot_authorize(update)
-    input_text = update.message.text
-    if len(input_text)<len(command)+3:
-        if empty_is_invalid:
-            raise Exception('command should contains arguments')
-        return None
-    return input_text[len(command)+2:]
-
-#def tg_reload_session(update, context):
-#    global Holder
-#    try:
-#        bot_authorize(update)
-#        settings = Holder.get(update.message.chat.id)
-#        settings.session = requests.session()
-#    except Exception as e:
-#        update.message.reply_text("Error: {0}".format(str(e)))
-
-#def tg_en_auth(update, context):
-#    global Holder
-#    try:
-#        input_text = simple_message_handler(update, TgCommands.EnAuth, True)
-#        input = input_text.strip().split(' ')
-#        if len(input)!=2:
-#            raise Exception('invalid request')
-#        settings = Holder.get(update.message.chat.id)
-#        is_en_auth = en_authorize(settings.session, input[0], input[1])
-#        update.message.reply_text(is_en_auth)
-#    except Exception as e:
-#        update.message.reply_text("Error: {0}".format(str(e)))
-
-#def tg_load_imgs(update, context):
-#    global Holder
-#    try:
-#        input_text = simple_message_handler(update, TgCommands.LoadImgs, True)
-#        settings = Holder.get(update.message.chat.id)
-#        resp = settings.session.get(input_text)
-#        settings.game_imgs = get_img_tags(resp.text)
-#        update.message.reply_text('images is loaded: {0} count'.format(len(settings.game_imgs)))
-#    except Exception as e:
-#        update.message.reply_text("Error: {0}".format(str(e)))
-
-#def tg_yandex_img_request(update, context):
-#    global Holder
-#    try:
-#        input_text = simple_message_handler(update, TgCommands.ImgReq, False)
-#        settings = Holder.get(update.message.chat.id)
-#        start_from_index = 0#len(settings.game_imgs)
-#        if not input_text is None:
-#            start_from_index = int(input_text)
-#        result = get_words(settings.game_imgs, start_from_index)
-#        settings.yandex_tags_filtered = result[0]
-#        settings.yandex_tags_all = result[1]
-#        settings.not_found_imgs = result[2]
-#        update.message.reply_text('yahoo, not parsed:' + str(len(result[2])))
-#    except Exception as e:
-#        update.message.reply_text("Error: {0}".format(str(e)))
-
-#def tg_imgs_action(update, context):
-#    global Holder
-#    try:
-#        bot_authorize(update)
-#        settings = Holder.get(update.message.chat.id)
-#        output_messages = do_special_search(settings.yandex_tags_filtered, settings.yandex_tags_filtered, [ModeType.Gibrid, ModeType.Meta, ModeType.Logo, ModeType.Anag], False)
-#        for msg in output_messages:
-#            print_long(update, msg)
-#    except Exception as e:
-#        update.message.reply_text("Error: {0}".format(str(e)))
-
-#def tg_print_words(update, context):
-#    global Holder
-#    try:
-#        input_text = simple_message_handler(update, TgCommands.PrintWords, False)
-#        settings = Holder.get(update.message.chat.id)
-#        update.message.reply_text(len(settings.game_imgs))
-#        print_long(update, '\n'.join(settings.game_imgs))
-#        update.message.reply_text(len(settings.yandex_tags_filtered))
-#        print_long(update, '-\n' + ' '.join(settings.yandex_tags_filtered))
-#        if input_text.startswith('a'):
-#            print_long(update, '-\n' + '\n'.join(settings.yandex_tags_filtered))
-#            update.message.reply_text(len(settings.yandex_tags_all))
-#            print_long(update, '-\n' + ' '.join(settings.yandex_tags_all))
-#            print_long(update, '-\n' + '\n'.join(settings.yandex_tags_all))
-#        update.message.reply_text(len(settings.not_found_imgs))
-#        print_long(update, '-\n' + '\n'.join(settings.not_found_imgs))
-#    except Exception as e:
-#        update.message.reply_text("Error: {0}".format(str(e)))
-
 def tg_olymp(update, context):
     try:
-        input_text = simple_message_handler(update, TgCommands.Olymp, True)
+        bot_authorize(update.message.chat.id)
+        input_text = simple_message_handler(update.message.text, TgCommands.Olymp, True)
         msg = default_input(input_text, ModeType.Olymp)
         update.message.reply_text(msg)
     except Exception as e:
@@ -174,7 +85,8 @@ def tg_olymp(update, context):
 
 def tg_gibrid(update, context):
     try:
-        input_text = simple_message_handler(update, TgCommands.Gibrid3, True)
+        bot_authorize(update.message.chat.id)
+        input_text = simple_message_handler(update.message.text, TgCommands.Gibrid, True)
         msg = default_input(input_text, ModeType.Gibrid3)
         update.message.reply_text(msg)
     except Exception as e:
@@ -182,7 +94,8 @@ def tg_gibrid(update, context):
 
 def tg_meta(update, context):
     try:
-        input_text = simple_message_handler(update, TgCommands.Meta, True)
+        bot_authorize(update.message.chat.id)
+        input_text = simple_message_handler(update.message.text, TgCommands.Meta, True)
         msg = default_input(input_text, ModeType.Meta)
         update.message.reply_text(msg)
     except Exception as e:
@@ -190,7 +103,8 @@ def tg_meta(update, context):
 
 def tg_logo(update, context):
     try:
-        input_text = simple_message_handler(update, TgCommands.Logo, True)
+        bot_authorize(update.message.chat.id)
+        input_text = simple_message_handler(update.message.text, TgCommands.Logo, True)
         msg = default_input(input_text, ModeType.Logo)
         update.message.reply_text(msg)
     except Exception as e:
@@ -199,22 +113,24 @@ def tg_logo(update, context):
 def tg_switch_mode(update, context):
     global Holder
     try:
-        input_text = simple_message_handler(update, TgCommands.SwitchMode, False)
+        bot_authorize(update.message.chat.id)
+        input_text = simple_message_handler(update.message.text, TgCommands.SwitchMode, False)
         settings = Holder.get(update.message.chat.id)
         mode = settings.current_mode
         if input_text is None:
             mode = settings.next_mode()
         else:
-            newmode = Utils.get_modes_by_alias(input_text)
-            if len(newmode)==0:
+            newmodes = ModeType.get_modes_by_alias(input_text)
+            if len(newmodes)==0:
                 update.message.reply_text('mode not found')
                 return
             else:
-                if len(newmode)>1:
-                    update.message.reply_text('more than one mode found:\n' + '\n'.join([str(mode_int) for mode_int in newmode]))
+                if len(newmodes)>1:
+                    found_modes = [ModeType.aliases_by_modes[mode_int][0] for mode_int in newmodes]
+                    update.message.reply_text('more than one mode found:\n' + '\n'.join(found_modes))
                     return
                 else:
-                    mode = newmode[0]
+                    mode = newmodes[0]
                     settings.current_mode = mode
         update.message.reply_text('switched to ' + mode.name)
     except Exception as e:
@@ -222,15 +138,14 @@ def tg_switch_mode(update, context):
 
 def tg_default(update, context):
     try:
-        bot_authorize(update)
-        input_text = update.message.text
+        bot_authorize(update.message.chat.id)
         settings = Holder.get(update.message.chat.id)
         mode = settings.current_mode
         if mode == ModeType.Disabled:
             return
-
-        msg = default_input(input_text, mode)
-        print_long(update, msg)
+        result = default_input(update.message.text, mode)
+        for msg in result.values:
+            print_long(update, msg)
     except Exception as e:
         update.message.reply_text("Error: {0}".format(str(e)))
 
@@ -241,14 +156,27 @@ def print_long(update, input_text):
     else:
         update.message.reply_text(input_text)
 
-def bot_authorize(update):
+#----------
+
+def bot_authorize(id):
     global Holder
-    if not update.message.chat.id in Holder.settings_by_id:
-        Holder.add(update.message.chat.id)
+    if not id in Holder.settings_by_id:
+        Holder.add(id)
         return
         #raise Exception('you are not authorized, please call /start')
 
-#----------
+def default_input(text, mode):
+    text_handler = Holder.default_text_handlers_by_modes[mode]
+    if text_handler is None:
+        return Result.failed("current mode is not supported yet")
+    return text_handler.do_action(text)
+
+def simple_message_handler(full_text, command, empty_is_invalid = False):
+    if len(full_text)<len(command)+3:
+        if empty_is_invalid:
+            raise Exception('command should contains arguments')
+        return None
+    return full_text[len(command)+2:]
 
 def action_olymp(first, second, output=[]):
     return list(set(first).intersection(second))
@@ -465,9 +393,14 @@ def is_matr_exist(the_matr,i,j,k,union):
     or the_matr + ': ' + k + '-' + j + '-' + i in union)
 
 def main():
-    t = class1()
-    handler = Utils.default_text_handlers_by_modes[ModeType.Olymp]
-    start = time.time()
+    # handler = Holder.default_text_handlers_by_modes[ModeType.Olymp]
+    # start = time.time()
+    
+    # result = handler.do_action('кошка.собака,копыто')
+    # end = time.time()
+    # print(end - start)
+
+
     
     #input = 'кошка.собака,копыто'.strip().split('.')
     #first = parse_and_get_associations(input[0])
@@ -477,9 +410,8 @@ def main():
     #action_result = do_action(first, second, ModeType.Gibrid)
     #union = list(dict.fromkeys(action_result))
 
-    result = handler.do_action('кошка.собака,копыто')
-    end = time.time()
-    print(end - start)
+
+
     #global pwd
     #settings = Settings()
     #session = requests.session()

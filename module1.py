@@ -12,7 +12,7 @@ class TgCommands():
     SwitchMode = 'mode'
     Test = 'test'
 
-class ModeType(enum.Enum):
+class ModeType():
     Disabled = 0
     Special = 1
     Olymp = 2
@@ -25,41 +25,28 @@ class ModeType(enum.Enum):
     Matr = 9
     Bruk = 10
     Combined = 11
-
-    def next(self):
-        val = self.value + 1
-        if (val == ModeTypeExt.modes_count):
-            val = 0
-        return ModeType(val)
-
-    def prev(self):
-        val = self.value - 1
-        if (val == -1):
-            val = ModeTypeExt.modes_count - 1
-        return ModeType(val)
-
-class ModeTypeExt:
+    
     modes_count = 12
     aliases_by_modes = {
-            ModeType.Disabled: ['disabled', 'выключено'],
-            ModeType.Special: ['special', 'специальный'],
-            ModeType.Olymp: ['olymp', 'олимпийка'],
-            ModeType.Gibrid3: ['gibrid3', 'гибрид3', 'g3', 'г3'],
-            ModeType.Gibrid4: ['gibrid4', 'гибрид4', 'g4', 'г4'],
-            ModeType.Meta: ['meta', 'метаграмма'],
-            ModeType.Logo: ['logo', 'логогриф'],
-            ModeType.Anag: ['anag', 'анаграмма'],
-            ModeType.Plus: ['plus', 'плюсограмма'],
-            ModeType.Matr: ['matr', 'матрица'],
-            ModeType.Bruk: ['bruk', 'брюква'],
-            ModeType.Combined: ['combined', 'комбинированный', 'all']
-            }
-    
+        Disabled: ['disabled', 'выключено'],
+        Special: ['special', 'специальный'],
+        Olymp: ['olymp', 'олимпийка'],
+        Gibrid3: ['gibrid3', 'гибрид3', 'g3', 'г3'],
+        Gibrid4: ['gibrid4', 'гибрид4', 'g4', 'г4'],
+        Meta: ['meta', 'метаграмма'],
+        Logo: ['logo', 'логогриф'],
+        Anag: ['anag', 'анаграмма'],
+        Plus: ['plus', 'плюсограмма'],
+        Matr: ['matr', 'матрица'],
+        Bruk: ['bruk', 'брюква'],
+        Combined: ['combined', 'комбинированный', 'all']
+        }
+
     @staticmethod
     def get_modes_by_alias(input) -> []:
         result = []
         input_alias = input.lower()
-        mapper = Utils.aliases_by_modes
+        mapper = ModeType.aliases_by_modes
         for mode in mapper.keys():
             for alias in mapper[mode]:
                 if alias.startswith(input_alias):
@@ -95,8 +82,10 @@ class Settings:
     def __init__(self):
         self.current_mode = ModeType.Disabled
 
-    def next_mode(self):
-        self.current_mode = self.current_mode.next()
+    def next_mode(self) -> int:
+        self.current_mode = self.current_mode + 1
+        if (self.current_mode == ModeType.modes_count):
+            self.current_mode = 0
         return self.current_mode
 
 class Result:
@@ -131,7 +120,7 @@ class Utils:
         return [item['name'] for item in associations]
 
     @staticmethod
-    def get_unique(arr):
+    def get_unique(arr) -> []:
         return list(dict.fromkeys(arr))
     
     @staticmethod
