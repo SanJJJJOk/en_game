@@ -126,8 +126,9 @@ def tg_switch_mode(update, context):
                 return
             else:
                 if len(newmodes)>1:
-                    found_modes = [ModeType.aliases_by_modes[mode_int][0] for mode_int in newmodes]
-                    update.message.reply_text('more than one mode found:\n' + '\n'.join(found_modes))
+                    found_modes = [ModeType.aliases_by_modes[mode_int] for mode_int in newmodes]
+                    str_found_modes = [found_mode[0] + '(' + ','.join(found_mode[1:]) + ')' for found_mode in found_modes]
+                    update.message.reply_text('more than one mode found:\n' + '\n'.join(str_found_modes))
                     return
                 else:
                     mode = newmodes[0]
