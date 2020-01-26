@@ -187,6 +187,8 @@ def tg_default(update, context):
         update.message.reply_text("Error: {0}".format(str(e)))
 
 def print_long(update, input_text):
+    if len(input_text) == 0:
+        update.message.reply_text('-')
     if len(input_text) > 4096:
         for x in range(0, len(input_text), 4096):
             update.message.reply_text(input_text[x:x+4096])
@@ -216,6 +218,8 @@ def simple_message_handler(full_text, command, empty_is_invalid = False):
     return full_text[len(command)+2:]
 
 def main():
+    # handler = CombinedModeDefaultTextHandler()
+    # result = handler.do_action('$кошка собака овал')
     # handler = Holder.default_text_handlers_by_modes[ModeType.Olymp]
     # start = time.time()
     # result = handler.do_action('кошка.собака,копыто')
