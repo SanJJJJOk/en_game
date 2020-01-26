@@ -135,12 +135,23 @@ class Utils:
         if len(text)==0:
             return Result.failed('too short message')
         input = text.strip().split('.')
-        if len(input)!=count and count!=-1:
-            return Result.failed('invalid groups count, need {0} groups'.format(count))
 
         if findall:
-            result = [ re.findall(r"[\w']+", input_item) for input_item in input ]
+            if len(input)>2:
+                return Result.failed('invalid groups count, need less than 3 groups')
+            sub_result = [ re.findall(r"[\w']+", input_item) for input_item in input ]
+            if len(input)==1:
+                for i in range(count):
+                    result.append(sub_result[0])
+            else:
+                full_sub_result = sub_result[0]
+                full_sub_result.extend(sub_result[1])
+                result.append(full_sub_result)
+                for i in range(count - 1):
+                    result.append(sub_result[1])
         else:
+            if len(input)!=count and count!=-1:
+                return Result.failed('invalid groups count, need {0} groups'.format(count))
             result = [ Utils.simple_parse_to_words(input_item) for input_item in input ]
 
         return Result.success(result)
