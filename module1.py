@@ -71,7 +71,7 @@ class GlobalHolder:
                 ModeType.Plus: PlusModeDefaultTextHandler(),
                 ModeType.Matr: MatrModeDefaultTextHandler(),
                 ModeType.Bruk: BrukModeDefaultTextHandler(),
-                ModeType.Combined: None
+                ModeType.Combined: CombinedModeDefaultTextHandler()
                 }
 
     def add(self, id):
