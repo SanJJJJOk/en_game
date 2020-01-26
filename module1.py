@@ -142,15 +142,16 @@ class Utils:
             if len(input)>2:
                 return Result.failed('invalid groups count, need less than 3 groups')
             sub_result = [ re.findall(r"[\w']+", input_item) for input_item in input ]
+            unique_sub_result = [ Utils.get_unique(sub_res_item) for sub_res_item in sub_result]
             if len(input)==1:
                 for i in range(count):
-                    result.append(sub_result[0])
+                    result.append(unique_sub_result[0])
             else:
-                full_sub_result = sub_result[0]
-                full_sub_result.extend(sub_result[1])
+                full_sub_result = unique_sub_result[0]
+                full_sub_result.extend(unique_sub_result[1])
                 result.append(full_sub_result)
                 for i in range(count - 1):
-                    result.append(sub_result[1])
+                    result.append(unique_sub_result[1])
         else:
             if len(input)!=count and count!=-1:
                 return Result.failed('invalid groups count, need {0} groups'.format(count))
@@ -170,7 +171,7 @@ class Utils:
                 ass = Utils.get_associations(correct_word)
                 result.extend(ass)
             result.append(correct_word)
-        return result
+        return Utils.get_unique(result)
 
 class ValuesHandlers:
     @staticmethod
