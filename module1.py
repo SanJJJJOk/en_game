@@ -3,6 +3,8 @@ import requests
 import re
 from urllib import request, parse
 import json
+from CubraDefinition import *
+from RussianWords import *
 
 class TgCommands():
     Olymp = 'o'
@@ -26,9 +28,10 @@ class ModeType():
     Plus = 8
     Matr = 9
     Bruk = 10
-    Combined = 11
+    Cubra = 11
+    Combined = 12
     
-    modes_count = 12
+    modes_count = 13
     aliases_by_modes = {
         Disabled: ['disabled', 'выключено'],
         Special: ['special', 'специальный'],
@@ -41,6 +44,7 @@ class ModeType():
         Plus: ['plus', 'плюсограмма'],
         Matr: ['matr', 'матрица'],
         Bruk: ['bruk', 'брюква'],
+        Cubra: ['cubra', 'кубрая'],
         Combined: ['combined', 'комбинированный', 'all']
         }
 
@@ -71,6 +75,7 @@ class GlobalHolder:
                 ModeType.Plus: PlusModeDefaultTextHandler(),
                 ModeType.Matr: MatrModeDefaultTextHandler(),
                 ModeType.Bruk: BrukModeDefaultTextHandler(),
+                ModeType.Cubra: CubraModeDefaultTextHandler(),
                 ModeType.Combined: CombinedModeDefaultTextHandler()
                 }
 
@@ -120,10 +125,14 @@ class Utils:
             return []
         associations = json_resp['associations']
         return [item['name'] for item in associations]
-
+    
     @staticmethod
     def get_unique(arr) -> []:
         return list(dict.fromkeys(arr))
+    
+    @staticmethod
+    def remove_empty(arr) -> []:
+        return [i for i in arr if i]
     
     @staticmethod
     def simple_parse_to_input(text, count = -1) -> Result:
@@ -493,3 +502,86 @@ class CombinedModeDefaultTextHandler():
             values.append(str(len(unique_union)))
             values.append('\n'.join(unique_union))
         return Result.success(values)
+
+class CubraModeDefaultTextHandler():
+    def __init__(self):
+        pass
+        
+    def do_action(self, text) -> Result:
+        text = text.strip().lower()
+        input = Utils.remove_empty(text.split(' '))
+        input_values = []
+        output_notfound = []
+        for input_word in input:
+            input_values_item = []
+            if '.' in input_word:
+                exact_input = Utils.remove_empty(input_word.split('.'))
+                input_values_item = [word.strip() for word in exact_input]
+            else:
+                if input_word.startswith('%'):
+                    input_word = input_word[1:].strip()
+                    ass = Utils.get_associations(input_word)
+                    input_values_item.extend(ass)
+                input_values_item.extend(CubraDefinition.get(input_word))
+            if len(input_values_item) == 0:
+                output_notfound.append(input_word)
+            input_values.append(input_values_item)
+
+        str_pattern = '^'
+        for word_list in input_values:
+            if len(word_list)!=0:
+                str_pattern = str_pattern + '(?:' + '|'.join(word_list) + ')'
+            else:
+                str_pattern = str_pattern + '.*'
+        str_pattern = str_pattern + '$'
+        pattern = re.compile(str_pattern)
+        tt = RussianWords.data
+        union = [ output_word for output_word in RussianWords.data if pattern.search(output_word) ]
+
+        values = []
+        values.append(str(len(union)))
+        if len(union)>200:
+            values.append('there are too many words')
+        else:
+            values.append('\n'.join(union))
+        if len(output_notfound) > 0:
+            values.append('not found cubra for: ' + ', '.join(output_notfound))
+        values.append('used pattern:\n' + str_pattern)
+        return Result.success(values)
+
+    #def search_with_strings_3_performance_test(self, values):
+    #    first = values[0]
+    #    second = values[1]
+    #    third = values[2]
+    #    result = []
+    #    for word1 in first:
+    #        for word2 in second:
+    #            for word3 in third:
+    #                value = word1+word2+word3
+    #                if value in RussianWords.data or True:
+    #                    result.append(value+' = '+word1+' + '+word2+' + '+word3)
+    #    return result
+    
+    #def search_with_regex(self, values):
+    #    str_pattern = '^'
+    #    for word_list in values:
+    #        if len(word_list)!=0:
+    #            str_pattern = str_pattern + '(?:' + '|'.join(word_list) + ')'
+    #        else:
+    #            str_pattern = str_pattern + '.*'
+    #    str_pattern = str_pattern + '$'
+    #    pattern = re.compile(str_pattern)
+    #    return [ word for word in RussianWords.data if pattern.search(word) ]
+
+    #def search_with_strings(self, values):
+    #    output = []
+    #    self.search_with_strings_internal(values, '', 0, len(values) - 1, output)
+    #    return output
+
+    #def search_with_strings_internal(self, values, result_word, index, maxindex, output):
+    #    if index>maxindex:
+    #        if result_word in RussianWords.data or True:
+    #            output.append(result_word)
+    #        return
+    #    for word in values[index]:
+    #        self.search_with_strings_internal(values, result_word+word,index+1,maxindex,output)
