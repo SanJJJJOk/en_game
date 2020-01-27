@@ -74,7 +74,7 @@ def tg_test(update, context):
     except Exception as e:
         update.message.reply_text("Error: {0}".format(str(e)))
 
-def tg_start(update, context):
+def tg_help(update, context):
     try:
         bot_authorize(update.message.chat.id)
         update.message.reply_text('для того, чтобы работать с ботом, нужно выбрать определенный режим(решение олимпиек, решени гибридов, специальный режим и т д.)')
@@ -232,7 +232,7 @@ def main():
     dp = updater.dispatcher
 
     dp.add_handler(CommandHandler(TgCommands.Modes, tg_modes))
-    dp.add_handler(CommandHandler(TgCommands.Start, tg_start))
+    dp.add_handler(CommandHandler(TgCommands.Help, tg_help))
     dp.add_handler(CommandHandler(TgCommands.Olymp, tg_olymp))
     dp.add_handler(CommandHandler(TgCommands.Gibrid, tg_gibrid))
     dp.add_handler(CommandHandler(TgCommands.Meta, tg_meta))

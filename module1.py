@@ -11,7 +11,7 @@ class TgCommands():
     Logo = 'l'
     SwitchMode = 'mode'
     Test = 'test'
-    Start = 'start'
+    Help = 'help'
     Modes = 'modes'
 
 class ModeType():
