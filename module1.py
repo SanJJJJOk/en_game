@@ -131,12 +131,12 @@ class Utils:
         findall = False
         text = text.strip().lower()
         if text[0]=='$':
-            text = text[1:]
+            text = text[1:].strip()
             findall = True
 
         if len(text)==0:
             return Result.failed('too short message')
-        input = text.strip().split('.')
+        input = text.split('.')
 
         if findall:
             if len(input)>2:
