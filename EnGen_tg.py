@@ -219,8 +219,8 @@ def simple_message_handler(full_text, command, empty_is_invalid = False):
     return full_text[len(command)+2:]
 
 def main():
-    handler = CubraModeDefaultTextHandler()
-    output2 = handler.do_action('q x a про.себ.ан.ка.ми дорога кот')
+    #handler = CubraModeDefaultTextHandler()
+    #output2 = handler.do_action('.ко .пы.ра .то')
     #output = handler.search_with_regex([['q','w','e'],['r','t'],['y','u','i'],['5','4','3','2'],['1','2']])
     #ttt = len(output)
     # result = handler.do_action('$кошка собака овал')

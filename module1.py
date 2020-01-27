@@ -535,7 +535,6 @@ class CubraModeDefaultTextHandler():
                 str_pattern = str_pattern + '.*'
         str_pattern = str_pattern + '$'
         pattern = re.compile(str_pattern)
-        tt = RussianWords.data
         union = [ output_word for output_word in RussianWords.data if pattern.search(output_word) ]
 
         values = []
