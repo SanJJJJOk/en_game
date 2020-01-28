@@ -526,6 +526,8 @@ class CubraModeDefaultTextHandler():
                 is_cubra = True
                 if 'бонус' in line or 'кубрая' in line or 'задание' in line:
                     is_cubra = False
+                if not '_' in line and not ' ' in line:
+                    is_cubra = False
                 if '_' in line:
                     is_cubra = True
                 if not is_cubra:
