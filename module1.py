@@ -139,7 +139,7 @@ class Utils:
         result = []
         findall = False
         text = text.strip().lower()
-        if text[0]=='$':
+        if text.startswith('$'):
             text = text[1:].strip()
             findall = True
 
@@ -508,24 +508,26 @@ class CubraModeDefaultTextHandler():
         pass
         
     def do_action(self, text) -> Result:
+        return self.internal_do_action(text)
+
+    def internal_do_action(self, text):
         text = text.strip().lower()
-        input = Utils.remove_empty(text.split(' '))
+        show_cubra_def = False
+        if text.startswith('?'):
+            text = text[1:].strip()
+            show_cubra_def = True
         input_values = []
         output_notfound = []
-        for input_word in input:
-            input_values_item = []
-            if '.' in input_word:
-                exact_input = Utils.remove_empty(input_word.split('.'))
-                input_values_item = [word.strip() for word in exact_input]
-            else:
-                if input_word.startswith('%'):
-                    input_word = input_word[1:].strip()
-                    ass = Utils.get_associations(input_word)
-                    input_values_item.extend(ass)
-                input_values_item.extend(CubraDefinition.get(input_word))
-            if len(input_values_item) == 0:
-                output_notfound.append(input_word)
-            input_values.append(input_values_item)
+        self.parse(text, input_values, output_notfound)
+
+        if show_cubra_def:
+            cubra_def_values = []
+            for word_list in input_values:
+                if len(word_list)!=0:
+                    cubra_def_values.append(', '.join(word_list))
+                else:
+                    cubra_def_values.append('-')
+            return Result.success('\n'.join(cubra_def_values))
 
         str_pattern = '^'
         for word_list in input_values:
@@ -547,6 +549,28 @@ class CubraModeDefaultTextHandler():
             values.append('not found cubra for: ' + ', '.join(output_notfound))
         values.append('used pattern:\n' + str_pattern)
         return Result.success(values)
+
+    def parse(self, text, input_values, output_notfound):
+        input = []
+        if '_' in text:
+            input = Utils.remove_empty(text.split('_'))
+        else:
+            input = Utils.remove_empty(text.split(' '))
+        for input_word in input:
+            input_word = input_word.strip()
+            input_values_item = []
+            if '.' in input_word:
+                exact_input = Utils.remove_empty(input_word.split('.'))
+                input_values_item = [word.strip() for word in exact_input]
+            else:
+                if input_word.startswith('%'):
+                    input_word = input_word[1:].strip()
+                    ass = Utils.get_associations(input_word)
+                    input_values_item.extend(ass)
+                input_values_item.extend(CubraDefinition.get(input_word))
+            if len(input_values_item) == 0:
+                output_notfound.append(input_word)
+            input_values.append(input_values_item)
 
     #def search_with_strings_3_performance_test(self, values):
     #    first = values[0]
@@ -584,3 +608,4 @@ class CubraModeDefaultTextHandler():
     #        return
     #    for word in values[index]:
     #        self.search_with_strings_internal(values, result_word+word,index+1,maxindex,output)
+
