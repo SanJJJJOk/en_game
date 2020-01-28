@@ -177,12 +177,17 @@ def tg_default(update, context):
         mode = settings.current_mode
         if mode == ModeType.Disabled:
             return
-        result = default_input(update.message.text, mode)
+        result = default_input(update.message.text, settings)
         if not result.is_success:
             print_long(update, "failed:\n" + result.message)
             return
+        my_dot_message = None
+        if len(result.values)>10:
+            my_dot_message = update.message.reply_text('.')
         for msg in result.values:
             print_long(update, msg)
+        if my_dot_message is None:
+            my_dot_message = update.message.reply_text('.', reply_to_message_id=my_dot_message.message_id)
     except Exception as e:
         update.message.reply_text("Error: {0}".format(str(e)))
 
@@ -205,11 +210,12 @@ def bot_authorize(id):
         return
         #raise Exception('you are not authorized, please call /start')
 
-def default_input(text, mode):
+def default_input(text, settings):
+    mode = settings.current_mode
     text_handler = Holder.default_text_handlers_by_modes[mode]
     if text_handler is None:
         return Result.failed("current mode is not supported yet")
-    return text_handler.do_action(text)
+    return text_handler.do_action(text, settings)
 
 def simple_message_handler(full_text, command, empty_is_invalid = False):
     if len(full_text)<len(command)+3:
@@ -219,8 +225,12 @@ def simple_message_handler(full_text, command, empty_is_invalid = False):
     return full_text[len(command)+2:]
 
 def main():
-    handler = CubraModeDefaultTextHandler()
-    output2 = handler.do_action('?.ко x .пы.ра . . .то.ль')
+    #handler = CubraModeDefaultTextHandler()
+    #settings = Settings()
+    #settings.mem_mode = ModeType.Cubra
+    #settings.mem_values = '+'
+    #output2 = handler.do_action('задание1\n.ко .пы .то\r\n.мир .', settings)
+
     #output = handler.search_with_regex([['q','w','e'],['r','t'],['y','u','i'],['5','4','3','2'],['1','2']])
     #ttt = len(output)
     # result = handler.do_action('$кошка собака овал')

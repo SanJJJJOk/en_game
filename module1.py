@@ -88,6 +88,8 @@ class GlobalHolder:
 class Settings:
     def __init__(self):
         self.current_mode = ModeType.Disabled
+        self.mem_values = None
+        self.mem_mode = ModeType.Disabled
 
     def next_mode(self) -> int:
         self.current_mode = self.current_mode + 1
@@ -413,7 +415,7 @@ class BaseSimpleModeDefaultTextHandler:
         self.count = -1
         self.values_handler = ValuesHandlers.dummy_values_handler
 
-    def do_action(self, text) -> Result:
+    def do_action(self, text, settings) -> Result:
         input_result = Utils.simple_parse_to_input(text, self.count)
         if not input_result.is_success:
             return input_result
@@ -490,7 +492,7 @@ class CombinedModeDefaultTextHandler():
             ValuesHandlers.plus_values_handler
         ]
         
-    def do_action(self, text) -> Result:
+    def do_action(self, text, settings) -> Result:
         input_result = Utils.simple_parse_to_input(text, 2)
         if not input_result.is_success:
             return input_result
@@ -507,7 +509,29 @@ class CubraModeDefaultTextHandler():
     def __init__(self):
         pass
         
-    def do_action(self, text) -> Result:
+    def do_action(self, text, settings) -> Result:
+        if text=='+' or text=='-':
+            settings.mem_mode = ModeType.Cubra
+            settings.mem_values = text
+            return Result.success()
+        if settings.mem_mode == ModeType.Cubra and settings.mem_values == '+':
+            text = text.lower()
+            lines = Utils.remove_empty(text.replace('\r','\n').split('\n'))
+            output = []
+            output_count = 0
+            for line in lines:
+                is_cubra = True
+                if 'бонус' in line or 'кубрая' in line or 'задание' in line:
+                    is_cubra = False
+                if '_' in line:
+                    is_cubra = True
+                if not is_cubra:
+                    continue
+                line_result = self.internal_do_action(line)
+                output.extend(line_result.values)
+                output_count = output_count + 1
+            output.append('{0}/{1} lines are identified as cubra'.format(output_count, len(lines)))
+            return Result.success(output)
         return self.internal_do_action(text)
 
     def internal_do_action(self, text):
@@ -568,8 +592,8 @@ class CubraModeDefaultTextHandler():
                     ass = Utils.get_associations(input_word)
                     input_values_item.extend(ass)
                 input_values_item.extend(CubraDefinition.get(input_word))
-            if len(input_values_item) == 0:
-                output_notfound.append(input_word)
+                if len(input_values_item) == 0:
+                    output_notfound.append(input_word)
             input_values.append(input_values_item)
 
     #def search_with_strings_3_performance_test(self, values):
