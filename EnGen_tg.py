@@ -186,7 +186,7 @@ def tg_default(update, context):
             my_dot_message = update.message.reply_text('.')
         for msg in result.values:
             print_long(update, msg)
-        if my_dot_message is None:
+        if not my_dot_message is None:
             my_dot_message = update.message.reply_text('.', reply_to_message_id=my_dot_message.message_id)
     except Exception as e:
         update.message.reply_text("Error: {0}".format(str(e)))
