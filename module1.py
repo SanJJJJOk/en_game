@@ -513,7 +513,10 @@ class CubraModeDefaultTextHandler():
         if text=='+' or text=='-':
             settings.mem_mode = ModeType.Cubra
             settings.mem_values = text
-            return Result.success()
+            if text=='+':
+                return Result.success(['ok, send me full task text'])
+            else:
+                return Result.success(['returned to simple mode'])
         if settings.mem_mode == ModeType.Cubra and settings.mem_values == '+':
             text = text.lower()
             lines = Utils.remove_empty(text.replace('\r','\n').split('\n'))
