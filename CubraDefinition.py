@@ -16,8 +16,8 @@ class CubraDefinition:
         if not CubraDefinition.data is None:
             return False
         bytes_password = str_password.encode('utf-8')
-        enctext = base64.b64decode(CubraDefinition.encdata)
-        inittext_bytes = CubraDefinition.decrypt(enctext, bytes_password)
+        bytes_enctext = base64.b64decode(CubraDefinition.encdata)
+        inittext_bytes = CubraDefinition.decrypt(bytes_enctext, bytes_password)
         init_text= str(inittext_bytes, 'utf-8')
         CubraDefinition.data = json.loads(init_text)
         return True

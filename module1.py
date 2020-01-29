@@ -556,7 +556,7 @@ class CubraModeDefaultTextHandler():
                     cubra_def_values.append(', '.join(word_list))
                 else:
                     cubra_def_values.append('-')
-            return Result.success('\n'.join(cubra_def_values))
+            return Result.success(['\n'.join(cubra_def_values)])
 
         str_pattern = '^'
         for word_list in input_values:

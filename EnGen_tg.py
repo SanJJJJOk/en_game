@@ -60,6 +60,7 @@ def tg_load(update, context):
         result = CubraDefinition.load_cubra(input_text)
         if not result:
             update.message.reply_text('already loaded')
+            return
         update.message.reply_text('good')
     except Exception as e:
         update.message.reply_text("Error: {0}".format(str(e)))
@@ -270,11 +271,14 @@ def main():
     # end = time.time()
     # print(end - start)
 
+    #str_password = ''
+    #CubraDefinition.load_cubra(str_password)
 
-    
-    str_password = 'PASSWORD'
+    #handler = CubraModeDefaultTextHandler()
+    #settings = Settings()
+    #output2 = handler.do_action('?1 .кль', settings)
+
     #encrypt(str_password)
-    #CubraDefinition.load(str_password)
 
     # updater = Updater("408100374:AAEhMleUbdVH_G1xmKeCAy8MlNfyBwB9AOo", use_context=True)
     updater = Updater("979411435:AAEHIVLx8L8CxmjIHtitaH4L1GeV_OCRJ7M", use_context=True)
