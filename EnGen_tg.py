@@ -57,8 +57,11 @@ def tg_load(update, context):
     try:
         bot_authorize(update.message.chat.id)
         input_text = simple_message_handler(update.message.text, TgCommands.Load, True)
-        CubraDefinition.load_cubra(input_text)
-        update.message.reply_text('good')
+        if update.message.chat.id=='228485598':
+            CubraDefinition.load_cubra(input_text)
+            update.message.reply_text('good')
+        else:
+            update.message.reply_text('bad')
     except Exception as e:
         file.close()
         update.message.reply_text("Error: {0}".format(str(e)))
@@ -66,7 +69,6 @@ def tg_load(update, context):
 def tg_test(update, context):
     newstr = ""
     try:
-        update.message.reply_text(text)
         update.message.reply_text("hello")
         update.message.reply_text("hello, " + update.message.from_user.first_name + "\n")
         update.message.reply_text("hello, " + update.message.from_user.first_name + "\n"+str(update.message.from_user.id) + "\n")
