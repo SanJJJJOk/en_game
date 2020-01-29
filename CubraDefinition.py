@@ -13,7 +13,7 @@ class CubraDefinition:
 
     @staticmethod
     def load_cubra(str_password):
-        if not data is None:
+        if not CubraDefinition.data is None:
             return False
         bytes_password = str_password.encode('utf-8')
         enctext = base64.b64decode(CubraDefinition.encdata)
