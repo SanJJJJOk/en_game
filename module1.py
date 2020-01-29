@@ -587,7 +587,7 @@ class CubraModeDefaultTextHandler():
         for input_word in input:
             input_word = input_word.strip()
             input_values_item = []
-            if '.' in input_word:
+            if input_word.startswith('.'):
                 exact_input = Utils.remove_empty(input_word.split('.'))
                 input_values_item = [word.strip() for word in exact_input]
             else:
