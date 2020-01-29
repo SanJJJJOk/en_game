@@ -29,6 +29,7 @@ import random
 import re
 import json
 import time
+from CubraDefinition import CubraDefinition
 
 from datetime import datetime
 from threading import Timer
@@ -53,6 +54,10 @@ def tg_error(update, context):
 def tg_test(update, context):
     newstr = ""
     try:
+        file = open('text.txt','r', encoding='utf-8')
+        text = file.read()
+        file.close()
+        update.message.reply_text(text)
         update.message.reply_text("hello")
         update.message.reply_text("hello, " + update.message.from_user.first_name + "\n")
         update.message.reply_text("hello, " + update.message.from_user.first_name + "\n"+str(update.message.from_user.id) + "\n")
@@ -72,6 +77,7 @@ def tg_test(update, context):
             newstr+="ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff" + str(i) + "\n"
             update.message.reply_text(newstr)
     except Exception as e:
+        file.close()
         update.message.reply_text("Error: {0}".format(str(e)))
 
 def tg_help(update, context):
@@ -225,6 +231,30 @@ def simple_message_handler(full_text, command, empty_is_invalid = False):
     return full_text[len(command)+2:]
 
 def main():
+    #file = open('d:\kubr.json','r', encoding='utf-8')
+    #cubra_text = file.read()
+    #file.close()
+
+    #cubra_text_bytes = cubra_text.encode('utf-8')
+    #while len(cubra_text_bytes) % 16 !=0:
+    #    cubra_text_bytes = cubra_text_bytes + b' '
+
+    #password = b''
+    #enctext = CubraDefinition.encrypt(cubra_text_bytes, password)
+    #file = open('d:\enccubra.txt', 'wb')
+    #file.truncate(0)
+    #file.write(enctext)
+    #file.close()
+
+    #inittext_bytes = CubraDefinition.decrypt(enctext, password)
+    #init_text= str(inittext_bytes, 'utf-8')
+    #final = json.loads(init_text)
+    
+    #file = open('d:\deccubra.txt', 'w', encoding='utf-8')
+    #file.truncate(0)
+    #file.write(init_text)
+    #file.close()
+
     #handler = CubraModeDefaultTextHandler()
     #settings = Settings()
     #settings.mem_mode = ModeType.Cubra
