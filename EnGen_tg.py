@@ -62,7 +62,6 @@ def tg_load(update, context):
             update.message.reply_text('already loaded')
         update.message.reply_text('good')
     except Exception as e:
-        file.close()
         update.message.reply_text("Error: {0}".format(str(e)))
 
 def tg_test(update, context):
@@ -75,11 +74,6 @@ def tg_test(update, context):
                                   +str(update.message.from_user.id) + "\n")
         update.message.reply_text("hello, " + update.message.from_user.first_name + "\n"
                                   +str(update.message.from_user.id) + "\n"
-                                  +update.message.from_user.first_name + "\n"
-                                  +update.message.from_user.last_name + "\n"
-                                  +update.message.from_user.username + "\n")
-        update.message.reply_text("hello, " + update.message.from_user.first_name + "\n"
-                                  +update.message.from_user.id + "\n"
                                   +update.message.from_user.first_name + "\n"
                                   +update.message.from_user.last_name + "\n"
                                   +update.message.from_user.username + "\n")
