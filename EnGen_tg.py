@@ -57,13 +57,10 @@ def tg_load(update, context):
     try:
         bot_authorize(update.message.chat.id)
         input_text = simple_message_handler(update.message.text, TgCommands.Load, True)
-        if update.message.chat.id=='228485598':
-            result = CubraDefinition.load_cubra(input_text)
-            if not result:
-                update.message.reply_text('already loaded')
-            update.message.reply_text('good')
-        else:
-            update.message.reply_text('bad')
+        result = CubraDefinition.load_cubra(input_text)
+        if not result:
+            update.message.reply_text('already loaded')
+        update.message.reply_text('good')
     except Exception as e:
         file.close()
         update.message.reply_text("Error: {0}".format(str(e)))
@@ -245,33 +242,25 @@ def simple_message_handler(full_text, command, empty_is_invalid = False):
         return None
     return full_text[len(command)+2:]
 
+def encrypt(str_password):
+    bytes_password = str_password.encode('utf-8')
+    file = open('d:\kubr.json','r', encoding='utf-8')
+    cubra_text = file.read()
+    file.close()
+
+    cubra_text_bytes = cubra_text.encode('utf-8')
+    while len(cubra_text_bytes) % 16 !=0:
+        cubra_text_bytes = cubra_text_bytes + b' '
+
+    enctext = CubraDefinition.encrypt(cubra_text_bytes, bytes_password)
+    enctext_64 = base64.b64encode(enctext)
+
+    file = open('d:\enccubra.txt', 'w')
+    file.truncate(0)
+    file.write(enctext_64)
+    file.close()
+
 def main():
-    #file = open('d:\kubr.json','r', encoding='utf-8')
-    #cubra_text = file.read()
-    #file.close()
-
-    #cubra_text_bytes = cubra_text.encode('utf-8')
-    #while len(cubra_text_bytes) % 16 !=0:
-    #    cubra_text_bytes = cubra_text_bytes + b' '
-
-    #password = b''
-    #enctext = CubraDefinition.encrypt(cubra_text_bytes, password)
-    #enctext_64 = base64.b64encode(enctext)
-    #file = open('d:\enccubra.txt', 'wb')
-    #file.truncate(0)
-    #file.write(enctext_64)
-    #file.close()
-
-    #enctext_new = base64.b64decode(enctext_64)
-    #inittext_bytes = CubraDefinition.decrypt(enctext_new, password)
-    #init_text= str(inittext_bytes, 'utf-8')
-    #final = json.loads(init_text)
-
-    #file = open('d:\deccubra.txt', 'w', encoding='utf-8')
-    #file.truncate(0)
-    #file.write(init_text)
-    #file.close()
-
     #handler = CubraModeDefaultTextHandler()
     #settings = Settings()
     #settings.mem_mode = ModeType.Cubra
@@ -286,6 +275,12 @@ def main():
     # result = handler.do_action('кошка.собака,копыто')
     # end = time.time()
     # print(end - start)
+
+
+    
+    str_password = 'PASSWORD'
+    #encrypt(str_password)
+    #CubraDefinition.load(str_password)
 
     # updater = Updater("408100374:AAEhMleUbdVH_G1xmKeCAy8MlNfyBwB9AOo", use_context=True)
     updater = Updater("979411435:AAEHIVLx8L8CxmjIHtitaH4L1GeV_OCRJ7M", use_context=True)
