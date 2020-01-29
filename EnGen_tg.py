@@ -30,6 +30,7 @@ import re
 import json
 import time
 from CubraDefinition import CubraDefinition
+import base64
 
 from datetime import datetime
 from threading import Timer
@@ -50,13 +51,21 @@ def tg_error(update, context):
     update.message.reply_text('hello')
     update.message.reply_text("Callback: {0}".format(str(context.error)))
     logger.warning('Update "%s" caused error "%s"', update, context.error)
+    
+def tg_load(update, context):
+    newstr = ""
+    try:
+        bot_authorize(update.message.chat.id)
+        input_text = simple_message_handler(update.message.text, TgCommands.Load, True)
+        CubraDefinition.load_cubra(input_text)
+        update.message.reply_text('good')
+    except Exception as e:
+        file.close()
+        update.message.reply_text("Error: {0}".format(str(e)))
 
 def tg_test(update, context):
     newstr = ""
     try:
-        file = open('text.txt','r', encoding='utf-8')
-        text = file.read()
-        file.close()
         update.message.reply_text(text)
         update.message.reply_text("hello")
         update.message.reply_text("hello, " + update.message.from_user.first_name + "\n")
@@ -73,11 +82,13 @@ def tg_test(update, context):
                                   +update.message.from_user.first_name + "\n"
                                   +update.message.from_user.last_name + "\n"
                                   +update.message.from_user.username + "\n")
+        file = open('text.txt','r', encoding='utf-8')
+        text = file.read()
+        file.close()
         for i in range(0,100):
             newstr+="ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff" + str(i) + "\n"
             update.message.reply_text(newstr)
     except Exception as e:
-        file.close()
         update.message.reply_text("Error: {0}".format(str(e)))
 
 def tg_help(update, context):
@@ -241,15 +252,17 @@ def main():
 
     #password = b''
     #enctext = CubraDefinition.encrypt(cubra_text_bytes, password)
+    #enctext_64 = base64.b64encode(enctext)
     #file = open('d:\enccubra.txt', 'wb')
     #file.truncate(0)
-    #file.write(enctext)
+    #file.write(enctext_64)
     #file.close()
 
-    #inittext_bytes = CubraDefinition.decrypt(enctext, password)
+    #enctext_new = base64.b64decode(enctext_64)
+    #inittext_bytes = CubraDefinition.decrypt(enctext_new, password)
     #init_text= str(inittext_bytes, 'utf-8')
     #final = json.loads(init_text)
-    
+
     #file = open('d:\deccubra.txt', 'w', encoding='utf-8')
     #file.truncate(0)
     #file.write(init_text)
@@ -282,6 +295,7 @@ def main():
     dp.add_handler(CommandHandler(TgCommands.Logo, tg_logo))
     dp.add_handler(CommandHandler(TgCommands.SwitchMode, tg_switch_mode))
     dp.add_handler(CommandHandler(TgCommands.Test, tg_test))
+    dp.add_handler(CommandHandler(TgCommands.Load, tg_load))
     dp.add_handler(MessageHandler(Filters.text, tg_default))
 
     dp.add_error_handler(tg_error)

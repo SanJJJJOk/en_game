@@ -15,6 +15,7 @@ class TgCommands():
     Test = 'test'
     Help = 'help'
     Modes = 'modes'
+    Load = 'load'
 
 class ModeType():
     Disabled = 0
