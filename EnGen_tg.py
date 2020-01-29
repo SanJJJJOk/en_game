@@ -58,7 +58,9 @@ def tg_load(update, context):
         bot_authorize(update.message.chat.id)
         input_text = simple_message_handler(update.message.text, TgCommands.Load, True)
         if update.message.chat.id=='228485598':
-            CubraDefinition.load_cubra(input_text)
+            result = CubraDefinition.load_cubra(input_text)
+            if not result:
+                update.message.reply_text('already loaded')
             update.message.reply_text('good')
         else:
             update.message.reply_text('bad')
