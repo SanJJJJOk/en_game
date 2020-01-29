@@ -78,7 +78,7 @@ def tg_test(update, context):
                                   +update.message.from_user.first_name + "\n"
                                   +update.message.from_user.last_name + "\n"
                                   +update.message.from_user.username + "\n")
-        file = open('text.txt','r', encoding='utf-8')
+        file = open('test.txt','r', encoding='utf-8')
         text = file.read()
         file.close()
         for i in range(0,100):

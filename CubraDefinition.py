@@ -7,7 +7,7 @@ class CubraDefinition:
 
     @staticmethod
     def get(key):
-        if CubraDefinition.data.__contains__(key):
+        if key in CubraDefinition.data:
             return CubraDefinition.data[key]
         return []
 
