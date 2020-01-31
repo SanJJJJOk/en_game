@@ -80,10 +80,8 @@ def tg_test(update, context):
                                   +update.message.from_user.username + "\n")
         file = open('test.txt','r', encoding='utf-8')
         text = file.read()
+        update.message.reply_text(text)
         file.close()
-        for i in range(0,100):
-            newstr+="ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff" + str(i) + "\n"
-            update.message.reply_text(newstr)
     except Exception as e:
         update.message.reply_text("Error: {0}".format(str(e)))
 
