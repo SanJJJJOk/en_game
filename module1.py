@@ -5,6 +5,7 @@ from urllib import request, parse
 import json
 from CubraDefinition import *
 from RussianWords import *
+import random
 
 class TgCommands():
     Olymp = 'o'
@@ -66,7 +67,7 @@ class GlobalHolder:
         self.settings_by_id = {}
         self.default_text_handlers_by_modes = {
                 ModeType.Disabled: None,
-                ModeType.Special: None,
+                ModeType.Special: SpecialModeDefaultTextHandler(),
                 ModeType.Olymp: OlympModeDefaultTextHandler(),
                 ModeType.Gibrid3: Gibrid3ModeDefaultTextHandler(),
                 ModeType.Gibrid4: Gibrid4ModeDefaultTextHandler(),
@@ -637,4 +638,37 @@ class CubraModeDefaultTextHandler():
     #        return
     #    for word in values[index]:
     #        self.search_with_strings_internal(values, result_word+word,index+1,maxindex,output)
+
+    
+class SpecialModeDefaultTextHandler():
+    def __init__(self):
+        self.fake_settings = Settings()
+        self.cubra_solver = CubraModeDefaultTextHandler()
+        
+    def do_action(self, text, settings) -> Result:
+        if text=='+':
+            for i in range(10):
+                count = random.randint(2,5)
+                values = []
+                for i in range(count):
+                    rand_key = random.choice(list(CubraDefinition.data.keys()))
+                    values.append(rand_key)
+                result = self.cubra_solver.do_action('_'.join(values), self.fake_settings)
+                if not result.is_success:
+                    continue
+                if result.values[0] == '0' or result.values[1] == 'there are too many words':
+                    continue
+                settings.mem_mode = ModeType.Special
+                settings.mem_values = '_'.join(values)
+                return Result.success(['_'.join(values)])
+            return Result.failed('it needs more time, send ''+'' again')
+        if settings.mem_mode == ModeType.Special:
+            expected = self.cubra_solver.do_action(settings.mem_values)
+            if text in expected.values[1]:
+                return Result.success('congratulations!')
+            else:
+                return Result.failed('no')
+        else:
+            return Result.failed('you are not generate any cubra')
+
 
