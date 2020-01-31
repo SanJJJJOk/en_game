@@ -647,20 +647,23 @@ class SpecialModeDefaultTextHandler():
         
     def do_action(self, text, settings) -> Result:
         if text=='+':
-            for i in range(10):
-                count = random.randint(2,5)
+            for i in range(100):
+                count = random.randint(2,4)
+                if count == 2:
+                    t = 1
                 values = []
                 for i in range(count):
                     rand_key = random.choice(list(CubraDefinition.data.keys()))
                     values.append(rand_key)
-                result = self.cubra_solver.do_action('_'.join(values), self.fake_settings)
+                text_cubra = '_'.join(values)
+                result = self.cubra_solver.do_action(text_cubra, self.fake_settings)
                 if not result.is_success:
                     continue
                 if result.values[0] == '0' or result.values[1] == 'there are too many words':
                     continue
                 settings.mem_mode = ModeType.Special
-                settings.mem_values = '_'.join(values)
-                return Result.success(['_'.join(values)])
+                settings.mem_values = text_cubra
+                return Result.success([text_cubra])
             return Result.failed('it needs more time, send ''+'' again')
         if settings.mem_mode == ModeType.Special:
             expected = self.cubra_solver.do_action(settings.mem_values)
