@@ -118,42 +118,6 @@ def tg_modes(update, context):
     except Exception as e:
         update.message.reply_text("Error: {0}".format(str(e)))
 
-def tg_olymp(update, context):
-    try:
-        bot_authorize(update.message.chat.id)
-        input_text = simple_message_handler(update.message.text, TgCommands.Olymp, True)
-        msg = default_input(input_text, ModeType.Olymp)
-        update.message.reply_text(msg)
-    except Exception as e:
-        update.message.reply_text("Error: {0}".format(str(e)))
-
-def tg_gibrid(update, context):
-    try:
-        bot_authorize(update.message.chat.id)
-        input_text = simple_message_handler(update.message.text, TgCommands.Gibrid, True)
-        msg = default_input(input_text, ModeType.Gibrid3)
-        update.message.reply_text(msg)
-    except Exception as e:
-        update.message.reply_text("Error: {0}".format(str(e)))
-
-def tg_meta(update, context):
-    try:
-        bot_authorize(update.message.chat.id)
-        input_text = simple_message_handler(update.message.text, TgCommands.Meta, True)
-        msg = default_input(input_text, ModeType.Meta)
-        update.message.reply_text(msg)
-    except Exception as e:
-        update.message.reply_text("Error: {0}".format(str(e)))
-
-def tg_logo(update, context):
-    try:
-        bot_authorize(update.message.chat.id)
-        input_text = simple_message_handler(update.message.text, TgCommands.Logo, True)
-        msg = default_input(input_text, ModeType.Logo)
-        update.message.reply_text(msg)
-    except Exception as e:
-        update.message.reply_text("Error: {0}".format(str(e)))
-
 def tg_switch_mode(update, context):
     global Holder
     try:
@@ -254,6 +218,7 @@ def encrypt(str_password):
     file.close()
 
 def main():
+
     #handler = CubraModeDefaultTextHandler()
     #settings = Settings()
     #settings.mem_mode = ModeType.Cubra
@@ -284,10 +249,6 @@ def main():
 
     dp.add_handler(CommandHandler(TgCommands.Modes, tg_modes))
     dp.add_handler(CommandHandler(TgCommands.Help, tg_help))
-    dp.add_handler(CommandHandler(TgCommands.Olymp, tg_olymp))
-    dp.add_handler(CommandHandler(TgCommands.Gibrid, tg_gibrid))
-    dp.add_handler(CommandHandler(TgCommands.Meta, tg_meta))
-    dp.add_handler(CommandHandler(TgCommands.Logo, tg_logo))
     dp.add_handler(CommandHandler(TgCommands.SwitchMode, tg_switch_mode))
     dp.add_handler(CommandHandler(TgCommands.Test, tg_test))
     dp.add_handler(CommandHandler(TgCommands.Load, tg_load))

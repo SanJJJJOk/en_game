@@ -8,10 +8,6 @@ from RussianWords import *
 import random
 
 class TgCommands():
-    Olymp = 'o'
-    Gibrid = 'g'
-    Meta = 'm'
-    Logo = 'l'
     SwitchMode = 'mode'
     Test = 'test'
     Help = 'help'
