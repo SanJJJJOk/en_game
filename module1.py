@@ -560,7 +560,7 @@ class CubraModeDefaultTextHandler():
             if len(word_list)!=0:
                 str_pattern = str_pattern + '(?:' + '|'.join(word_list) + ')'
             else:
-                str_pattern = str_pattern + '.*'
+                str_pattern = str_pattern + '.+'
         str_pattern = str_pattern + '$'
         pattern = re.compile(str_pattern)
         union = [ output_word for output_word in RussianWords.data if pattern.search(output_word) ]
@@ -617,7 +617,7 @@ class CubraModeDefaultTextHandler():
     #        if len(word_list)!=0:
     #            str_pattern = str_pattern + '(?:' + '|'.join(word_list) + ')'
     #        else:
-    #            str_pattern = str_pattern + '.*'
+    #            str_pattern = str_pattern + '.+'
     #    str_pattern = str_pattern + '$'
     #    pattern = re.compile(str_pattern)
     #    return [ word for word in RussianWords.data if pattern.search(word) ]
