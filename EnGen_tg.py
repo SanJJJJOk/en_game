@@ -70,9 +70,7 @@ def tg_test(update, context):
                                   +update.message.from_user.first_name + "\n"
                                   +update.message.from_user.last_name + "\n"
                                   +update.message.from_user.username + "\n")
-        for i in range(0,100):
-            newstr+="ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff" + str(i) + "\n"
-            update.message.reply_text(newstr)
+        update.message.reply_text(os.path.dirname(os.path.realpath(__file__)))
     except Exception as e:
         update.message.reply_text("Error: {0}".format(str(e)))
 
