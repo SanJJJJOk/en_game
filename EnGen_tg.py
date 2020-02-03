@@ -65,11 +65,6 @@ def tg_test(update, context):
                                   +update.message.from_user.first_name + "\n"
                                   +update.message.from_user.last_name + "\n"
                                   +update.message.from_user.username + "\n")
-        update.message.reply_text("hello, " + update.message.from_user.first_name + "\n"
-                                  +update.message.from_user.id + "\n"
-                                  +update.message.from_user.first_name + "\n"
-                                  +update.message.from_user.last_name + "\n"
-                                  +update.message.from_user.username + "\n")
         update.message.reply_text(os.path.dirname(os.path.realpath(__file__)))
     except Exception as e:
         update.message.reply_text("Error: {0}".format(str(e)))
