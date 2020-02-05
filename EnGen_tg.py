@@ -186,7 +186,7 @@ def bot_authorize(update, context):
     global Holder
     if not update.message.chat.id in Holder.settings_by_id:
         Holder.add(update.message.chat.id)
-        user_info = "authorized user:" + update.message.from_user.first_name + "\n"+str(update.message.from_user.id) + "\n"+update.message.from_user.first_name + "\n"+update.message.from_user.last_name + "\n"+update.message.from_user.username
+        user_info = "authorized user:" + str(update.message.chat.id) + "\n" + update.message.from_user.first_name + "\n"+str(update.message.from_user.id) + "\n"+update.message.from_user.first_name + "\n"+update.message.from_user.last_name + "\n"+update.message.from_user.username
         context.bot.send_message('228485598', user_info)
         return
         #raise Exception('you are not authorized, please call /start')
