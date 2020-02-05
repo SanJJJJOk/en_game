@@ -31,6 +31,7 @@ import json
 import time
 from CubraDefinition import CubraDefinition
 import base64
+import datetime
 
 from datetime import datetime
 from threading import Timer
@@ -186,7 +187,7 @@ def bot_authorize(update, context):
     global Holder
     if not update.message.chat.id in Holder.settings_by_id:
         Holder.add(update.message.chat.id)
-        user_info = "authorized user:" + str(update.message.chat.id) + "\n" + update.message.from_user.first_name + "\n"+str(update.message.from_user.id) + "\n"+update.message.from_user.first_name + "\n"+update.message.from_user.last_name + "\n"+update.message.from_user.username
+        user_info = "authorized user:" + str(update.message.chat.id) + "\n" + str(update.message.date) + "\n"+str(update.message.from_user.id) + "\n"+update.message.from_user.first_name + "\n"+update.message.from_user.last_name + "\n"+update.message.from_user.username
         context.bot.send_message('228485598', user_info)
         return
         #raise Exception('you are not authorized, please call /start')
@@ -226,7 +227,6 @@ def encrypt(str_password):
     file.close()
 
 def main():
-
     #handler = CubraModeDefaultTextHandler()
     #settings = Settings()
     #settings.mem_mode = ModeType.Cubra
