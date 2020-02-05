@@ -55,7 +55,7 @@ def tg_error(update, context):
 def tg_load(update, context):
     newstr = ""
     try:
-        bot_authorize(update.message.chat.id)
+        bot_authorize(update, context)
         input_text = simple_message_handler(update.message.text, TgCommands.Load, True)
         result = CubraDefinition.load_cubra(input_text)
         if not result:
@@ -88,7 +88,7 @@ def tg_test(update, context):
 
 def tg_help(update, context):
     try:
-        bot_authorize(update.message.chat.id)
+        bot_authorize(update, context)
         update.message.reply_text('для того, чтобы работать с ботом, нужно выбрать определенный режим(решение олимпиек, решени гибридов, специальный режим и т д.)')
         update.message.reply_text('режимы созданы для того, чтобы обрабатывать текст без ввода команды. в каждом режиме бот обрабатывает сообщения определенным образом.')
         update.message.reply_text('переключить режим на следующий в списке можно командой /mode. введя через пробел название(или часть названия) режима - можно переключить конкретно на выбранных режим(например, /mode olymp или просто /mode o).')
@@ -99,7 +99,7 @@ def tg_help(update, context):
 
 def tg_modes(update, context):
     try:
-        bot_authorize(update.message.chat.id)
+        bot_authorize(update, context)
         update.message.reply_text('режим disabled:')
         update.message.reply_text('отключены ответы бота на какой-либо текст без команды')
         update.message.reply_text('режим special:')
@@ -116,13 +116,15 @@ def tg_modes(update, context):
         update.message.reply_text('формат ввода для матриц(в матрицах, очевидно, нужно сравнивать слова из трех списков, а не из двух): для формата ввода "накуй ассоциации" точки в принципе не нужны, для формата ввода "накуй ассоциации: расширенный" ещё одна точка не нужна, третий список будет дублировать второй, для остальных - точка также является разделителем списков(то есть их должны быть две штуки). например, "кошка.собака,дом.печка,стол"')
         update.message.reply_text('режим combined')
         update.message.reply_text('сразу все режимы olymp, gibrid3, gibrid4, meta, logo, bruk, plus, anag(матрицы тут нет)')
+        update.message.reply_text('режим cubra')
+        update.message.reply_text('надо добавить описание')
     except Exception as e:
         update.message.reply_text("Error: {0}".format(str(e)))
 
 def tg_switch_mode(update, context):
     global Holder
     try:
-        bot_authorize(update.message.chat.id)
+        bot_authorize(update, context)
         input_text = simple_message_handler(update.message.text, TgCommands.SwitchMode, False)
         settings = Holder.get(update.message.chat.id)
         mode = settings.current_mode
@@ -148,7 +150,7 @@ def tg_switch_mode(update, context):
 
 def tg_default(update, context):
     try:
-        bot_authorize(update.message.chat.id)
+        bot_authorize(update, context)
         settings = Holder.get(update.message.chat.id)
         mode = settings.current_mode
         if mode == ModeType.Disabled:
@@ -158,7 +160,10 @@ def tg_default(update, context):
             print_long(update, "failed:\n" + result.message)
             return
         my_dot_message = None
-        if len(result.values)>10:
+        count_symbols = 0
+        for result_val in result.values:
+            count_symbols = count_symbols + len(result_val)
+        if count_symbols > 1000:
             my_dot_message = update.message.reply_text('.')
         for msg in result.values:
             print_long(update, msg)
@@ -176,15 +181,17 @@ def print_long(update, input_text):
             update.message.reply_text(input_text[x:x+4096])
     else:
         update.message.reply_text(input_text)
-
-#----------
-
-def bot_authorize(id):
+        
+def bot_authorize(update, context):
     global Holder
-    if not id in Holder.settings_by_id:
-        Holder.add(id)
+    if not update.message.chat.id in Holder.settings_by_id:
+        Holder.add(update.message.chat.id)
+        user_info = "authorized user:" + update.message.from_user.first_name + "\n"+str(update.message.from_user.id) + "\n"+update.message.from_user.first_name + "\n"+update.message.from_user.last_name + "\n"+update.message.from_user.username
+        context.bot.send_message('228485598', user_info)
         return
         #raise Exception('you are not authorized, please call /start')
+
+#----------
 
 def default_input(text, settings):
     mode = settings.current_mode
