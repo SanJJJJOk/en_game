@@ -505,7 +505,6 @@ class MatrModeDefaultTextHandler(BaseSimpleModeDefaultTextHandler):
 class CombinedModeDefaultTextHandler():
     def __init__(self):
         self.combined_values_handlers = [
-            ValuesHandlers.olymp_values_handler,
             ValuesHandlers.gibrid_3_values_handler,
             ValuesHandlers.gibrid_4_values_handler,
             ValuesHandlers.meta_values_handler,
