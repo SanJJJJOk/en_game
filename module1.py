@@ -24,12 +24,13 @@ class ModeType():
     Logo = 6
     Anag = 7
     Plus = 8
-    Matr = 9
-    Bruk = 10
-    Cubra = 11
-    Combined = 12
+    Scepka = 9
+    Matr = 10
+    Bruk = 11
+    Cubra = 12
+    Combined = 13
     
-    modes_count = 13
+    modes_count = 14
     aliases_by_modes = {
         Disabled: ['disabled', 'выключено'],
         Special: ['special', 'специальный'],
@@ -40,6 +41,7 @@ class ModeType():
         Logo: ['logo', 'логогриф'],
         Anag: ['anag', 'анаграмма'],
         Plus: ['plus', 'плюсограмма'],
+        Scepka: ['scepka', 'сцепка'],
         Matr: ['matr', 'матрица'],
         Bruk: ['bruk', 'брюква'],
         Cubra: ['cubra', 'кубрая'],
@@ -71,6 +73,7 @@ class GlobalHolder:
                 ModeType.Logo: LogoModeDefaultTextHandler(),
                 ModeType.Anag: AnagModeDefaultTextHandler(),
                 ModeType.Plus: PlusModeDefaultTextHandler(),
+                ModeType.Scepka: ScepkaModeDefaultTextHandler(),
                 ModeType.Matr: MatrModeDefaultTextHandler(),
                 ModeType.Bruk: BrukModeDefaultTextHandler(),
                 ModeType.Cubra: CubraModeDefaultTextHandler(),
@@ -379,6 +382,24 @@ class ValuesHandlers:
         union.sort()
         return union
 
+        
+    @staticmethod
+    def scepka_values_handler(values):
+        union = []
+        first = values[0]
+        second = values[1]
+        for word1 in first:
+            for word2 in second:
+                if word1 + word2 in RussianWords.data:
+                    scepka = word1 + '+' + word2
+                    if not scepka in union:
+                        union.append(scepka)
+                if word2 + word1 in RussianWords.data:
+                    scepka = word2 + '+' + word1
+                    if not scepka in union:
+                        union.append(scepka)
+        return union
+
     @staticmethod
     def matr_values_handler(values):
         union = []
@@ -471,6 +492,12 @@ class PlusModeDefaultTextHandler(BaseSimpleModeDefaultTextHandler):
         self.count = 2
         self.values_handler = ValuesHandlers.plus_values_handler
         
+class ScepkaModeDefaultTextHandler(BaseSimpleModeDefaultTextHandler):
+    def __init__(self):
+        super().__init__()
+        self.count = 2
+        self.values_handler = ValuesHandlers.scepka_values_handler
+        
 class MatrModeDefaultTextHandler(BaseSimpleModeDefaultTextHandler):
     def __init__(self):
         super().__init__()
@@ -487,7 +514,8 @@ class CombinedModeDefaultTextHandler():
             ValuesHandlers.logo_values_handler,
             ValuesHandlers.bruk_values_handler,
             ValuesHandlers.anag_values_handler,
-            ValuesHandlers.plus_values_handler
+            ValuesHandlers.plus_values_handler,
+            ValuesHandlers.scepka_values_handler
         ]
         
     def do_action(self, text, settings) -> Result:
