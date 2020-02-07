@@ -388,16 +388,14 @@ class ValuesHandlers:
         union = []
         first = values[0]
         second = values[1]
-        for word1 in first:
-            for word2 in second:
-                if word1 + word2 in RussianWords.data:
-                    scepka = word1 + '+' + word2
-                    if not scepka in union:
-                        union.append(scepka)
-                if word2 + word1 in RussianWords.data:
-                    scepka = word2 + '+' + word1
-                    if not scepka in union:
-                        union.append(scepka)
+        if len(first)==0 or len(second)==0:
+            return []
+        str_pattern = '^(?:' + '|'.join(first) + ')(?:' + '|'.join(second) + ')$'
+        pattern = re.compile(str_pattern)
+        union.extend([ output_word for output_word in RussianWords.data if pattern.search(output_word) ])
+        str_pattern = '^(?:' + '|'.join(second) + ')(?:' + '|'.join(first) + ')$'
+        pattern = re.compile(str_pattern)
+        union.extend([ output_word for output_word in RussianWords.data if pattern.search(output_word) ])
         return union
 
     @staticmethod
