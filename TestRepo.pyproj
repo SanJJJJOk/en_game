@@ -1,0 +1,61 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{3efd4a2f-f360-4232-933f-e24e526e517c}</ProjectGuid>
+    <ProjectHome />
+    <StartupFile>CubraDefinition.py</StartupFile>
+    <SearchPath />
+    <WorkingDirectory>.</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <ProjectTypeGuids>{888888a0-9f3d-457c-b088-3a5042f75d52}</ProjectTypeGuids>
+    <LaunchProvider>Standard Python launcher</LaunchProvider>
+    <InterpreterId>MSBuild|venv|$(MSBuildProjectFullPath)</InterpreterId>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
+  <PropertyGroup>
+    <VisualStudioVersion Condition=" '$(VisualStudioVersion)' == '' ">10.0</VisualStudioVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="ForStat\ConsoleApp1\ConsoleApp1\obj\Debug\ConsoleApp1.csproj.FileListAbsolute.txt" />
+    <Content Include="requirements.txt" />
+    <Content Include="runtime.txt" />
+    <Content Include="test.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CubraDefinition.py" />
+    <Compile Include="EnGen_tg.py" />
+    <Compile Include="en_calendar.py" />
+    <Compile Include="en_game.py" />
+    <Compile Include="en_m_game.py" />
+    <Compile Include="en_rating.py" />
+    <Compile Include="en_request.py" />
+    <Compile Include="gis.py" />
+    <Compile Include="main.py" />
+    <Compile Include="module1.py" />
+    <Compile Include="RussianWords.py" />
+    <Compile Include="speed_test.py" />
+    <Compile Include="TgTest.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="ForStat\" />
+    <Folder Include="ForStat\ConsoleApp1\" />
+    <Folder Include="ForStat\ConsoleApp1\ConsoleApp1\" />
+    <Folder Include="ForStat\ConsoleApp1\ConsoleApp1\obj\" />
+    <Folder Include="ForStat\ConsoleApp1\ConsoleApp1\obj\Debug" />
+  </ItemGroup>
+  <ItemGroup>
+    <Interpreter Include="venv\">
+      <Id>venv</Id>
+      <Description>venv (Python 3.7 (64-bit))</Description>
+      <InterpreterPath>Scripts\python.exe</InterpreterPath>
+      <WindowsInterpreterPath>Scripts\pythonw.exe</WindowsInterpreterPath>
+      <Version>3.7</Version>
+      <Architecture>X64</Architecture>
+      <PathEnvironmentVariable>PYTHONPATH</PathEnvironmentVariable>
+    </Interpreter>
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
+</Project>
