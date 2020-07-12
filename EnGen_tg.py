@@ -19,7 +19,7 @@ bot.
 
 import logging
 import os.path
-from module1 import *
+from module2 import *
 from TgTest import *
 from gis import *
 from urllib import request, parse
@@ -29,11 +29,9 @@ import random
 import re
 import json
 import time
-from CubraDefinition import CubraDefinition
 import base64
-import datetime
+from datetime import datetime, date, time, timedelta
 
-from datetime import datetime
 from threading import Timer
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 
@@ -43,223 +41,81 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 
 logger = logging.getLogger(__name__)
 
-#Define a global variables
-Holder = GlobalHolder()
-
-#tg methods
-
 def tg_error(update, context):
     update.message.reply_text('hello')
     update.message.reply_text("Callback: {0}".format(str(context.error)))
     logger.warning('Update "%s" caused error "%s"', update, context.error)
     
-def tg_load(update, context):
-    newstr = ""
+Holder = GlobalInfo()
+
+def tg_login(update, context):
     try:
-        bot_authorize(update, context)
-        input_text = simple_message_handler(update.message.text, TgCommands.Load, True)
-        result = CubraDefinition.load_cubra(input_text)
-        if not result:
-            update.message.reply_text('already loaded')
+        if len(update.message.text)<8:
+            update.message.reply_text('неверный логин')
             return
-        update.message.reply_text('good')
+        login_id = update.message.text[7:]
+        if not login_id in GlobalInfo.munchkins_logins:
+            update.message.reply_text('неверный логин')
+            return
+        GlobalInfo.registered_players[update.message.chat.id] = GlobalInfo.munchkins_logins[login_id]
     except Exception as e:
-        update.message.reply_text("Error: {0}".format(str(e)))
-
-def tg_test(update, context):
-    newstr = ""
-    try:
-        update.message.reply_text("hello")
-        update.message.reply_text("hello, " + update.message.from_user.first_name + "\n")
-        update.message.reply_text("hello, " + update.message.from_user.first_name + "\n"+str(update.message.from_user.id) + "\n")
-        update.message.reply_text("hello, " + update.message.from_user.first_name + "\n"
-                                  +str(update.message.from_user.id) + "\n")
-        update.message.reply_text("hello, " + update.message.from_user.first_name + "\n"
-                                  +str(update.message.from_user.id) + "\n"
-                                  +update.message.from_user.first_name + "\n"
-                                  +update.message.from_user.last_name + "\n"
-                                  +update.message.from_user.username + "\n")
-        update.message.reply_text(os.path.dirname(os.path.realpath(__file__)))
-        file = open('test.txt','r', encoding='utf-8')
-        text = file.read()
-        update.message.reply_text(text)
-        file.close()
-    except Exception as e:
-        update.message.reply_text("Error: {0}".format(str(e)))
-
-def tg_help(update, context):
-    try:
-        bot_authorize(update, context)
-        update.message.reply_text('для того, чтобы работать с ботом, нужно выбрать определенный режим(решение олимпиек, решени гибридов, специальный режим и т д.)')
-        update.message.reply_text('режимы созданы для того, чтобы обрабатывать текст без ввода команды. в каждом режиме бот обрабатывает сообщения определенным образом.')
-        update.message.reply_text('переключить режим на следующий в списке можно командой /mode. введя через пробел название(или часть названия) режима - можно переключить конкретно на выбранных режим(например, /mode olymp или просто /mode o).')
-        update.message.reply_text('после переключения на режим, можно вводить боту текст для решения выбранной задачи, подробности в /modes')
-    except Exception as e:
-        update.message.reply_text("Error: {0}".format(str(e)))
-
-
-def tg_modes(update, context):
-    try:
-        bot_authorize(update, context)
-        update.message.reply_text('режим disabled:')
-        update.message.reply_text('отключены ответы бота на какой-либо текст без команды')
-        update.message.reply_text('режим special:')
-        update.message.reply_text('постоянно меняется, что в данный момент он делает и работает ли вообще - надо спрашивать')
-        update.message.reply_text('режимы olymp, gibrid3, gibrid4, meta, logo, bruk, plus, scepka, matr, anag:')
-        update.message.reply_text('режимы для помощи в решении заданий: олимпийка, гибриды из трех, гибриды из четырех, метаграмма, логогриф, буква-брюква, плюсограмма, сцепка, матрица, анаграмма')
-        update.message.reply_text('к заданным словам ищутся ассоциации на sociation.org и дальше сравниваются результаты по правилам каждого режима(например, для гибридов это пересечение по трем буквам)')
-        update.message.reply_text('формат ввода(простой): вводите первое слово, вводите точку, вводите второе слово. например, если в режиме олимпиек ввести "кошка.полка", то бот возьмет синонимы к слову кошка(плюс само слово кошка), синонимы к слову полка(плюс само слово полка), и будет искать по эти спискам общие слова')
-        update.message.reply_text('формат ввода(посложнее): также можно вводить не одно слово, а несколько - и для каджого из них бот будет искать синонимы. вводить нужно через запятую(можно с пробелами). например, если в режиме олимпийка ввести "кошка, собака . дом, кровать, окно", то бот возьмет синонимы к словам кошка и собака(плюс сами слова) и запишет их в первый список, потом возьмет синонимы к словам дом, кровать и окно(аналогично плюс сами эти слова) и запишет их во второй список, и потом выведет общие слова между первым и вторым списками.')
-        update.message.reply_text('формат ввода(исключение ассоциаций): если перед словом поставить восклицательный знак либо знак процента, то бот не будет брать к этому слову ассоциации. например, "!окно,дом.сарай": бот возьмет для первого списка слова окно, дом и ассоциации к слову дом, для второго списка - слово сарай и ассоциации к слову сарай')
-        update.message.reply_text('формат ввода(накуй ассоциации): если первым символом в сообщении поставить занк доллара, то формат ввода будет совсем другой: все слова будут браться не через запятую, а через любые знаки(кроме точки)/пробел/перенос строки, а также к этим словам не будут браться ассоциации. например, "$корова день окно мышь овал" в режиме гибридов вернет один ответ: корОВАл. то есть бот возьмет только те слова которые указаны, без ассоциаций')
-        update.message.reply_text('формат ввода(накуй ассоциации: расширенный): если поставить точку между группами слов, то слова в первой группе не будут сравниваться между собой. например, если у вас есть большой список слов и вы хотите сравнить его на наличие гибридов со словами кошка и овал, можно ввести "$слово1 слово2 тут докуя слов слово100.кошка овал", слово1..слово100 между собой сравниваться не будут, будут сравниваться кошка и овал между собой и кошка и овал с первым списком')
-        update.message.reply_text('общая инфа по формату ввода: во всех вышеописанных форматах неважно сколько вы поставите пробелов между словами. валидные варианты: " корова,   дичь   .  место", "стол, %  ум,уж.  %дерево,мост  ", "$  евро  рубль,,,;;;*** сон.карета"')
-        update.message.reply_text('формат ввода для матриц(в матрицах, очевидно, нужно сравнивать слова из трех списков, а не из двух): для формата ввода "накуй ассоциации" точки в принципе не нужны, для формата ввода "накуй ассоциации: расширенный" ещё одна точка не нужна, третий список будет дублировать второй, для остальных - точка также является разделителем списков(то есть их должны быть две штуки). например, "кошка.собака,дом.печка,стол"')
-        update.message.reply_text('режим combined:')
-        update.message.reply_text('следующие режимы вместе: gibrid3, gibrid4, meta, logo, bruk, plus, scepka, anag')
-        update.message.reply_text('режим cubra:')
-        update.message.reply_text('надо добавить описание')
-    except Exception as e:
-        update.message.reply_text("Error: {0}".format(str(e)))
-
-def tg_switch_mode(update, context):
-    global Holder
-    try:
-        bot_authorize(update, context)
-        input_text = simple_message_handler(update.message.text, TgCommands.SwitchMode, False)
-        settings = Holder.get(update.message.chat.id)
-        mode = settings.current_mode
-        if input_text is None:
-            mode = settings.next_mode()
-        else:
-            newmodes = ModeType.get_modes_by_alias(input_text)
-            if len(newmodes)==0:
-                update.message.reply_text('mode not found')
-                return
-            else:
-                if len(newmodes)>1:
-                    found_modes = [ModeType.aliases_by_modes[mode_int] for mode_int in newmodes]
-                    str_found_modes = [found_mode[0] + '(' + ','.join(found_mode[1:]) + ')' for found_mode in found_modes]
-                    update.message.reply_text('more than one mode found:\n' + '\n'.join(str_found_modes))
-                    return
-                else:
-                    mode = newmodes[0]
-                    settings.current_mode = mode
-        update.message.reply_text('switched to ' + ModeType.aliases_by_modes[mode][0])
-    except Exception as e:
-        update.message.reply_text("Error: {0}".format(str(e)))
+        err_msg = "неизвестная ошибка: {0}".format(str(e))
+        update.message.reply_text(err_msg)
+        context.bot.send_message('228485598', err_msg + 'id:' + update.message.chat.id)
 
 def tg_default(update, context):
     try:
-        bot_authorize(update, context)
-        settings = Holder.get(update.message.chat.id)
-        mode = settings.current_mode
-        if mode == ModeType.Disabled:
+        if not update.message.chat.id in GlobalInfo.registered_players:
+            update.message.reply_text('вы не зарегистрированы')
             return
-        result = default_input(update.message.text, settings)
-        if not result.is_success:
-            print_long(update, "failed:\n" + result.message)
+        munchkin = GlobalInfo.registered_players[update.message.chat.id]
+        input_text = update.message.text.strip()
+        if len(input_text)==0:
+            update.message.reply_text('ошибка: пустое сообщение')
             return
-        my_dot_message = None
-        count_symbols = 0
-        for result_val in result.values:
-            count_symbols = count_symbols + len(result_val)
-        if count_symbols > 1000:
-            my_dot_message = update.message.reply_text('.')
-        for msg in result.values:
-            print_long(update, msg)
-        if not my_dot_message is None:
-            my_dot_message = update.message.reply_text('.', reply_to_message_id=my_dot_message.message_id)
+        if input_text in GlobalInfo.c_singlecode_handlers:
+            handler = GlobalInfo.c_singlecode_handlers[input_text]
+            result = handler(munchkin, input_text)
+            update.message.reply_text(result.message)
+            return
+        parsed_codes = GlobalInfo.split_and_remove_empty(input_text)
+        if len(parsed_codes)==0:
+            update.message.reply_text('ошибка: пустое сообщение')
+            return
+        result_treasure = GlobalInfo.do_beautiful_with_treasures(munchkin, parsed_codes)
+        update.message.reply_text(result_treasure.message)
     except Exception as e:
-        update.message.reply_text("Error: {0}".format(str(e)))
-
-def print_long(update, input_text):
-    if len(input_text) == 0:
-        update.message.reply_text('-')
-        return
-    if len(input_text) > 4096:
-        for x in range(0, len(input_text), 4096):
-            update.message.reply_text(input_text[x:x+4096])
-    else:
-        update.message.reply_text(input_text)
-        
-def bot_authorize(update, context):
-    global Holder
-    if not update.message.chat.id in Holder.settings_by_id:
-        Holder.add(update.message.chat.id)
-        user_info = "authorized user:" + str(update.message.chat.id) + "\n" + str(update.message.date) + "\n"+str(update.message.from_user.id) + "\n"+str(update.message.from_user.first_name) + "\n"+str(update.message.from_user.last_name) + "\n"+str(update.message.from_user.username)
-        context.bot.send_message('228485598', user_info)
-        return
-        #raise Exception('you are not authorized, please call /start')
-
-#----------
-
-def default_input(text, settings):
-    mode = settings.current_mode
-    text_handler = Holder.default_text_handlers_by_modes[mode]
-    if text_handler is None:
-        return Result.failed("current mode is not supported yet")
-    return text_handler.do_action(text, settings)
-
-def simple_message_handler(full_text, command, empty_is_invalid = False):
-    if len(full_text)<len(command)+3:
-        if empty_is_invalid:
-            raise Exception('command should contains arguments')
-        return None
-    return full_text[len(command)+2:]
-
-def encrypt(str_password):
-    bytes_password = str_password.encode('utf-8')
-    file = open('d:\kubr.json','r', encoding='utf-8')
-    cubra_text = file.read()
-    file.close()
-
-    cubra_text_bytes = cubra_text.encode('utf-8')
-    while len(cubra_text_bytes) % 16 !=0:
-        cubra_text_bytes = cubra_text_bytes + b' '
-
-    enctext = CubraDefinition.encrypt(cubra_text_bytes, bytes_password)
-    enctext_64 = base64.b64encode(enctext)
-
-    file = open('d:\enccubra.txt', 'w')
-    file.truncate(0)
-    file.write(enctext_64)
-    file.close()
+        err_msg = "неизвестная ошибка: {0}".format(str(e))
+        update.message.reply_text(err_msg)
+        context.bot.send_message('228485598', err_msg + 'id:' + update.message.chat.id)
 
 def main():
-    #handler = CubraModeDefaultTextHandler()
-    #settings = Settings()
-    #settings.mem_mode = ModeType.Cubra
-    #settings.mem_values = '+'
-    #output2 = handler.do_action('задание1\n.ко .пы .то\r\n.мир .', settings)
+    GlobalInfo.initialize()
+    update = FakeUpdate()
+    context = FakeContext()
+    update.message.text = '/login 1234'
+    update.message.chat.id = '123'
+    tg_login(update, context)
+    GlobalInfo.registered_players[update.message.chat.id].current_lvl = 3
+    update.message.text = '/login 1234'
+    update.message.chat.id = '456'
+    tg_login(update, context)
+    
+    t1 = GlobalInfo.registered_players
+    t2 = GlobalInfo.munchkins_logins
 
-    #output = handler.search_with_regex([['q','w','e'],['r','t'],['y','u','i'],['5','4','3','2'],['1','2']])
-    #ttt = len(output)
-    # result = handler.do_action('$кошка собака овал')
-    # handler = Holder.default_text_handlers_by_modes[ModeType.Olymp]
-    # start = time.time()
-    # result = handler.do_action('кошка.собака,копыто')
-    # end = time.time()
-    # print(end - start)
 
-    #str_password = ''
-    #CubraDefinition.load_cubra(str_password)
+    t3 = Munchkin()
 
-    #handler = CubraModeDefaultTextHandler()
-    #settings = Settings()
-    #output2 = handler.do_action('?1 .кль', settings)
-
-    #encrypt(str_password)
-
-    # updater = Updater("408100374:AAEhMleUbdVH_G1xmKeCAy8MlNfyBwB9AOo", use_context=True)
-    updater = Updater("979411435:AAEHIVLx8L8CxmjIHtitaH4L1GeV_OCRJ7M", use_context=True)
+    updater = Updater("408100374:AAEhMleUbdVH_G1xmKeCAy8MlNfyBwB9AOo", use_context=True)
+    #updater = Updater("979411435:AAEHIVLx8L8CxmjIHtitaH4L1GeV_OCRJ7M", use_context=True)
     dp = updater.dispatcher
 
-    dp.add_handler(CommandHandler(TgCommands.Modes, tg_modes))
-    dp.add_handler(CommandHandler(TgCommands.Help, tg_help))
-    dp.add_handler(CommandHandler(TgCommands.SwitchMode, tg_switch_mode))
-    dp.add_handler(CommandHandler(TgCommands.Test, tg_test))
-    dp.add_handler(CommandHandler(TgCommands.Load, tg_load))
+    #dp.add_handler(CommandHandler(TgCommands.Modes, tg_modes))
+    #dp.add_handler(CommandHandler(TgCommands.Help, tg_help))
+    #dp.add_handler(CommandHandler(TgCommands.SwitchMode, tg_switch_mode))
+    #dp.add_handler(CommandHandler(TgCommands.Test, tg_test))
+    #dp.add_handler(CommandHandler(TgCommands.Load, tg_load))
     dp.add_handler(MessageHandler(Filters.text, tg_default))
 
     dp.add_error_handler(tg_error)

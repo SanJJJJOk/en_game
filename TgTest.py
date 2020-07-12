@@ -13,3 +13,11 @@ class FakeMessage:
 class FakeChat:
     def __init__(self):
         self.id = ''
+        
+class FakeContext:
+    def __init__(self):
+        self.bot = FakeBot()
+
+class FakeBot:
+    def send_message(self, str1, str2):
+        pass

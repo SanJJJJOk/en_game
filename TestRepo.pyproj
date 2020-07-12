@@ -29,13 +29,13 @@
     <Compile Include="CubraDefinition.py" />
     <Compile Include="EnGen_tg.py" />
     <Compile Include="en_calendar.py" />
-    <Compile Include="en_game.py" />
     <Compile Include="en_m_game.py" />
     <Compile Include="en_rating.py" />
     <Compile Include="en_request.py" />
     <Compile Include="gis.py" />
     <Compile Include="main.py" />
     <Compile Include="module1.py" />
+    <Compile Include="module2.py" />
     <Compile Include="RussianWords.py" />
     <Compile Include="speed_test.py" />
     <Compile Include="TgTest.py" />
@@ -50,12 +50,12 @@
   <ItemGroup>
     <Interpreter Include="venv\">
       <Id>venv</Id>
+      <Version>3.7</Version>
       <Description>venv (Python 3.7 (64-bit))</Description>
       <InterpreterPath>Scripts\python.exe</InterpreterPath>
       <WindowsInterpreterPath>Scripts\pythonw.exe</WindowsInterpreterPath>
-      <Version>3.7</Version>
-      <Architecture>X64</Architecture>
       <PathEnvironmentVariable>PYTHONPATH</PathEnvironmentVariable>
+      <Architecture>X64</Architecture>
     </Interpreter>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
