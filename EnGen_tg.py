@@ -63,6 +63,21 @@ def tg_login(update, context):
         update.message.reply_text(err_msg)
         context.bot.send_message('228485598', err_msg + 'id:' + update.message.chat.id)
 
+def tg_logout(update, context):
+    try:
+        if len(update.message.text)<8:
+            update.message.reply_text('неверный логин')
+            return
+        login_id = update.message.text[7:]
+        if not login_id in GlobalInfo.munchkins_logins:
+            update.message.reply_text('неверный логин')
+            return
+        GlobalInfo.registered_players[update.message.chat.id] = GlobalInfo.munchkins_logins[login_id]
+    except Exception as e:
+        err_msg = "неизвестная ошибка: {0}".format(str(e))
+        update.message.reply_text(err_msg)
+        context.bot.send_message('228485598', err_msg + 'id:' + update.message.chat.id)
+
 def tg_default(update, context):
     try:
         if not update.message.chat.id in GlobalInfo.registered_players:
@@ -104,18 +119,14 @@ def main():
     t1 = GlobalInfo.registered_players
     t2 = GlobalInfo.munchkins_logins
 
-
     t3 = Munchkin()
 
     updater = Updater("408100374:AAEhMleUbdVH_G1xmKeCAy8MlNfyBwB9AOo", use_context=True)
     #updater = Updater("979411435:AAEHIVLx8L8CxmjIHtitaH4L1GeV_OCRJ7M", use_context=True)
     dp = updater.dispatcher
 
-    #dp.add_handler(CommandHandler(TgCommands.Modes, tg_modes))
-    #dp.add_handler(CommandHandler(TgCommands.Help, tg_help))
-    #dp.add_handler(CommandHandler(TgCommands.SwitchMode, tg_switch_mode))
-    #dp.add_handler(CommandHandler(TgCommands.Test, tg_test))
-    #dp.add_handler(CommandHandler(TgCommands.Load, tg_load))
+    dp.add_handler(CommandHandler('login', tg_login))
+    dp.add_handler(CommandHandler('logout', tg_logout))
     dp.add_handler(MessageHandler(Filters.text, tg_default))
 
     dp.add_error_handler(tg_error)

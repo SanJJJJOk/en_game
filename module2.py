@@ -81,31 +81,79 @@ class Munchkin():
 
 class GlobalInfo():
     munchkins_logins = {
-        '1234': Munchkin(), 
-        '2345': Munchkin()
+        'iqnsffw': Munchkin(), 
+        'oqofndh': Munchkin()
         }
     registered_players = {}#.chat.id-key,Munchkin-value
     monsters = [
-        Monster('fa9182','da3927',1,['l1002'],{
+        Monster('fight','defeat',1,['lvl'],{
             RaceClassType.Warrior: 2
             }),
-        Monster('fa5122','da4159',1,['l4146'],{})
+        Monster('мор4','1539',1,['л5321'],{}),
+        Monster('муп2','3661',2,['л7669'],{}),
+        Monster('мма3','2204',2,['л5656'],{}),
+        Monster('мпк6','7652',4,['л3218'],{
+            RaceClassType.Wizard: 2
+            }),
+        Monster('мте4','4071',5,['л4231'],{}),
+        Monster('моа8','8029',6,['л0331'],{}),
+        Monster('мсу1','5676',8,['л3580'],{
+            RaceClassType.Warrior: 1
+            }),
+        Monster('мех5','3063',9,['л8988'],{
+            RaceClassType.Wizard: 1
+            }),
+        Monster('мхм4','4753',10,['л4815'],{}),
+        Monster('мкб7','9982',12,['л1251'],{}),
+        Monster('мвя3','1914',13,['л5246'],{
+            RaceClassType.Elf: -5
+            }),
+        Monster('мпо2','3777',15,['л7313'],{
+            RaceClassType.Elf: 1,
+            RaceClassType.Warrior: 1
+            }),
+        Monster('мас9','8211',19,['л1181'],{}),
+        Monster('мде6','2119',21,['л6369'],{}),
+        Monster('мгл2','2183',23,['л2534'],{
+            RaceClassType.Warrior: 1
+            }),
         ]
     treasures = [
-        Treasure('head name 1', None, TreasureType.Headgear, 1, False, 'tan1'),
+        Treasure('карнавальная маска', RaceClassType.Wizard, TreasureType.Headgear, 1, False, 'гуп7'),#5
+        Treasure('сланцы', RaceClassType.Elf, TreasureType.Footgear, 1, False, 'сан2'),#6
+        Treasure('жилетка новичка', RaceClassType.Wizard, TreasureType.Armor, 1, False, 'бор6'),#8
+        Treasure('шлем из картона', RaceClassType.Warrior, TreasureType.Headgear, 1, False, 'гус9'),#9
+        Treasure('палка', RaceClassType.Warrior, TreasureType.OneHandWeapon, 1, False, 'ора5'),#9
+        Treasure('шелковые тапочки', RaceClassType.Wizard, TreasureType.Footgear, 2, False, 'сок7'),#10
+        Treasure('длинный лук', RaceClassType.Elf, TreasureType.TwoHandWeapon, 2, True, 'трс3'),#10
+        Treasure('бронька', None, TreasureType.Armor, 1, False, 'бас2'),#12
+        Treasure('эльфомечик', RaceClassType.Elf, TreasureType.OneHandWeapon, 2, False, 'ому7'),#12
+        Treasure('тапки вязаные', None, TreasureType.Footgear, 1, False, 'сыч8'),#13
+        Treasure('массивный шлем', RaceClassType.Warrior, TreasureType.Headgear, 2, True, 'гон6'),#13
+        Treasure('защитный шлем', None, TreasureType.Headgear, 1, False, 'гав4'),#15
+        Treasure('доспех воина', RaceClassType.Warrior, TreasureType.Armor, 2, False, 'бух5'),#15
+        Treasure('высокие сапоги', None, TreasureType.Footgear, 2, False, 'сфи4'),#19
+        Treasure('божественная тиара', None, TreasureType.Headgear, 2, False, 'гкк2'),#19
+        Treasure('великая броня света', RaceClassType.Wizard, TreasureType.Armor, 3, True, 'буа5'),#19
+        Treasure('минипосох', RaceClassType.Wizard, TreasureType.OneHandWeapon, 1, False, 'оля2'),#21
+        Treasure('нейроботы', RaceClassType.Wizard, TreasureType.Footgear, 3, False, 'сем9'),#21
+        Treasure('бронежилет', None, TreasureType.Armor, 2, False, 'бур4'),#21
+        Treasure('мегамеч', RaceClassType.Warrior, TreasureType.TwoHandWeapon, 4, True, 'тен3'),#23
+        Treasure('леви-кроссы', RaceClassType.Elf, TreasureType.Footgear, 3, False, 'сук2'),#23
+        Treasure('крепкие латы', RaceClassType.Warrior, TreasureType.Footgear, 2, False, 'ска5'),#23
         ]
     classes = {
-        RaceClassType.NoClass: 'abc1',
-        RaceClassType.Warrior: 'abc2',
-        RaceClassType.Wizard: 'abc3',
-        RaceClassType.Thief: 'abc4',
-        RaceClassType.Cleric: 'abc5',
+        RaceClassType.NoClass: 'ком1',
+        RaceClassType.Warrior: 'кан3',
+        RaceClassType.Wizard: 'куу7',
+        #RaceClassType.Thief: 'abc4',
+        #RaceClassType.Cleric: 'abc5',
         }
     races = {
-        RaceClassType.Human: 'abc6',
-        RaceClassType.Elf: 'abc7',
-        RaceClassType.Halfling: 'abc8',
-        RaceClassType.Dwarf: 'abc9',
+        RaceClassType.Human: 'раз1',
+        RaceClassType.Elf: 'ров9',
+        #RaceClassType.Halfling: 'abc8',
+        #RaceClassType.Dwarf: 'abc9',
         }
     c_level_codes = {}
     c_monster_fight_codes = {}
