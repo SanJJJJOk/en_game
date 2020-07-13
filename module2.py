@@ -7,7 +7,7 @@ from RussianWords import *
 import random
 from datetime import datetime, date, time, timedelta
 
-class RaceClassType():
+class RaceClassType:
     NoClass = 1
     Warrior = 2
     Wizard = 3
@@ -37,7 +37,7 @@ class RaceClassType():
     #def is_race(type):
     #    return type==RaceClassType.Human or type==RaceClassType.Elf or type==RaceClassType.Halfling or type==RaceClassType.Dwarf
     
-class TreasureType():
+class TreasureType:
     Headgear = 1
     Armor = 2
     Footgear = 3
@@ -45,12 +45,12 @@ class TreasureType():
     TwoHandWeapon = 5
     Jewel = 6
     
-class Result():
+class Result:
     def __init__(self, result_code, message):
         self.result_code = result_code
         self.message = message
 
-class Treasure():
+class Treasure:
     def __init__(self, name, rc_type, tr_type, power, is_big, tr_code):
         self.name = name
         self.rc_type = rc_type
@@ -59,7 +59,7 @@ class Treasure():
         self.is_big = is_big
         self.tr_code = tr_code
 
-class Monster():
+class Monster:
     def __init__(self, fightcode, defeatcode, lvl, lvlcodes, bonuses):
         self.monster_fightcode = fightcode
         self.monster_defeatcode = defeatcode
@@ -67,8 +67,9 @@ class Monster():
         self.monster_lvl = lvl
         self.bonuses_to_mnch = bonuses
         
-class Munchkin():
-    def __init__(self):
+class Munchkin:
+    def __init__(self, name):
+        self.name = name
         self.current_lvl = 1
         self.current_race = RaceClassType.Human
         self.current_class = RaceClassType.NoClass
@@ -79,10 +80,11 @@ class Munchkin():
         self.class_change_datetime = None
         self.monster_fight_datetime = None
 
-class GlobalInfo():
+class GlobalInfo:
     munchkins_logins = {
-        'iqnsffw': Munchkin(), 
-        'oqofndh': Munchkin()
+        'iqnsffw': Munchkin('otwt'), 
+        'oqofndh': Munchkin('div'),
+        'qnoruwd': Munchkin('mars'),
         }
     registered_players = {}#.chat.id-key,Munchkin-value
     monsters = [

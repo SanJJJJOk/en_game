@@ -58,6 +58,7 @@ def tg_login(update, context):
             update.message.reply_text('неверный логин')
             return
         GlobalInfo.registered_players[update.message.chat.id] = GlobalInfo.munchkins_logins[login_id]
+        update.message.reply_text('регистрация успешна')
     except Exception as e:
         err_msg = "неизвестная ошибка: {0}".format(str(e))
         update.message.reply_text(err_msg)
@@ -119,7 +120,7 @@ def main():
     #t1 = GlobalInfo.registered_players
     #t2 = GlobalInfo.munchkins_logins
 
-    #t3 = Munchkin()
+    #t3 = Munchkin('name123')
 
     updater = Updater("408100374:AAEhMleUbdVH_G1xmKeCAy8MlNfyBwB9AOo", use_context=True)
     #updater = Updater("979411435:AAEHIVLx8L8CxmjIHtitaH4L1GeV_OCRJ7M", use_context=True)
