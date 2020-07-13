@@ -42,11 +42,38 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 logger = logging.getLogger(__name__)
 
 def tg_error(update, context):
-    update.message.reply_text('hello')
-    update.message.reply_text("Callback: {0}".format(str(context.error)))
+    err_msg = "Callback: {0}".format(str(context.error))
+    update.message.reply_text(err_msg)
+    context.bot.send_message('228485598', err_msg)
     logger.warning('Update "%s" caused error "%s"', update, context.error)
     
 Holder = GlobalInfo()
+
+def tg_stat(update, context):
+    try:
+        if not update.message.chat.id in GlobalInfo.registered_players:
+            update.message.reply_text('вы не зарегистрированы')
+            return
+        munchkin = GlobalInfo.registered_players[update.message.chat.id]
+        output_stat = munchkin.name + ', ***' + str(munchkin.current_lvl) + '*** ур.\n'
+        output_stat = output_stat + '---------------------------\n'
+        output_stat = output_stat + RaceClassType.CREmojies[munchkin.current_race] + ': ' + RaceClassType.CRNames[munchkin.current_race] + '\n'
+        output_stat = output_stat + RaceClassType.CREmojies[munchkin.current_class] + ': ' + RaceClassType.CRNames[munchkin.current_class] + '\n'
+        output_stat = output_stat + '---------------------------\n'
+        for tr in munchkin.used_trs:
+            output_stat = output_stat + tr.get_small_info() + '\n' 
+
+        total_power = munchkin.current_lvl
+        for tr in munchkin.used_trs:
+            total_power = total_power + tr.power
+        output_stat = output_stat + '---------------------------\n'
+        output_stat = output_stat + Emojies.Power + '=' + str(total_power)
+
+        update.message.reply_text(output_stat)
+    except Exception as e:
+        err_msg = "неизвестная ошибка: {0}".format(str(e))
+        update.message.reply_text(err_msg)
+        context.bot.send_message('228485598', err_msg + 'id:' + update.message.chat.id)
 
 def tg_login(update, context):
     try:
@@ -57,8 +84,9 @@ def tg_login(update, context):
         if not login_id in GlobalInfo.munchkins_logins:
             update.message.reply_text('неверный логин')
             return
-        GlobalInfo.registered_players[update.message.chat.id] = GlobalInfo.munchkins_logins[login_id]
-        update.message.reply_text('регистрация успешна')
+        munchkin = GlobalInfo.munchkins_logins[login_id]
+        GlobalInfo.registered_players[update.message.chat.id] = munchkin
+        update.message.reply_text('регистрация успешна: ' + munchkin.name)
     except Exception as e:
         err_msg = "неизвестная ошибка: {0}".format(str(e))
         update.message.reply_text(err_msg)
@@ -66,14 +94,11 @@ def tg_login(update, context):
 
 def tg_logout(update, context):
     try:
-        if len(update.message.text)<8:
+        chat_id = update.message.chat.id
+        if chat_id in GlobalInfo.registered_players:
+            del GlobalInfo.registered_players[chat_id]
             update.message.reply_text('неверный логин')
-            return
-        login_id = update.message.text[7:]
-        if not login_id in GlobalInfo.munchkins_logins:
-            update.message.reply_text('неверный логин')
-            return
-        GlobalInfo.registered_players[update.message.chat.id] = GlobalInfo.munchkins_logins[login_id]
+        update.message.reply_text('вы не относитесь ни к одной команде')
     except Exception as e:
         err_msg = "неизвестная ошибка: {0}".format(str(e))
         update.message.reply_text(err_msg)
@@ -92,14 +117,14 @@ def tg_default(update, context):
         if input_text in GlobalInfo.c_singlecode_handlers:
             handler = GlobalInfo.c_singlecode_handlers[input_text]
             result = handler(munchkin, input_text)
-            update.message.reply_text(result.message)
+            update.message.reply_text(Result.ResultEmojies[result.result_code] + result.message)
             return
         parsed_codes = GlobalInfo.split_and_remove_empty(input_text)
         if len(parsed_codes)==0:
             update.message.reply_text('ошибка: пустое сообщение')
             return
         result_treasure = GlobalInfo.do_beautiful_with_treasures(munchkin, parsed_codes)
-        update.message.reply_text(result_treasure.message)
+        update.message.reply_text(Result.ResultEmojies[result_treasure.result_code] + result_treasure.message)
     except Exception as e:
         err_msg = "неизвестная ошибка: {0}".format(str(e))
         update.message.reply_text(err_msg)
@@ -126,6 +151,7 @@ def main():
     #updater = Updater("979411435:AAEHIVLx8L8CxmjIHtitaH4L1GeV_OCRJ7M", use_context=True)
     dp = updater.dispatcher
 
+    dp.add_handler(CommandHandler('stat', tg_stat))
     dp.add_handler(CommandHandler('login', tg_login))
     dp.add_handler(CommandHandler('logout', tg_logout))
     dp.add_handler(MessageHandler(Filters.text, tg_default))

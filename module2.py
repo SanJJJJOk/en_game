@@ -7,6 +7,26 @@ from RussianWords import *
 import random
 from datetime import datetime, date, time, timedelta
 
+class Emojies:
+    OneHandSword = '\ud83d\udde1'
+    TwoHandSword = '\u2694\ufe0f'
+    Headgear = '\ud83c\udfa9'
+    Armor = '\ud83e\udde5'
+    Footgear = '\ud83e\udd7e'
+    Power = '\ud83d\udcaa'
+    NoClass = '\ud83d\udc76'
+    Warrior = '\ud83d\udee1'
+    Wizard = '\u2728'
+    Thief = '\ud83d\udd2a'
+    Cleric = '\ud83d\udd2e'
+    Human = '\ud83e\uddcd'
+    Elf = '\ud83c\udff9'
+    Halfling = '\ud83e\udd6a'
+    Dwarf = '\ud83e\ude93'
+    Result0 = '\u2705'#good
+    Result1 = '\u274c'#bad
+    Result2 = '\u23f3'#time
+
 class RaceClassType:
     NoClass = 1
     Warrior = 2
@@ -28,6 +48,17 @@ class RaceClassType:
         8: 'Халфлинг',
         9: 'Дварф',
         }
+    CREmojies = {
+        1: Emojies.NoClass,
+        2: Emojies.Warrior,
+        3: Emojies.Wizard,
+        4: Emojies.Thief,
+        5: Emojies.Cleric,
+        6: Emojies.Human,
+        7: Emojies.Elf,
+        8: Emojies.Halfling,
+        9: Emojies.Dwarf,
+        }
 
     @staticmethod
     def is_class(type):
@@ -43,9 +74,29 @@ class TreasureType:
     Footgear = 3
     OneHandWeapon = 4
     TwoHandWeapon = 5
-    Jewel = 6
+    #Jewel = 6
+    TreasureNames = {
+        1: 'Головняк',
+        2: 'Броник',
+        3: 'Обувка',
+        4: 'В 1 руку',
+        5: 'В 2 руки',
+        #6: 'Украшение',
+        }
+    TreasureEmojies = {
+        1: Emojies.Headgear,
+        2: Emojies.Armor,
+        3: Emojies.Footgear,
+        4: Emojies.OneHandSword,
+        5: Emojies.TwoHandSword,
+        }
     
 class Result:
+    ResultEmojies = {
+        0: Emojies.Result0,
+        1: Emojies.Result1,
+        2: Emojies.Result2,
+        }
     def __init__(self, result_code, message):
         self.result_code = result_code
         self.message = message
@@ -58,6 +109,23 @@ class Treasure:
         self.power = power
         self.is_big = is_big
         self.tr_code = tr_code
+        
+    def get_small_info(self):
+        info =  TreasureType.TreasureEmojies[self.tr_type] + '+' + str(self.power)
+        if not self.rc_type is None:
+            info = info + ' [' + RaceClassType.CREmojies[self.rc_type] + ']'
+        if self.is_big:
+            info = info + ' БОЛЬШАЯ'
+        info = info + ' - ' + self.name + '(' + self.tr_code + ')'
+        return info
+
+    #def get_small_info_old(self):
+    #    info = self.name + '(' + self.tr_code + '): ' + TreasureType.TreasureEmojies[self.tr_type] + '(+' + str(self.power) + ')'
+    #    if not self.rc_type is None:
+    #        info = info + ' [' + RaceClassType.CRNames[self.rc_type] + ']'
+    #    if self.is_big:
+    #        info = info + ' БОЛЬШАЯ'
+    #    return info
 
 class Monster:
     def __init__(self, fightcode, defeatcode, lvl, lvlcodes, bonuses):
@@ -88,9 +156,6 @@ class GlobalInfo:
         }
     registered_players = {}#.chat.id-key,Munchkin-value
     monsters = [
-        Monster('fight','defeat',1,['lvl'],{
-            RaceClassType.Warrior: 2
-            }),
         Monster('мор4','1539',1,['л5321'],{}),
         Monster('муп2','3661',2,['л7669'],{}),
         Monster('мма3','2204',2,['л5656'],{}),
@@ -148,14 +213,14 @@ class GlobalInfo:
         RaceClassType.NoClass: 'ком1',
         RaceClassType.Warrior: 'кан3',
         RaceClassType.Wizard: 'куу7',
-        #RaceClassType.Thief: 'abc4',
-        #RaceClassType.Cleric: 'abc5',
+        RaceClassType.Thief: 'абв4',
+        RaceClassType.Cleric: 'абв5',
         }
     races = {
         RaceClassType.Human: 'раз1',
         RaceClassType.Elf: 'ров9',
-        #RaceClassType.Halfling: 'abc8',
-        #RaceClassType.Dwarf: 'abc9',
+        RaceClassType.Halfling: 'абв8',
+        RaceClassType.Dwarf: 'абв9',
         }
     c_level_codes = {}
     c_monster_fight_codes = {}
@@ -182,6 +247,12 @@ class GlobalInfo:
             GlobalInfo.c_singlecode_handlers[r_code] = GlobalInfo.simple_text_handler_race
         for treasure in GlobalInfo.treasures:
             GlobalInfo.c_treasure_codes[treasure.tr_code] = treasure
+        dt_now = datetime.now()
+        for login in GlobalInfo.munchkins_logins:
+            munchkin = GlobalInfo.munchkins_logins[login]
+            munchkin.race_change_datetime = dt_now
+            munchkin.class_change_datetime = dt_now
+            munchkin.monster_fight_datetime = dt_now
     
     @staticmethod
     def simple_text_handler_level(munchkin, input_text):
@@ -194,7 +265,7 @@ class GlobalInfo:
         munchkin.used_levels_codes.append(input_text)
         munchkin.current_lvl = munchkin.current_lvl + 1
         #save lvls
-        return Result(0, 'Ура! Ваш новый уровень: ' + munchkin.current_lvl)
+        return Result(0, 'Ура! Ваш новый уровень: ' + str(munchkin.current_lvl))
     
     @staticmethod
     def simple_text_handler_class(munchkin, input_text):
@@ -206,14 +277,15 @@ class GlobalInfo:
         if munchkin.current_class==new_class:
             return Result(1, 'вы уже текущего класса')
 
-        if munchkin.class_change_datetime < dt_now:
+        if munchkin.class_change_datetime > dt_now:
             dt_diff = (munchkin.class_change_datetime - dt_now).total_seconds()
             block_msg = 'следующая смена класса возможна через ' + str(round(dt_diff // 60)) + 'мин ' + str(round(dt_diff % 60)) + 'с'
             return Result(2, block_msg)
 
         munchkin.current_class = new_class
-        munchkin.class_change_datetime = dt_now + timedelta(0,300)
-        return Result(0, 'Ура! Ваш новый класс: ' + RaceClassType.CRNames[new_class])
+        munchkin.used_trs = []
+        munchkin.class_change_datetime = dt_now + timedelta(0,10)
+        return Result(0, 'Ура! Ваш новый класс: ' + RaceClassType.CREmojies[new_class] + RaceClassType.CRNames[new_class])
 
     @staticmethod
     def simple_text_handler_race(munchkin, input_text):
@@ -225,14 +297,15 @@ class GlobalInfo:
         if munchkin.current_race==new_race:
             return Result(1, 'вы уже текущей расы')
 
-        if munchkin.race_change_datetime < dt_now:
+        if munchkin.race_change_datetime > dt_now:
             dt_diff = (munchkin.race_change_datetime - dt_now).total_seconds()
             block_msg = 'следующая смена расы возможна через ' + str(round(dt_diff // 60)) + 'мин ' + str(round(dt_diff % 60)) + 'с'
             return Result(2, block_msg)
 
         munchkin.current_race = new_race
-        munchkin.race_change_datetime = dt_now + timedelta(0,300)
-        return Result(0, 'Ура! Ваша новая раса: ' + RaceClassType.CRNames[new_race])
+        munchkin.used_trs = []
+        munchkin.race_change_datetime = dt_now + timedelta(0,10)
+        return Result(0, 'Ура! Ваша новая раса: ' + RaceClassType.CREmojies[new_race] + RaceClassType.CRNames[new_race])
 
     @staticmethod
     def simple_text_handler_fight(munchkin, input_text):
@@ -240,7 +313,7 @@ class GlobalInfo:
             raise Exception('орг косяк, сообщите ему об этом( @sanjjjjok )')
     
         dt_now = datetime.now()
-        if munchkin.monster_fight_datetime < dt_now:
+        if munchkin.monster_fight_datetime > dt_now:
             dt_diff = (munchkin.monster_fight_datetime - dt_now).total_seconds()
             block_msg = 'следующая битва возможна через ' + str(round(dt_diff // 60)) + 'мин ' + str(round(dt_diff % 60)) + 'с'
             return Result(2, block_msg)
@@ -253,7 +326,7 @@ class GlobalInfo:
             if munchkin.current_class == cr_bonus or munchkin.current_race == cr_bonus:
                 total_power = total_power + monster.bonuses_to_mnch[cr_bonus]
 
-        munchkin.monster_fight_datetime = dt_now + timedelta(0,120)
+        munchkin.monster_fight_datetime = dt_now + timedelta(0,5)
         if total_power > monster.monster_lvl or (total_power == monster.monster_lvl and munchkin.current_class == RaceClassType.Warrior):
             return Result(0, 'Ура! Монстр победжен! Код побежденного монстра:' + monster.monster_defeatcode)
         else:
@@ -266,7 +339,7 @@ class GlobalInfo:
             if not tr_code in GlobalInfo.c_treasure_codes:
                 return Result(1, 'нет сокровища с таким кодом: ' + tr_code)
             input_treasures.append(GlobalInfo.c_treasure_codes[tr_code])
-        check_equip_msg = check_equip(munchkin, input_treasures)
+        check_equip_msg = GlobalInfo.check_equip(munchkin, input_treasures)
         if check_equip_msg is None:
             munchkin.used_trs = input_treasures
             return Result(0, 'Ура! Вы успешно переоделись')
@@ -300,13 +373,13 @@ class GlobalInfo:
         if not munchkin.use_three_hands and hand_weapon_count > 2:
             return 'нельзя использовать более двух рук'
         if count_big>1 and munchkin.current_race!=RaceClassType.Dwarf:
-            return 'нельзя носить более одной большой вещи, если вы не Дварф'
+            return 'нельзя носить более одной большой вещи, если вы не ' + RaceClassType.CRNames[RaceClassType.Dwarf]
         if headgear_count>1:
-            return 'нельзя носить более одного элемента одежды Головняк'
+            return 'нельзя носить более одного элемента одежды ' + TreasureType.TreasureNames[TreasureType.Headgear]
         if armor_count>1:
-            return 'нельзя носить более одного элемента одежды Броня'
+            return 'нельзя носить более одного элемента одежды ' + TreasureType.TreasureNames[TreasureType.Armor]
         if footgear_count>1:
-            return 'нельзя носить более одного элемента одежды Ступни'
+            return 'нельзя носить более одного элемента одежды ' + TreasureType.TreasureNames[TreasureType.Footgear]
         return None
         
     @staticmethod
