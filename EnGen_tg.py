@@ -106,20 +106,20 @@ def tg_default(update, context):
 
 def main():
     GlobalInfo.initialize()
-    update = FakeUpdate()
-    context = FakeContext()
-    update.message.text = '/login 1234'
-    update.message.chat.id = '123'
-    tg_login(update, context)
-    GlobalInfo.registered_players[update.message.chat.id].current_lvl = 3
-    update.message.text = '/login 1234'
-    update.message.chat.id = '456'
-    tg_login(update, context)
+    #update = FakeUpdate()
+    #context = FakeContext()
+    #update.message.text = '/login 1234'
+    #update.message.chat.id = '123'
+    #tg_login(update, context)
+    #GlobalInfo.registered_players[update.message.chat.id].current_lvl = 3
+    #update.message.text = '/login 1234'
+    #update.message.chat.id = '456'
+    #tg_login(update, context)
     
-    t1 = GlobalInfo.registered_players
-    t2 = GlobalInfo.munchkins_logins
+    #t1 = GlobalInfo.registered_players
+    #t2 = GlobalInfo.munchkins_logins
 
-    t3 = Munchkin()
+    #t3 = Munchkin()
 
     updater = Updater("408100374:AAEhMleUbdVH_G1xmKeCAy8MlNfyBwB9AOo", use_context=True)
     #updater = Updater("979411435:AAEHIVLx8L8CxmjIHtitaH4L1GeV_OCRJ7M", use_context=True)
