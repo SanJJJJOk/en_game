@@ -28,6 +28,7 @@ from urllib.parse import quote
 import random
 import re
 import json
+from json import JSONEncoder
 import time
 import base64
 from datetime import datetime, date, time, timedelta
@@ -49,7 +50,132 @@ def tg_error(update, context):
     
 Holder = GlobalInfo()
 
-def tg_stat(update, context):
+class EmployeeEncoder(JSONEncoder):
+        def default(self, o):
+            return o.__dict__
+
+class TgCommands:
+    Login = 'login'
+    Logout = 'logout'
+    Info = 'info'
+    Curse = 'curse'
+    Shield = 'shield'
+    Chicken = 'chicken'
+
+#admin commands
+
+def tg_document(update, context):
+    try:
+        file = update.message.document.get_file()
+        output = file.download_as_bytearray()
+        out2 = str(output, 'utf-8')
+        out3 = str(output)
+        jjj2 = json.loads(out2)
+        jjj3 = json.loads(out3)
+        for munch_id in GlobalInfo.c_munchkins_by_ids:
+            munchkin = GlobalInfo.c_munchkins_by_ids[munch_id]
+            output_dict[munch_id] = munchkin.save()
+        m_str = json.dumps(output_dict, indent=2)
+        #m_str = json.dumps(output_dict, ensure_ascii=False, indent=2)
+        #jjj = json.loads(output_str)
+        file = open('123.json','w')
+        file.truncate(0)
+        file.write(m_str)
+        file.close()
+        file = open('123.json','rb')
+        context.bot.send_document('228485598', file)
+        file.close()
+        t = 1
+    except Exception as e:
+        err_msg = "неизвестная ошибка: {0}".format(str(e))
+        update.message.reply_text(err_msg)
+        context.bot.send_message('228485598', err_msg + 'id:' + update.message.chat.id)
+
+def tg_backup(update, context):
+    try:
+        output_dict = {}
+        for munch_id in GlobalInfo.c_munchkins_by_ids:
+            munchkin = GlobalInfo.c_munchkins_by_ids[munch_id]
+            output_dict[munch_id] = munchkin.save()
+        m_str = json.dumps(output_dict, indent=2)
+        #m_str = json.dumps(output_dict, ensure_ascii=False, indent=2)
+        #jjj = json.loads(output_str)
+        file = open('123.json','wb', encoding='utf-8')
+        file.truncate(0)
+        file.write(m_str)
+        file.close()
+        file = open('123.json','rb')
+        context.bot.send_document('228485598', file)
+        file.close()
+        t = 1
+    except Exception as e:
+        err_msg = "неизвестная ошибка: {0}".format(str(e))
+        update.message.reply_text(err_msg)
+        context.bot.send_message('228485598', err_msg + 'id:' + update.message.chat.id)
+
+def tg_admin_default_command(update, context, command, count):
+    if update.message.chat.id!='228485598':
+        update.message.reply_text('атата!')
+        return []
+    if len(update.message.text) < len(command)+3:
+        update.message.reply_text('empty')
+        return []
+    input_text = update.message.text[len(command)+2:]
+    input = input_text.split(' ')
+    if len(input)!=count:
+        update.message.reply_text('args')
+        return []
+    return input
+
+def tg_chicken(update, context):
+    try:
+        input = tg_admin_default_command(update, context, TgCommands.Chicken, 2)
+        if len(input)==0:
+            return
+        munch_id = int(input[0])
+        munchkin = GlobalInfo.c_munchkins_by_ids[munch_id]
+        dt_now = datetime.now()
+        value = int(input[1])
+        munchkin.chicken_datetime = dt_now + timedelta(0, value)
+    except Exception as e:
+        err_msg = "неизвестная ошибка: {0}".format(str(e))
+        update.message.reply_text(err_msg)
+        context.bot.send_message('228485598', err_msg + 'id:' + update.message.chat.id)
+
+def tg_shield(update, context):
+    try:
+        input = tg_admin_default_command(update, context, TgCommands.Shield, 2)
+        if len(input)==0:
+            return
+        munch_id = int(input[0])
+        munchkin = GlobalInfo.c_munchkins_by_ids[munch_id]
+        dt_now = datetime.now()
+        value = int(input[1])
+        munchkin.shield_datetime = dt_now + timedelta(0, value)
+    except Exception as e:
+        err_msg = "неизвестная ошибка: {0}".format(str(e))
+        update.message.reply_text(err_msg)
+        context.bot.send_message('228485598', err_msg + 'id:' + update.message.chat.id)
+
+def tg_curse(update, context):
+    try:
+        input = tg_admin_default_command(update, context, TgCommands.Curse, 1)
+        if len(input)==0:
+            return
+        munch_id = int(input[0])
+        munchkin = GlobalInfo.c_munchkins_by_ids[munch_id]
+        dt_now = datetime.now()
+        curse_time = dt_now + timedelta(0, 1800)
+        munchkin.applied_curses.append(curse_time)
+
+    except Exception as e:
+        err_msg = "неизвестная ошибка: {0}".format(str(e))
+        update.message.reply_text(err_msg)
+        context.bot.send_message('228485598', err_msg + 'id:' + update.message.chat.id)
+
+#user commands
+
+def tg_info(update, context):
     try:
         if not update.message.chat.id in GlobalInfo.registered_players:
             update.message.reply_text('вы не зарегистрированы')
@@ -63,9 +189,7 @@ def tg_stat(update, context):
         for tr in munchkin.used_trs:
             output_stat = output_stat + tr.get_small_info() + '\n' 
 
-        total_power = munchkin.current_lvl
-        for tr in munchkin.used_trs:
-            total_power = total_power + tr.power
+        total_power = munchkin.get_total_power()
         output_stat = output_stat + '---------------------------\n'
         output_stat = output_stat + Emojies.Power + '=' + str(total_power)
 
@@ -77,10 +201,13 @@ def tg_stat(update, context):
 
 def tg_login(update, context):
     try:
-        if len(update.message.text)<8:
+        file = open('123.json','r')
+        update.message.reply_text(file.read())
+        file.close()
+        if len(update.message.text)<len(TgCommands.Login)+3:
             update.message.reply_text('неверный логин')
             return
-        login_id = update.message.text[7:]
+        login_id = update.message.text[len(TgCommands.Login)+2:]
         if not login_id in GlobalInfo.munchkins_logins:
             update.message.reply_text('неверный логин')
             return
@@ -94,6 +221,9 @@ def tg_login(update, context):
 
 def tg_logout(update, context):
     try:
+        file = open('1234.json','r')
+        update.message.reply_text(file.read())
+        file.close()
         chat_id = update.message.chat.id
         if chat_id in GlobalInfo.registered_players:
             del GlobalInfo.registered_players[chat_id]
@@ -134,6 +264,7 @@ def main():
     GlobalInfo.initialize()
     #update = FakeUpdate()
     #context = FakeContext()
+    #tg_backup(update, context)
     #update.message.text = '/login 1234'
     #update.message.chat.id = '123'
     #tg_login(update, context)
@@ -151,10 +282,15 @@ def main():
     #updater = Updater("979411435:AAEHIVLx8L8CxmjIHtitaH4L1GeV_OCRJ7M", use_context=True)
     dp = updater.dispatcher
 
-    dp.add_handler(CommandHandler('stat', tg_stat))
-    dp.add_handler(CommandHandler('login', tg_login))
-    dp.add_handler(CommandHandler('logout', tg_logout))
+    dp.add_handler(CommandHandler('backup', tg_backup))
+    dp.add_handler(CommandHandler(TgCommands.Chicken, tg_chicken))
+    dp.add_handler(CommandHandler(TgCommands.Shield, tg_shield))
+    dp.add_handler(CommandHandler(TgCommands.Curse, tg_curse))
+    dp.add_handler(CommandHandler(TgCommands.Info, tg_info))
+    dp.add_handler(CommandHandler(TgCommands.Login, tg_login))
+    dp.add_handler(CommandHandler(TgCommands.Logout, tg_logout))
     dp.add_handler(MessageHandler(Filters.text, tg_default))
+    dp.add_handler(MessageHandler(Filters.document, tg_document))
 
     dp.add_error_handler(tg_error)
 

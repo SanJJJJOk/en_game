@@ -20,6 +20,8 @@
     <VisualStudioVersion Condition=" '$(VisualStudioVersion)' == '' ">10.0</VisualStudioVersion>
   </PropertyGroup>
   <ItemGroup>
+    <Content Include="123.json" />
+    <Content Include="1234.json" />
     <Content Include="ForStat\ConsoleApp1\ConsoleApp1\obj\Debug\ConsoleApp1.csproj.FileListAbsolute.txt" />
     <Content Include="requirements.txt" />
     <Content Include="runtime.txt" />
