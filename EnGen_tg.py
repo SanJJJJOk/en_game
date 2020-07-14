@@ -67,10 +67,10 @@ class TgCommands:
 def tg_document(update, context):
     try:
         file = update.message.document.get_file()
-        output = file.download('1234.json')
-        out2 = str(output, 'utf-8')
-        out3 = str(output)
-        jjj2 = json.loads(out2)
+        output = file.download_as_bytearray()
+        out2 = str(output)
+        jjj2 = json.loads(output)
+        t = 1
         #for munch_id in GlobalInfo.c_munchkins_by_ids:
         #    munchkin = GlobalInfo.c_munchkins_by_ids[munch_id]
         #    output_dict[munch_id] = munchkin.save()
@@ -96,7 +96,7 @@ def tg_backup(update, context):
         for munch_id in GlobalInfo.c_munchkins_by_ids:
             munchkin = GlobalInfo.c_munchkins_by_ids[munch_id]
             output_dict[munch_id] = munchkin.save()
-        m_str = json.dumps(output_dict, indent=2)
+        m_str = json.dumps(output_dict, ensure_ascii=False, indent=2)
         #m_str = json.dumps(output_dict, ensure_ascii=False, indent=2)
         #jjj = json.loads(output_str)
         file = open('123.json','w', encoding='utf-8')

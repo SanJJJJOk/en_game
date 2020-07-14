@@ -1,1 +1,56 @@
-{"123": "456" }
+{
+  "1": {
+    "id": 1,
+    "абвг": "otwt",
+    "current_lvl": 1,
+    "current_race": 6,
+    "current_class": 1,
+    "used_trs": [],
+    "used_levels_codes": [],
+    "use_three_hands": false,
+    "race_change_datetime": "07/14/2020, 18:24:39",
+    "class_change_datetime": "07/14/2020, 18:24:39",
+    "monster_fight_datetime": "07/14/2020, 18:24:39",
+    "shield_datetime": "07/14/2020, 18:24:39",
+    "chicken_datetime": "07/14/2020, 18:24:39",
+    "used_one_shot_codes": [],
+    "one_shot_bonus": [],
+    "applied_curses": []
+  },
+  "2": {
+    "id": 2,
+    "абвг": "div",
+    "current_lvl": 1,
+    "current_race": 6,
+    "current_class": 1,
+    "used_trs": [],
+    "used_levels_codes": [],
+    "use_three_hands": false,
+    "race_change_datetime": "07/14/2020, 18:24:39",
+    "class_change_datetime": "07/14/2020, 18:24:39",
+    "monster_fight_datetime": "07/14/2020, 18:24:39",
+    "shield_datetime": "07/14/2020, 18:24:39",
+    "chicken_datetime": "07/14/2020, 18:24:39",
+    "used_one_shot_codes": [],
+    "one_shot_bonus": [],
+    "applied_curses": []
+  },
+  "3": {
+    "id": 3,
+    "абвг": "mars",
+    "current_lvl": 1,
+    "current_race": 6,
+    "current_class": 1,
+    "used_trs": [],
+    "used_levels_codes": [],
+    "use_three_hands": false,
+    "race_change_datetime": "07/14/2020, 18:24:39",
+    "class_change_datetime": "07/14/2020, 18:24:39",
+    "monster_fight_datetime": "07/14/2020, 18:24:39",
+    "shield_datetime": "07/14/2020, 18:24:39",
+    "chicken_datetime": "07/14/2020, 18:24:39",
+    "used_one_shot_codes": [],
+    "one_shot_bonus": [],
+    "applied_curses": []
+  }
+}
