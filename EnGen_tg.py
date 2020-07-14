@@ -67,25 +67,24 @@ class TgCommands:
 def tg_document(update, context):
     try:
         file = update.message.document.get_file()
-        output = file.download_as_bytearray()
+        output = file.download('1234.json')
         out2 = str(output, 'utf-8')
         out3 = str(output)
         jjj2 = json.loads(out2)
-        jjj3 = json.loads(out3)
-        for munch_id in GlobalInfo.c_munchkins_by_ids:
-            munchkin = GlobalInfo.c_munchkins_by_ids[munch_id]
-            output_dict[munch_id] = munchkin.save()
-        m_str = json.dumps(output_dict, indent=2)
-        #m_str = json.dumps(output_dict, ensure_ascii=False, indent=2)
-        #jjj = json.loads(output_str)
-        file = open('123.json','w')
-        file.truncate(0)
-        file.write(m_str)
-        file.close()
-        file = open('123.json','rb')
-        context.bot.send_document('228485598', file)
-        file.close()
-        t = 1
+        #for munch_id in GlobalInfo.c_munchkins_by_ids:
+        #    munchkin = GlobalInfo.c_munchkins_by_ids[munch_id]
+        #    output_dict[munch_id] = munchkin.save()
+        #m_str = json.dumps(output_dict, indent=2)
+        ##m_str = json.dumps(output_dict, ensure_ascii=False, indent=2)
+        ##jjj = json.loads(output_str)
+        #file = open('123.json','w')
+        #file.truncate(0)
+        #file.write(m_str)
+        #file.close()
+        #file = open('123.json','rb')
+        #context.bot.send_document('228485598', file)
+        #file.close()
+        #t = 1
     except Exception as e:
         err_msg = "неизвестная ошибка: {0}".format(str(e))
         update.message.reply_text(err_msg)
