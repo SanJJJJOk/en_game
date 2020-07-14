@@ -151,17 +151,14 @@ class Munchkin:
         self.shield_datetime = None
         self.chicken_datetime = None
         self.used_one_shot_codes = []
-        self.one_shot_bonus = []
+        self.one_shot_bonus = 0
         self.applied_curses = []
 
     def get_total_power(self):
         dt_now = datetime.now()
-        total_power = self.current_lvl
+        total_power = self.current_lvl + self.one_shot_bonus
         for tr in self.used_trs:
             total_power = total_power + tr.power
-        for one_shot_code in self.used_one_shot_bonus:
-            if used_one_shot_bonus[one_shot_code] < dt_now:
-                total_power = total_power + 1
         return total_power
     
     @staticmethod
@@ -176,11 +173,11 @@ class Munchkin:
     def save(self):
         return {
             'id': self.id,
-            'абвг': self.name,
+            'name': self.name,
             'current_lvl': self.current_lvl,
             'current_race': self.current_race,
             'current_class': self.current_class,
-            'used_trs': self.used_trs,
+            'used_trs': [i.tr_code for i in self.used_trs],
             'used_levels_codes': self.used_levels_codes,
             'use_three_hands': self.use_three_hands,
             'race_change_datetime': self.race_change_datetime.strftime("%m/%d/%Y, %H:%M:%S"),
@@ -188,19 +185,33 @@ class Munchkin:
             'monster_fight_datetime': self.monster_fight_datetime.strftime("%m/%d/%Y, %H:%M:%S"),
             'shield_datetime': self.shield_datetime.strftime("%m/%d/%Y, %H:%M:%S"),
             'chicken_datetime': self.chicken_datetime.strftime("%m/%d/%Y, %H:%M:%S"),
-            'used_one_shot_codes': [i.strftime("%m/%d/%Y, %H:%M:%S") for i in self.used_one_shot_codes],
-            'one_shot_bonus': [i.strftime("%m/%d/%Y, %H:%M:%S") for i in self.one_shot_bonus],
+            'used_one_shot_codes': self.used_one_shot_codes,
+            'one_shot_bonus': self.one_shot_bonus,
             'applied_curses': [i.strftime("%m/%d/%Y, %H:%M:%S") for i in self.applied_curses],
             }
 
     def load(self, input):
+         self.name = input['name']
+         self.current_lvl = input['current_lvl']
+         self.current_race = input['current_race']
+         self.current_class = input['current_class']
+         self.used_trs = [GlobalInfo.c_treasure_codes[i] for i in input['used_trs']]
+         self.used_levels_codes = input['used_levels_codes']
+         self.use_three_hands = input['use_three_hands']
+         self.race_change_datetime = datetime.strptime(input['race_change_datetime'], "%m/%d/%Y, %H:%M:%S")
          self.class_change_datetime = datetime.strptime(input['class_change_datetime'], "%m/%d/%Y, %H:%M:%S")
+         self.monster_fight_datetime = datetime.strptime(input['monster_fight_datetime'], "%m/%d/%Y, %H:%M:%S")
+         self.shield_datetime = datetime.strptime(input['shield_datetime'], "%m/%d/%Y, %H:%M:%S")
+         self.chicken_datetime = datetime.strptime(input['chicken_datetime'], "%m/%d/%Y, %H:%M:%S")
+         self.used_one_shot_codes = input['used_one_shot_codes']
+         self.one_shot_bonus = input['one_shot_bonus']
+         self.applied_curses = [datetime.strptime(i, "%m/%d/%Y, %H:%M:%S") for i in input['applied_curses']]
 
 class GlobalInfo:
     munchkins_logins = {
-        'iqnsffw': Munchkin('otwt', 1),
-        'oqofndh': Munchkin('div', 2),
-        'qnoruwd': Munchkin('mars', 3),
+        'com1': Munchkin('otwt', 1),
+        'com2': Munchkin('div', 2),
+        'com3': Munchkin('mars', 3),
         }
     registered_players = {}#.chat.id-key,Munchkin-value
     monsters = [
@@ -299,6 +310,8 @@ class GlobalInfo:
             r_code = GlobalInfo.races[race]
             GlobalInfo.c_race_codes[r_code] = race
             GlobalInfo.c_singlecode_handlers[r_code] = GlobalInfo.simple_text_handler_race
+        for one_shot_bonus_code in GlobalInfo.one_shot_bonus_codes:
+            GlobalInfo.c_singlecode_handlers[one_shot_bonus_code] = GlobalInfo.simple_text_handler_oneshot
         for treasure in GlobalInfo.treasures:
             GlobalInfo.c_treasure_codes[treasure.tr_code] = treasure
         dt_now = datetime.now()
@@ -363,7 +376,7 @@ class GlobalInfo:
         munchkin.used_trs = []
         munchkin.race_change_datetime = dt_now + timedelta(0,10)
         return Result(0, 'Ура! Ваша новая раса: ' + RaceClassType.CREmojies[new_race] + RaceClassType.CRNames[new_race])
-
+    
     @staticmethod
     def simple_text_handler_fight(munchkin, input_text):
         if not input_text in GlobalInfo.c_monster_fight_codes:
@@ -377,6 +390,7 @@ class GlobalInfo:
 
         monster = GlobalInfo.c_monster_fight_codes[input_text]
         total_power = munchkin.get_total_power()
+        munchkin.one_shot_bonus = 0
         for cr_bonus in monster.bonuses_to_mnch:
             if munchkin.current_class == cr_bonus or munchkin.current_race == cr_bonus:
                 total_power = total_power + monster.bonuses_to_mnch[cr_bonus]
@@ -387,6 +401,34 @@ class GlobalInfo:
         else:
             return Result(1, 'вы не смогли победить монстра =(')
     
+    @staticmethod
+    def simple_text_handler_oneshot(munchkin, input_text):
+        if not input_text in GlobalInfo.c_monster_fight_codes:
+            raise Exception('орг косяк, сообщите ему об этом( @sanjjjjok )')
+    
+        if input_text in munchkin.used_one_shot_codes:
+            return Result(1, 'вы уже использовали этот код =(')
+        else:
+            munchkin.one_shot_bonus = munchkin.one_shot_bonus + 1
+            return Result(0, 'Ура! Вы получили дополнительную единицу силы в следующем бою')
+
+        #if munchkin.monster_fight_datetime > dt_now:
+        #    dt_diff = (munchkin.monster_fight_datetime - dt_now).total_seconds()
+        #    block_msg = 'следующая битва возможна через ' + str(round(dt_diff // 60)) + 'мин ' + str(round(dt_diff % 60)) + 'с'
+        #    return Result(2, block_msg)
+
+        #monster = GlobalInfo.c_monster_fight_codes[input_text]
+        #total_power = munchkin.get_total_power()
+        #for cr_bonus in monster.bonuses_to_mnch:
+        #    if munchkin.current_class == cr_bonus or munchkin.current_race == cr_bonus:
+        #        total_power = total_power + monster.bonuses_to_mnch[cr_bonus]
+
+        #munchkin.monster_fight_datetime = dt_now + timedelta(0,5)
+        #if total_power > monster.monster_lvl or (total_power == monster.monster_lvl and munchkin.current_class == RaceClassType.Warrior):
+        #    return Result(0, 'Ура! Монстр победжен! Код побежденного монстра:' + monster.monster_defeatcode)
+        #else:
+        #    return Result(1, 'вы не смогли победить монстра =(')
+
     @staticmethod
     def do_beautiful_with_treasures(munchkin, treasure_codes):
         input_treasures = []
@@ -442,3 +484,25 @@ class GlobalInfo:
         arr = text.split(' ')
         return [i for i in arr if i]
     
+    @staticmethod
+    def backup():
+        output_dict = {
+            'datetime': datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
+            }
+        for munch_id in GlobalInfo.c_munchkins_by_ids:
+            munchkin = GlobalInfo.c_munchkins_by_ids[munch_id]
+            output_dict[munch_id] = munchkin.save()
+        m_str = json.dumps(output_dict, ensure_ascii=False, indent=2)
+        file = open('123.json', 'w', encoding='utf-8')
+        file.truncate(0)
+        file.write(m_str)
+        file.close()
+
+    @staticmethod
+    def restore(input_data):
+        for munch_id in GlobalInfo.c_munchkins_by_ids:
+            munchkin = GlobalInfo.c_munchkins_by_ids[munch_id]
+            if not str(munch_id) in input_data:
+                return 'не удалось найти в файле id=' + str(munch_id)
+            munchkin.load(input_data[str(munch_id)])
+        return None

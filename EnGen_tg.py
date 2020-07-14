@@ -66,25 +66,17 @@ class TgCommands:
 
 def tg_document(update, context):
     try:
+        if str(update.message.chat.id)!='228485598':
+            update.message.reply_text('атата!')
+            return
         file = update.message.document.get_file()
-        output = file.download_as_bytearray()
-        out2 = str(output)
-        jjj2 = json.loads(output)
-        t = 1
-        #for munch_id in GlobalInfo.c_munchkins_by_ids:
-        #    munchkin = GlobalInfo.c_munchkins_by_ids[munch_id]
-        #    output_dict[munch_id] = munchkin.save()
-        #m_str = json.dumps(output_dict, indent=2)
-        ##m_str = json.dumps(output_dict, ensure_ascii=False, indent=2)
-        ##jjj = json.loads(output_str)
-        #file = open('123.json','w')
-        #file.truncate(0)
-        #file.write(m_str)
-        #file.close()
-        #file = open('123.json','rb')
-        #context.bot.send_document('228485598', file)
-        #file.close()
-        #t = 1
+        input_filedata = file.download_as_bytearray()
+        json_data = json.loads(input_filedata)
+        output_msg = GlobalInfo.restore(json_data)
+        if output_msg is None:
+            update.message.reply_text('збс')
+        else:
+            update.message.reply_text(output_msg)
     except Exception as e:
         err_msg = "неизвестная ошибка: {0}".format(str(e))
         update.message.reply_text(err_msg)
@@ -92,28 +84,20 @@ def tg_document(update, context):
 
 def tg_backup(update, context):
     try:
-        output_dict = {}
-        for munch_id in GlobalInfo.c_munchkins_by_ids:
-            munchkin = GlobalInfo.c_munchkins_by_ids[munch_id]
-            output_dict[munch_id] = munchkin.save()
-        m_str = json.dumps(output_dict, ensure_ascii=False, indent=2)
-        #m_str = json.dumps(output_dict, ensure_ascii=False, indent=2)
-        #jjj = json.loads(output_str)
-        file = open('123.json','w', encoding='utf-8')
-        file.truncate(0)
-        file.write(m_str)
-        file.close()
+        if str(update.message.chat.id)!='228485598':
+            update.message.reply_text('атата!')
+            return
+        GlobalInfo.backup()
         file = open('123.json','rb')
         context.bot.send_document('228485598', file)
         file.close()
-        t = 1
     except Exception as e:
         err_msg = "неизвестная ошибка: {0}".format(str(e))
         update.message.reply_text(err_msg)
         context.bot.send_message('228485598', err_msg + 'id:' + update.message.chat.id)
 
 def tg_admin_default_command(update, context, command, count):
-    if update.message.chat.id!='228485598':
+    if str(update.message.chat.id)!='228485598':
         update.message.reply_text('атата!')
         return []
     if len(update.message.text) < len(command)+3:
@@ -200,9 +184,6 @@ def tg_info(update, context):
 
 def tg_login(update, context):
     try:
-        file = open('123.json','r')
-        update.message.reply_text(file.read())
-        file.close()
         if len(update.message.text)<len(TgCommands.Login)+3:
             update.message.reply_text('неверный логин')
             return
@@ -220,9 +201,6 @@ def tg_login(update, context):
 
 def tg_logout(update, context):
     try:
-        file = open('1234.json','r')
-        update.message.reply_text(file.read())
-        file.close()
         chat_id = update.message.chat.id
         if chat_id in GlobalInfo.registered_players:
             del GlobalInfo.registered_players[chat_id]
@@ -272,6 +250,7 @@ def main():
     #update.message.chat.id = '456'
     #tg_login(update, context)
     
+
     #t1 = GlobalInfo.registered_players
     #t2 = GlobalInfo.munchkins_logins
 
