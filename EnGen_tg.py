@@ -100,7 +100,7 @@ def tg_backup(update, context):
         m_str = json.dumps(output_dict, indent=2)
         #m_str = json.dumps(output_dict, ensure_ascii=False, indent=2)
         #jjj = json.loads(output_str)
-        file = open('123.json','wb', encoding='utf-8')
+        file = open('123.json','w', encoding='utf-8')
         file.truncate(0)
         file.write(m_str)
         file.close()
