@@ -28,7 +28,6 @@ from urllib.parse import quote
 import random
 import re
 import json
-from json import JSONEncoder
 import time
 import base64
 from datetime import datetime, date, time, timedelta
@@ -50,17 +49,15 @@ def tg_error(update, context):
     
 Holder = GlobalInfo()
 
-class EmployeeEncoder(JSONEncoder):
-        def default(self, o):
-            return o.__dict__
-
 class TgCommands:
+    Backup = 'backup'
     Login = 'login'
     Logout = 'logout'
     Info = 'info'
     Curse = 'curse'
     Shield = 'shield'
     Chicken = 'chicken'
+    Refresh = 'refresh'
 
 #admin commands
 
@@ -110,6 +107,25 @@ def tg_admin_default_command(update, context, command, count):
         return []
     return input
 
+def tg_refresh(update, context):
+    try:
+        input = tg_admin_default_command(update, context, TgCommands.Refresh, 2)
+        if len(input)==0:
+            return
+        munch_id = int(input[0])
+        munchkin = GlobalInfo.c_munchkins_by_ids[munch_id]
+        count = int(input[1])
+        if count < len(munchkin.applied_curses):
+            munchkin.applied_curses = munchkin.applied_curses[:-count]
+            update.message.reply_text('+++' + str(count) + ' refreshed')
+        else:
+            munchkin.applied_curses = []
+            update.message.reply_text('+++all refreshed')
+    except Exception as e:
+        err_msg = "неизвестная ошибка: {0}".format(str(e))
+        update.message.reply_text(err_msg)
+        context.bot.send_message('228485598', err_msg + 'id:' + update.message.chat.id)
+
 def tg_chicken(update, context):
     try:
         input = tg_admin_default_command(update, context, TgCommands.Chicken, 2)
@@ -120,6 +136,7 @@ def tg_chicken(update, context):
         dt_now = datetime.now()
         value = int(input[1])
         munchkin.chicken_datetime = dt_now + timedelta(0, value)
+        update.message.reply_text('+++chicken applied')
     except Exception as e:
         err_msg = "неизвестная ошибка: {0}".format(str(e))
         update.message.reply_text(err_msg)
@@ -135,6 +152,7 @@ def tg_shield(update, context):
         dt_now = datetime.now()
         value = int(input[1])
         munchkin.shield_datetime = dt_now + timedelta(0, value)
+        update.message.reply_text('+++shield applied')
     except Exception as e:
         err_msg = "неизвестная ошибка: {0}".format(str(e))
         update.message.reply_text(err_msg)
@@ -148,9 +166,12 @@ def tg_curse(update, context):
         munch_id = int(input[0])
         munchkin = GlobalInfo.c_munchkins_by_ids[munch_id]
         dt_now = datetime.now()
+        if munchkin.shield_datetime > dt_now:
+            update.message.reply_text('---shield')
+            return
         curse_time = dt_now + timedelta(0, 1800)
         munchkin.applied_curses.append(curse_time)
-
+        update.message.reply_text('+++curse applied')
     except Exception as e:
         err_msg = "неизвестная ошибка: {0}".format(str(e))
         update.message.reply_text(err_msg)
@@ -163,18 +184,44 @@ def tg_info(update, context):
         if not update.message.chat.id in GlobalInfo.registered_players:
             update.message.reply_text('вы не зарегистрированы')
             return
+        dt_now = datetime.now()
         munchkin = GlobalInfo.registered_players[update.message.chat.id]
+        
+        if munchkin.chicken_datetime > dt_now:
+            dt_ck_diff = (munchkin.chicken_datetime - dt_now).total_seconds()
+            update.message.reply_text('Вы - курица! ' + Emojies.Result2 + GlobalInfo.sec_to_str(dt_ck_diff))
+            return
+
         output_stat = munchkin.name + ', ***' + str(munchkin.current_lvl) + '*** ур.\n'
         output_stat = output_stat + '---------------------------\n'
-        output_stat = output_stat + RaceClassType.CREmojies[munchkin.current_race] + ': ' + RaceClassType.CRNames[munchkin.current_race] + '\n'
-        output_stat = output_stat + RaceClassType.CREmojies[munchkin.current_class] + ': ' + RaceClassType.CRNames[munchkin.current_class] + '\n'
-        output_stat = output_stat + '---------------------------\n'
+        output_stat = output_stat + RaceClassType.CREmojies[munchkin.current_race] + ': ' + RaceClassType.CRNames[munchkin.current_race]
+        if munchkin.race_change_datetime > dt_now:
+            dt_r_diff = (munchkin.race_change_datetime - dt_now).total_seconds()
+            output_stat = output_stat + ' ' + Emojies.Result2 + GlobalInfo.sec_to_str(dt_r_diff)
+        output_stat = output_stat + '\n' + RaceClassType.CREmojies[munchkin.current_class] + ': ' + RaceClassType.CRNames[munchkin.current_class]
+        if munchkin.class_change_datetime > dt_now:
+            dt_c_diff = (munchkin.class_change_datetime - dt_now).total_seconds()
+            output_stat = output_stat + ' ' + Emojies.Result2 + GlobalInfo.sec_to_str(dt_c_diff)
+        output_stat = output_stat + '\n---------------------------\n'
         for tr in munchkin.used_trs:
             output_stat = output_stat + tr.get_small_info() + '\n' 
-
-        total_power = munchkin.get_total_power()
         output_stat = output_stat + '---------------------------\n'
+        if munchkin.shield_datetime > dt_now:
+            dt_s_diff = (munchkin.shield_datetime - dt_now).total_seconds()
+            output_stat = output_stat + 'Защита от проклятий: ' + Emojies.Result2 + GlobalInfo.sec_to_str(dt_s_diff) + '\n'
+        if munchkin.one_shot_bonus > 0:
+            output_stat = output_stat + 'Бонус в следующем бою: +' + str(munchkin.one_shot_bonus) + '\n'
+        for curse in munchkin.applied_curses:
+            if curse > dt_now:
+                dt_curse_diff = (curse - dt_now).total_seconds()
+                output_stat = output_stat + '-1: ' + Emojies.Result2 + GlobalInfo.sec_to_str(dt_curse_diff) + '\n'
+        output_stat = output_stat + '---------------------------\n'
+        total_power = munchkin.get_total_power()
         output_stat = output_stat + Emojies.Power + '=' + str(total_power)
+        if munchkin.monster_fight_datetime > dt_now:
+            output_stat = output_stat + '\n---------------------------\n'
+            dt_m_diff = (munchkin.monster_fight_datetime - dt_now).total_seconds()
+            output_stat = output_stat + 'Следующий бой доступен через: ' + Emojies.Result2 + GlobalInfo.sec_to_str(dt_m_diff)
 
         update.message.reply_text(output_stat)
     except Exception as e:
@@ -260,7 +307,8 @@ def main():
     #updater = Updater("979411435:AAEHIVLx8L8CxmjIHtitaH4L1GeV_OCRJ7M", use_context=True)
     dp = updater.dispatcher
 
-    dp.add_handler(CommandHandler('backup', tg_backup))
+    dp.add_handler(CommandHandler(TgCommands.Backup, tg_backup))
+    dp.add_handler(CommandHandler(TgCommands.Refresh, tg_refresh))
     dp.add_handler(CommandHandler(TgCommands.Chicken, tg_chicken))
     dp.add_handler(CommandHandler(TgCommands.Shield, tg_shield))
     dp.add_handler(CommandHandler(TgCommands.Curse, tg_curse))

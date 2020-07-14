@@ -26,6 +26,7 @@ class Emojies:
     Result0 = '\u2705'#good
     Result1 = '\u274c'#bad
     Result2 = '\u23f3'#time
+    #Shield = '\ud83e\udd1e'
 
 class RaceClassType:
     NoClass = 1
@@ -60,9 +61,9 @@ class RaceClassType:
         9: Emojies.Dwarf,
         }
 
-    @staticmethod
-    def is_class(type):
-        return type==RaceClassType.NoClass or type==RaceClassType.Warrior or type==RaceClassType.Wizard or type==RaceClassType.Thief or type==RaceClassType.Cleric
+    #@staticmethod
+    #def is_class(type):
+    #    return type==RaceClassType.NoClass or type==RaceClassType.Warrior or type==RaceClassType.Wizard or type==RaceClassType.Thief or type==RaceClassType.Cleric
 
     #@staticmethod
     #def is_race(type):
@@ -159,6 +160,9 @@ class Munchkin:
         total_power = self.current_lvl + self.one_shot_bonus
         for tr in self.used_trs:
             total_power = total_power + tr.power
+        for curse in self.applied_curses:
+            if curse > dt_now:
+                total_power = total_power - 1
         return total_power
     
     @staticmethod
@@ -167,9 +171,6 @@ class Munchkin:
             return o.strftime("%m/%d/%Y, %H:%M:%S")
         return o.__dict__()
         
-    #def toJson(self):
-    #    return json.dumps(self, default=lambda o: Munchkin.converter_datetime_to_json)
-
     def save(self):
         return {
             'id': self.id,
@@ -208,6 +209,7 @@ class Munchkin:
          self.applied_curses = [datetime.strptime(i, "%m/%d/%Y, %H:%M:%S") for i in input['applied_curses']]
 
 class GlobalInfo:
+    final_code = 'imfinalcode19482730'
     munchkins_logins = {
         'com1': Munchkin('otwt', 1),
         'com2': Munchkin('div', 2),
@@ -328,30 +330,26 @@ class GlobalInfo:
     def simple_text_handler_level(munchkin, input_text):
         if not input_text in GlobalInfo.c_level_codes:
             raise Exception('орг косяк, сообщите ему об этом( @sanjjjjok )')
-
         if input_text in munchkin.used_levels_codes:
             return Result(1, 'вы уже получили уровень по этому коду')
-
         munchkin.used_levels_codes.append(input_text)
         munchkin.current_lvl = munchkin.current_lvl + 1
-        #save lvls
+        if munchkin.current_lvl == 25:
+            return Result(0, 'Поздравляю! Вы закончили игру. Код закрытия движка: ' + GlobalInfo.final_code)
         return Result(0, 'Ура! Ваш новый уровень: ' + str(munchkin.current_lvl))
     
     @staticmethod
     def simple_text_handler_class(munchkin, input_text):
         if not input_text in GlobalInfo.c_class_codes:
             raise Exception('орг косяк, сообщите ему об этом( @sanjjjjok )')
-    
         dt_now = datetime.now()
         new_class = GlobalInfo.c_class_codes[input_text]
         if munchkin.current_class==new_class:
             return Result(1, 'вы уже текущего класса')
-
         if munchkin.class_change_datetime > dt_now:
             dt_diff = (munchkin.class_change_datetime - dt_now).total_seconds()
-            block_msg = 'следующая смена класса возможна через ' + str(round(dt_diff // 60)) + 'мин ' + str(round(dt_diff % 60)) + 'с'
+            block_msg = 'следующая смена класса возможна через ' + GlobalInfo.sec_to_str(dt_diff)
             return Result(2, block_msg)
-
         munchkin.current_class = new_class
         munchkin.used_trs = []
         munchkin.class_change_datetime = dt_now + timedelta(0,10)
@@ -361,17 +359,14 @@ class GlobalInfo:
     def simple_text_handler_race(munchkin, input_text):
         if not input_text in GlobalInfo.c_race_codes:
             raise Exception('орг косяк, сообщите ему об этом( @sanjjjjok )')
-    
         dt_now = datetime.now()
         new_race = GlobalInfo.c_race_codes[input_text]
         if munchkin.current_race==new_race:
             return Result(1, 'вы уже текущей расы')
-
         if munchkin.race_change_datetime > dt_now:
             dt_diff = (munchkin.race_change_datetime - dt_now).total_seconds()
-            block_msg = 'следующая смена расы возможна через ' + str(round(dt_diff // 60)) + 'мин ' + str(round(dt_diff % 60)) + 'с'
+            block_msg = 'следующая смена расы возможна через ' + GlobalInfo.sec_to_str(dt_diff)
             return Result(2, block_msg)
-
         munchkin.current_race = new_race
         munchkin.used_trs = []
         munchkin.race_change_datetime = dt_now + timedelta(0,10)
@@ -381,20 +376,21 @@ class GlobalInfo:
     def simple_text_handler_fight(munchkin, input_text):
         if not input_text in GlobalInfo.c_monster_fight_codes:
             raise Exception('орг косяк, сообщите ему об этом( @sanjjjjok )')
-    
         dt_now = datetime.now()
+        if munchkin.chicken_datetime > dt_now:
+            dt_ck_diff = (munchkin.chicken_datetime - dt_now).total_seconds()
+            block_msg = 'вас превратили в курицу, битва с монстром невозможна ' + Emojies.Result2 + GlobalInfo.sec_to_str(dt_ck_diff)
+            return Result(2, block_msg)
         if munchkin.monster_fight_datetime > dt_now:
             dt_diff = (munchkin.monster_fight_datetime - dt_now).total_seconds()
-            block_msg = 'следующая битва возможна через ' + str(round(dt_diff // 60)) + 'мин ' + str(round(dt_diff % 60)) + 'с'
+            block_msg = 'следующая битва возможна через ' + GlobalInfo.sec_to_str(dt_diff)
             return Result(2, block_msg)
-
         monster = GlobalInfo.c_monster_fight_codes[input_text]
         total_power = munchkin.get_total_power()
         munchkin.one_shot_bonus = 0
         for cr_bonus in monster.bonuses_to_mnch:
             if munchkin.current_class == cr_bonus or munchkin.current_race == cr_bonus:
                 total_power = total_power + monster.bonuses_to_mnch[cr_bonus]
-
         munchkin.monster_fight_datetime = dt_now + timedelta(0,5)
         if total_power > monster.monster_lvl or (total_power == monster.monster_lvl and munchkin.current_class == RaceClassType.Warrior):
             return Result(0, 'Ура! Монстр победжен! Код побежденного монстра:' + monster.monster_defeatcode)
@@ -403,31 +399,14 @@ class GlobalInfo:
     
     @staticmethod
     def simple_text_handler_oneshot(munchkin, input_text):
-        if not input_text in GlobalInfo.c_monster_fight_codes:
+        if not input_text in GlobalInfo.one_shot_bonus_codes:
             raise Exception('орг косяк, сообщите ему об этом( @sanjjjjok )')
-    
         if input_text in munchkin.used_one_shot_codes:
-            return Result(1, 'вы уже использовали этот код =(')
+            return Result(1, 'вы уже использовали этот код')
         else:
+            munchkin.used_one_shot_codes.append(input_text)
             munchkin.one_shot_bonus = munchkin.one_shot_bonus + 1
             return Result(0, 'Ура! Вы получили дополнительную единицу силы в следующем бою')
-
-        #if munchkin.monster_fight_datetime > dt_now:
-        #    dt_diff = (munchkin.monster_fight_datetime - dt_now).total_seconds()
-        #    block_msg = 'следующая битва возможна через ' + str(round(dt_diff // 60)) + 'мин ' + str(round(dt_diff % 60)) + 'с'
-        #    return Result(2, block_msg)
-
-        #monster = GlobalInfo.c_monster_fight_codes[input_text]
-        #total_power = munchkin.get_total_power()
-        #for cr_bonus in monster.bonuses_to_mnch:
-        #    if munchkin.current_class == cr_bonus or munchkin.current_race == cr_bonus:
-        #        total_power = total_power + monster.bonuses_to_mnch[cr_bonus]
-
-        #munchkin.monster_fight_datetime = dt_now + timedelta(0,5)
-        #if total_power > monster.monster_lvl or (total_power == monster.monster_lvl and munchkin.current_class == RaceClassType.Warrior):
-        #    return Result(0, 'Ура! Монстр победжен! Код побежденного монстра:' + monster.monster_defeatcode)
-        #else:
-        #    return Result(1, 'вы не смогли победить монстра =(')
 
     @staticmethod
     def do_beautiful_with_treasures(munchkin, treasure_codes):
@@ -479,6 +458,10 @@ class GlobalInfo:
             return 'нельзя носить более одного элемента одежды ' + TreasureType.TreasureNames[TreasureType.Footgear]
         return None
         
+    @staticmethod
+    def sec_to_str(amount):
+        return str(round(amount // 60)) + 'мин ' + str(round(amount % 60)) + 'с'
+
     @staticmethod
     def split_and_remove_empty(text) -> []:
         arr = text.split(' ')

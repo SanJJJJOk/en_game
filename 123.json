@@ -1,5 +1,5 @@
 {
-  "datetime": "07/14/2020, 19:51:42",
+  "datetime": "07/14/2020, 23:34:23",
   "1": {
     "id": 1,
     "name": "otwt",
@@ -17,14 +17,17 @@
       "л5321"
     ],
     "use_three_hands": false,
-    "race_change_datetime": "07/14/2020, 19:51:51",
-    "class_change_datetime": "07/14/2020, 19:51:51",
-    "monster_fight_datetime": "07/14/2020, 19:51:31",
-    "shield_datetime": "07/14/2020, 19:51:31",
-    "chicken_datetime": "07/14/2020, 19:51:31",
+    "race_change_datetime": "07/14/2020, 22:40:22",
+    "class_change_datetime": "07/14/2020, 22:40:21",
+    "monster_fight_datetime": "07/14/2020, 22:39:56",
+    "shield_datetime": "07/14/2020, 22:39:56",
+    "chicken_datetime": "07/14/2020, 23:33:57",
     "used_one_shot_codes": [],
-    "one_shot_bonus": [],
-    "applied_curses": []
+    "one_shot_bonus": 0,
+    "applied_curses": [
+      "07/15/2020, 00:04:13",
+      "07/15/2020, 00:04:15"
+    ]
   },
   "2": {
     "id": 2,
@@ -35,13 +38,13 @@
     "used_trs": [],
     "used_levels_codes": [],
     "use_three_hands": false,
-    "race_change_datetime": "07/14/2020, 19:51:31",
-    "class_change_datetime": "07/14/2020, 19:51:31",
-    "monster_fight_datetime": "07/14/2020, 19:51:31",
-    "shield_datetime": "07/14/2020, 19:51:31",
-    "chicken_datetime": "07/14/2020, 19:51:31",
+    "race_change_datetime": "07/14/2020, 22:39:56",
+    "class_change_datetime": "07/14/2020, 22:39:56",
+    "monster_fight_datetime": "07/14/2020, 22:39:56",
+    "shield_datetime": "07/14/2020, 22:39:56",
+    "chicken_datetime": "07/14/2020, 22:39:56",
     "used_one_shot_codes": [],
-    "one_shot_bonus": [],
+    "one_shot_bonus": 0,
     "applied_curses": []
   },
   "3": {
@@ -53,13 +56,13 @@
     "used_trs": [],
     "used_levels_codes": [],
     "use_three_hands": false,
-    "race_change_datetime": "07/14/2020, 19:51:31",
-    "class_change_datetime": "07/14/2020, 19:51:31",
-    "monster_fight_datetime": "07/14/2020, 19:51:31",
-    "shield_datetime": "07/14/2020, 19:51:31",
-    "chicken_datetime": "07/14/2020, 19:51:31",
+    "race_change_datetime": "07/14/2020, 22:39:56",
+    "class_change_datetime": "07/14/2020, 22:39:56",
+    "monster_fight_datetime": "07/14/2020, 22:39:56",
+    "shield_datetime": "07/14/2020, 22:39:56",
+    "chicken_datetime": "07/14/2020, 22:39:56",
     "used_one_shot_codes": [],
-    "one_shot_bonus": [],
+    "one_shot_bonus": 0,
     "applied_curses": []
   }
 }
