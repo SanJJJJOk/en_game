@@ -107,13 +107,15 @@ class Result:
         self.message = message
 
 class Treasure:
-    def __init__(self, name, rc_type, tr_type, power, is_big, tr_code):
+    def __init__(self, id, name, rc_type, tr_type, power, is_big, tr_code, monster_id):
+        self.id = id
         self.name = name
         self.rc_type = rc_type
         self.tr_type = tr_type
         self.power = power
         self.is_big = is_big
         self.tr_code = tr_code
+        self.monster_id = monster_id
         
     def get_small_info(self):
         info =  TreasureType.TreasureEmojies[self.tr_type] + '+' + str(self.power)
@@ -133,7 +135,8 @@ class Treasure:
     #    return info
 
 class Monster:
-    def __init__(self, fightcode, defeatcode, lvl, lvlcodes, bonuses):
+    def __init__(self, id, fightcode, defeatcode, lvl, lvlcodes, bonuses):
+        self.id = id
         self.monster_fightcode = fightcode
         self.monster_defeatcode = defeatcode
         self.monster_lvlcodes = lvlcodes
@@ -149,6 +152,7 @@ class Munchkin:
         self.current_class = RaceClassType.NoClass
         self.used_trs = []
         self.used_levels_codes = []
+        self.killed_monsters = []
         self.use_three_hands = False
         self.race_change_datetime = None
         self.class_change_datetime = None
@@ -185,6 +189,7 @@ class Munchkin:
             'current_class': self.current_class,
             'used_trs': [i.tr_code for i in self.used_trs],
             'used_levels_codes': self.used_levels_codes,
+            'killed_monsters': self.killed_monsters,
             'use_three_hands': self.use_three_hands,
             'race_change_datetime': self.race_change_datetime.strftime("%m/%d/%Y, %H:%M:%S"),
             'class_change_datetime': self.class_change_datetime.strftime("%m/%d/%Y, %H:%M:%S"),
@@ -204,6 +209,7 @@ class Munchkin:
          self.current_class = input['current_class']
          self.used_trs = [GlobalInfo.c_treasure_codes[i] for i in input['used_trs']]
          self.used_levels_codes = input['used_levels_codes']
+         self.killed_monsters = input['killed_monsters']
          self.use_three_hands = input['use_three_hands']
          self.race_change_datetime = datetime.strptime(input['race_change_datetime'], "%m/%d/%Y, %H:%M:%S")
          self.class_change_datetime = datetime.strptime(input['class_change_datetime'], "%m/%d/%Y, %H:%M:%S")
@@ -216,7 +222,7 @@ class Munchkin:
          self.applied_curses = [datetime.strptime(i, "%m/%d/%Y, %H:%M:%S") for i in input['applied_curses']]
 
 class GlobalInfo:
-    log_enabled = True
+    logs = []
     autobackup_enabled = True
     final_code = 'imfinalcode19482730'
     munchkins_logins = {
@@ -226,58 +232,58 @@ class GlobalInfo:
         }
     registered_players = {}#.chat.id-key,Munchkin-value
     monsters = [
-        Monster('мор4','1539',1,['л5321'],{}),
-        Monster('муп2','3661',2,['л7669'],{}),
-        Monster('мма3','2204',2,['л5656'],{}),
-        Monster('мпк6','7652',4,['л3218'],{
+        Monster(1,'мор4','1539',1,['л5321'],{}),
+        Monster(2,'муп2','3661',2,['л7669'],{}),
+        Monster(3,'мма3','2204',2,['л5656'],{}),
+        Monster(4,'мпк6','7652',4,['л3218'],{
             RaceClassType.Wizard: 2
             }),
-        Monster('мте4','4071',5,['л4231'],{}),
-        Monster('моа8','8029',6,['л0331'],{}),
-        Monster('мсу1','5676',8,['л3580'],{
+        Monster(5,'мте4','4071',5,['л4231'],{}),
+        Monster(6,'моа8','8029',6,['л0331'],{}),
+        Monster(7,'мсу1','5676',8,['л3580'],{
             RaceClassType.Warrior: 1
             }),
-        Monster('мех5','3063',9,['л8988'],{
+        Monster(8,'мех5','3063',9,['л8988'],{
             RaceClassType.Wizard: 1
             }),
-        Monster('мхм4','4753',10,['л4815'],{}),
-        Monster('мкб7','9982',12,['л1251'],{}),
-        Monster('мвя3','1914',13,['л5246'],{
+        Monster(9,'мхм4','4753',10,['л4815'],{}),
+        Monster(10,'мкб7','9982',12,['л1251'],{}),
+        Monster(11,'мвя3','1914',13,['л5246'],{
             RaceClassType.Elf: -5
             }),
-        Monster('мпо2','3777',15,['л7313'],{
+        Monster(12,'мпо2','3777',15,['л7313'],{
             RaceClassType.Elf: 1,
             RaceClassType.Warrior: 1
             }),
-        Monster('мас9','8211',19,['л1181'],{}),
-        Monster('мде6','2119',21,['л6369'],{}),
-        Monster('мгл2','2183',23,['л2534'],{
+        Monster(13,'мас9','8211',19,['л1181'],{}),
+        Monster(14,'мде6','2119',21,['л6369'],{}),
+        Monster(15,'мгл2','2183',23,['л2534'],{
             RaceClassType.Warrior: 1
             }),
         ]
     treasures = [
-        Treasure('карнавальная маска', RaceClassType.Wizard, TreasureType.Headgear, 1, False, 'гуп7'),#5
-        Treasure('сланцы', RaceClassType.Elf, TreasureType.Footgear, 1, False, 'сан2'),#6
-        Treasure('жилетка новичка', RaceClassType.Wizard, TreasureType.Armor, 1, False, 'бор6'),#8
-        Treasure('шлем из картона', RaceClassType.Warrior, TreasureType.Headgear, 1, False, 'гус9'),#9
-        Treasure('палка', RaceClassType.Warrior, TreasureType.OneHandWeapon, 1, False, 'ора5'),#9
-        Treasure('шелковые тапочки', RaceClassType.Wizard, TreasureType.Footgear, 2, False, 'сок7'),#10
-        Treasure('длинный лук', RaceClassType.Elf, TreasureType.TwoHandWeapon, 2, True, 'трс3'),#10
-        Treasure('бронька', None, TreasureType.Armor, 1, False, 'бас2'),#12
-        Treasure('эльфомечик', RaceClassType.Elf, TreasureType.OneHandWeapon, 2, False, 'ому7'),#12
-        Treasure('тапки вязаные', None, TreasureType.Footgear, 1, False, 'сыч8'),#13
-        Treasure('массивный шлем', RaceClassType.Warrior, TreasureType.Headgear, 2, True, 'гон6'),#13
-        Treasure('защитный шлем', None, TreasureType.Headgear, 1, False, 'гав4'),#15
-        Treasure('доспех воина', RaceClassType.Warrior, TreasureType.Armor, 2, False, 'бух5'),#15
-        Treasure('высокие сапоги', None, TreasureType.Footgear, 2, False, 'сфи4'),#19
-        Treasure('божественная тиара', None, TreasureType.Headgear, 2, False, 'гкк2'),#19
-        Treasure('великая броня света', RaceClassType.Wizard, TreasureType.Armor, 3, True, 'буа5'),#19
-        Treasure('минипосох', RaceClassType.Wizard, TreasureType.OneHandWeapon, 1, False, 'оля2'),#21
-        Treasure('нейроботы', RaceClassType.Wizard, TreasureType.Footgear, 3, False, 'сем9'),#21
-        Treasure('бронежилет', None, TreasureType.Armor, 2, False, 'бур4'),#21
-        Treasure('мегамеч', RaceClassType.Warrior, TreasureType.TwoHandWeapon, 4, True, 'тен3'),#23
-        Treasure('леви-кроссы', RaceClassType.Elf, TreasureType.Footgear, 3, False, 'сук2'),#23
-        Treasure('крепкие латы', RaceClassType.Warrior, TreasureType.Footgear, 2, False, 'ска5'),#23
+        Treasure(1,'карнавальная маска', RaceClassType.Wizard, TreasureType.Headgear, 1, False, 'гуп7', 5),#5
+        Treasure(2,'сланцы', RaceClassType.Elf, TreasureType.Footgear, 1, False, 'сан2', 6),#6
+        Treasure(3,'жилетка новичка', RaceClassType.Wizard, TreasureType.Armor, 1, False, 'бор6', 7),#8
+        Treasure(4,'шлем из картона', RaceClassType.Warrior, TreasureType.Headgear, 1, False, 'гус9', 8),#9
+        Treasure(5,'палка', RaceClassType.Warrior, TreasureType.OneHandWeapon, 1, False, 'ора5', 8),#9
+        Treasure(6,'шелковые тапочки', RaceClassType.Wizard, TreasureType.Footgear, 2, False, 'сок7', 9),#10
+        Treasure(7,'длинный лук', RaceClassType.Elf, TreasureType.TwoHandWeapon, 2, True, 'трс3', 9),#10
+        Treasure(8,'бронька', None, TreasureType.Armor, 1, False, 'бас2', 10),#12
+        Treasure(9,'эльфомечик', RaceClassType.Elf, TreasureType.OneHandWeapon, 2, False, 'ому7', 10),#12
+        Treasure(10,'тапки вязаные', None, TreasureType.Footgear, 1, False, 'сыч8', 11),#13
+        Treasure(11,'массивный шлем', RaceClassType.Warrior, TreasureType.Headgear, 2, True, 'гон6', 11),#13
+        Treasure(12,'защитный шлем', None, TreasureType.Headgear, 1, False, 'гав4', 12),#15
+        Treasure(13,'доспех воина', RaceClassType.Warrior, TreasureType.Armor, 2, False, 'бух5', 12),#15
+        Treasure(14,'высокие сапоги', None, TreasureType.Footgear, 2, False, 'сфи4', 13),#19
+        Treasure(15,'божественная тиара', None, TreasureType.Headgear, 2, False, 'гкк2', 13),#19
+        Treasure(16,'великая броня света', RaceClassType.Wizard, TreasureType.Armor, 3, True, 'буа5', 13),#19
+        Treasure(17,'минипосох', RaceClassType.Wizard, TreasureType.OneHandWeapon, 1, False, 'оля2', 14),#21
+        Treasure(18,'нейроботы', RaceClassType.Wizard, TreasureType.Footgear, 3, False, 'сем9', 14),#21
+        Treasure(19,'бронежилет', None, TreasureType.Armor, 2, False, 'бур4', 14),#21
+        Treasure(20,'мегамеч', RaceClassType.Warrior, TreasureType.TwoHandWeapon, 4, True, 'тен3', 15),#23
+        Treasure(21,'леви-кроссы', RaceClassType.Elf, TreasureType.Footgear, 3, False, 'сук2', 15),#23
+        Treasure(22,'крепкие латы', RaceClassType.Warrior, TreasureType.Footgear, 2, False, 'ска5', 15),#23
         ]
     classes = {
         RaceClassType.NoClass: 'ком1',
@@ -306,6 +312,8 @@ class GlobalInfo:
     c_treasure_codes = {}
     c_singlecode_handlers = {}
     c_munchkins_by_ids = {}
+    c_check_m_by_lvlc = {}
+    c_check_m_by_trc = {}
 
     @staticmethod
     def initialize():
@@ -313,6 +321,7 @@ class GlobalInfo:
             for lvlcode in monster.monster_lvlcodes:
                 GlobalInfo.c_level_codes[lvlcode] = monster
                 GlobalInfo.c_singlecode_handlers[lvlcode] = GlobalInfo.simple_text_handler_level
+                GlobalInfo.c_check_m_by_lvlc[lvlcode] = monster.id
             GlobalInfo.c_monster_fight_codes[monster.monster_fightcode] = monster
             GlobalInfo.c_singlecode_handlers[monster.monster_fightcode] = GlobalInfo.simple_text_handler_fight
         for clss in GlobalInfo.classes:
@@ -327,6 +336,7 @@ class GlobalInfo:
             GlobalInfo.c_singlecode_handlers[one_shot_bonus_code] = GlobalInfo.simple_text_handler_oneshot
         for treasure in GlobalInfo.treasures:
             GlobalInfo.c_treasure_codes[treasure.tr_code] = treasure
+            GlobalInfo.c_check_m_by_trc[treasure.tr_code] = treasure.monster_id
         dt_now = datetime.now()
         for login in GlobalInfo.munchkins_logins:
             munchkin = GlobalInfo.munchkins_logins[login]
@@ -337,6 +347,15 @@ class GlobalInfo:
             munchkin.shield_datetime = dt_now
             munchkin.stat_datetime = dt_now
             GlobalInfo.c_munchkins_by_ids[munchkin.id] = munchkin
+
+    @staticmethod
+    def add_log_row(name, chatid, text):
+        GlobalInfo.logs.append({
+            'datetime': datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
+            'name': name,
+            'chatid': chatid,
+            'text': text,
+            })
     
     @staticmethod
     def simple_text_handler_level(munchkin, input_text):
@@ -400,6 +419,8 @@ class GlobalInfo:
             block_msg = 'следующая битва возможна через ' + GlobalInfo.sec_to_str(dt_diff)
             return Result(2, block_msg)
         monster = GlobalInfo.c_monster_fight_codes[input_text]
+        if monster.id in munchkin.killed_monsters:
+            return Result(1, 'вы уже побеждали монстра, код побежденного монстра:' + monster.monster_defeatcode)
         total_power = munchkin.get_total_power()
         munchkin.one_shot_bonus = 0
         for cr_bonus in monster.bonuses_to_mnch:
@@ -407,6 +428,7 @@ class GlobalInfo:
                 total_power = total_power + monster.bonuses_to_mnch[cr_bonus]
         munchkin.monster_fight_datetime = dt_now + timedelta(0,5)
         if total_power > monster.monster_lvl or (total_power == monster.monster_lvl and munchkin.current_class == RaceClassType.Warrior):
+            munchkin.killed_monsters.append(monster.id)
             return Result(0, 'Ура! Монстр победжен! Код побежденного монстра:' + monster.monster_defeatcode)
         else:
             return Result(1, 'вы не смогли победить монстра =(')
@@ -490,7 +512,7 @@ class GlobalInfo:
         for munch_id in GlobalInfo.c_munchkins_by_ids:
             munchkin = GlobalInfo.c_munchkins_by_ids[munch_id]
             output_dict[munch_id] = munchkin.save()
-        m_str = json.dumps(output_dict, ensure_ascii=False, indent=2)
+        m_str = json.dumps(output_dict, ensure_ascii=False, indent=2)#todo:remove indent
         file = open('123.json', 'w', encoding='utf-8')
         file.truncate(0)
         file.write(m_str)

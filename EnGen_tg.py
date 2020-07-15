@@ -62,7 +62,7 @@ class TgCommands:
     Hand = 'hand'
     Msg = 'msg'
     Msgteam = 'msgteam'
-    Log = 'log'
+    Log = 'savelog'
     Autobackup = 'autobackup'
 
 #admin commands - common
@@ -132,8 +132,14 @@ def tg_log(update, context):
         if str(update.message.chat.id)!='228485598':
             update.message.reply_text('атата!')
             return
-        GlobalInfo.log_enabled = not GlobalInfo.log_enabled
-        update.message.reply_text('log is ' + str(GlobalInfo.log_enabled))
+        log_str = json.dumps(GlobalInfo.logs, ensure_ascii=False, indent=2)
+        file = open('1234.json', 'w', encoding='utf-8')
+        file.truncate(0)
+        file.write(log_str)
+        file.close()
+        file_to_send = open('1234.json','rb')
+        context.bot.send_document('228485598', file_to_send)
+        file.close()
     except Exception as e:
         err_msg = "неизвестная ошибка: {0}".format(str(e))
         update.message.reply_text(err_msg)
@@ -401,10 +407,10 @@ def tg_default(update, context):
         if input_text in GlobalInfo.c_singlecode_handlers:
             handler = GlobalInfo.c_singlecode_handlers[input_text]
             result = handler(munchkin, input_text)
+            tg_check_lv_cheaters(update, context, munchkin, input_text)
             update.message.reply_text(Result.ResultEmojies[result.code] + result.message)
             if result.code==0:
-                if GlobalInfo.log_enabled:
-                    context.bot.send_message('661294614', munchkin.name + ':\n' + input_text)
+                GlobalInfo.add_log_row(munchkin.name, update.message.chat.id, input_text)
                 if GlobalInfo.autobackup_enabled:
                     tg_backup_base(context, '661294614')
             return
@@ -430,15 +436,28 @@ def tg_default(update, context):
         if len(parsed_codes)==0:
             update.message.reply_text('ошибка: пустое сообщение')
             return
+        tg_check_tr_cheaters(update, context, munchkin, parsed_codes)
         result_treasure = GlobalInfo.do_beautiful_with_treasures(munchkin, parsed_codes)
         update.message.reply_text(Result.ResultEmojies[result_treasure.code] + result_treasure.message)
-        if result.code==0:
-            if GlobalInfo.log_enabled:
-                context.bot.send_message('661294614', munchkin.name + ':\n' + input_text)
+        if result_treasure.code==0:
+            GlobalInfo.add_log_row(munchkin.name, update.message.chat.id, input_text)
     except Exception as e:
         err_msg = "неизвестная ошибка: {0}".format(str(e))
         update.message.reply_text(err_msg)
         context.bot.send_message('228485598', err_msg + 'id:' + update.message.chat.id)
+
+def tg_check_lv_cheaters(update, context, munchkin, lvl_code):
+    #return
+    if lvl_code in GlobalInfo.c_level_codes:
+        if not GlobalInfo.c_check_m_by_lvlc[lvl_code] in munchkin.killed_monsters:
+            context.bot.send_message('228485598', Emojies.Important + Emojies.Important + 'lvl cheater found:' + munchkin.name + ',' + lvl_code)
+
+def tg_check_tr_cheaters(update, context, munchkin, tr_codes):
+    #return
+    for tr_code in tr_codes:
+        if tr_code in GlobalInfo.c_treasure_codes:
+            if not GlobalInfo.c_check_m_by_trc[tr_code] in munchkin.killed_monsters:
+                context.bot.send_message('228485598', Emojies.Important + Emojies.Important + 'treasure cheater found:' + munchkin.name + ',' + tr_code)
 
 def main():
     GlobalInfo.initialize()
