@@ -27,6 +27,9 @@ class Emojies:
     Result1 = '\u274c'#bad
     Result2 = '\u23f3'#time
     #Shield = '\ud83e\udd1e'
+    Chicken = '\ud83d\udc25'#time
+    Important = '\u2757\ufe0f'
+    Info = '\u2139\ufe0f'
 
 class RaceClassType:
     NoClass = 1
@@ -97,9 +100,10 @@ class Result:
         0: Emojies.Result0,
         1: Emojies.Result1,
         2: Emojies.Result2,
+        3: Emojies.Chicken,
         }
-    def __init__(self, result_code, message):
-        self.result_code = result_code
+    def __init__(self, code, message):
+        self.code = code
         self.message = message
 
 class Treasure:
@@ -151,6 +155,7 @@ class Munchkin:
         self.monster_fight_datetime = None
         self.shield_datetime = None
         self.chicken_datetime = None
+        self.stat_datetime = None
         self.used_one_shot_codes = []
         self.one_shot_bonus = 0
         self.applied_curses = []
@@ -186,6 +191,7 @@ class Munchkin:
             'monster_fight_datetime': self.monster_fight_datetime.strftime("%m/%d/%Y, %H:%M:%S"),
             'shield_datetime': self.shield_datetime.strftime("%m/%d/%Y, %H:%M:%S"),
             'chicken_datetime': self.chicken_datetime.strftime("%m/%d/%Y, %H:%M:%S"),
+            'stat_datetime': self.stat_datetime.strftime("%m/%d/%Y, %H:%M:%S"),
             'used_one_shot_codes': self.used_one_shot_codes,
             'one_shot_bonus': self.one_shot_bonus,
             'applied_curses': [i.strftime("%m/%d/%Y, %H:%M:%S") for i in self.applied_curses],
@@ -204,11 +210,14 @@ class Munchkin:
          self.monster_fight_datetime = datetime.strptime(input['monster_fight_datetime'], "%m/%d/%Y, %H:%M:%S")
          self.shield_datetime = datetime.strptime(input['shield_datetime'], "%m/%d/%Y, %H:%M:%S")
          self.chicken_datetime = datetime.strptime(input['chicken_datetime'], "%m/%d/%Y, %H:%M:%S")
+         self.stat_datetime = datetime.strptime(input['stat_datetime'], "%m/%d/%Y, %H:%M:%S")
          self.used_one_shot_codes = input['used_one_shot_codes']
          self.one_shot_bonus = input['one_shot_bonus']
          self.applied_curses = [datetime.strptime(i, "%m/%d/%Y, %H:%M:%S") for i in input['applied_curses']]
 
 class GlobalInfo:
+    log_enabled = True
+    autobackup_enabled = True
     final_code = 'imfinalcode19482730'
     munchkins_logins = {
         'com1': Munchkin('otwt', 1),
@@ -288,6 +297,8 @@ class GlobalInfo:
         'ф6183',
         'ф9114',
         ]
+    divine_intervention_code = 'дв01012'
+    is_divine_intervention_passed = False
     c_level_codes = {}
     c_monster_fight_codes = {}
     c_class_codes = {}
@@ -324,6 +335,7 @@ class GlobalInfo:
             munchkin.monster_fight_datetime = dt_now
             munchkin.chicken_datetime = dt_now
             munchkin.shield_datetime = dt_now
+            munchkin.stat_datetime = dt_now
             GlobalInfo.c_munchkins_by_ids[munchkin.id] = munchkin
     
     @staticmethod
@@ -336,8 +348,8 @@ class GlobalInfo:
         munchkin.current_lvl = munchkin.current_lvl + 1
         if munchkin.current_lvl == 25:
             return Result(0, 'Поздравляю! Вы закончили игру. Код закрытия движка: ' + GlobalInfo.final_code)
-        return Result(0, 'Ура! Ваш новый уровень: ' + str(munchkin.current_lvl))
-    
+        return Result(0, 'Ура! Ваш новый уровень: ' + str(munchkin.current_lvl) + '. Не забудьте ввести этот код ещё и в движке.')
+
     @staticmethod
     def simple_text_handler_class(munchkin, input_text):
         if not input_text in GlobalInfo.c_class_codes:
@@ -350,6 +362,8 @@ class GlobalInfo:
             dt_diff = (munchkin.class_change_datetime - dt_now).total_seconds()
             block_msg = 'следующая смена класса возможна через ' + GlobalInfo.sec_to_str(dt_diff)
             return Result(2, block_msg)
+        if munchkin.current_class==RaceClassType.Wizard and new_class==RaceClassType.NoClass and len(munchkin.applied_curses)>0:
+            munchkin.applied_curses = munchkin.applied_curses[:-1]
         munchkin.current_class = new_class
         munchkin.used_trs = []
         munchkin.class_change_datetime = dt_now + timedelta(0,10)
@@ -379,8 +393,8 @@ class GlobalInfo:
         dt_now = datetime.now()
         if munchkin.chicken_datetime > dt_now:
             dt_ck_diff = (munchkin.chicken_datetime - dt_now).total_seconds()
-            block_msg = 'вас превратили в курицу, битва с монстром невозможна ' + Emojies.Result2 + GlobalInfo.sec_to_str(dt_ck_diff)
-            return Result(2, block_msg)
+            block_msg = 'вас превратили в курицу, битва с монстром невозможна\n' + Emojies.Result2 + GlobalInfo.sec_to_str(dt_ck_diff)
+            return Result(3, block_msg)
         if munchkin.monster_fight_datetime > dt_now:
             dt_diff = (munchkin.monster_fight_datetime - dt_now).total_seconds()
             block_msg = 'следующая битва возможна через ' + GlobalInfo.sec_to_str(dt_diff)
@@ -470,7 +484,8 @@ class GlobalInfo:
     @staticmethod
     def backup():
         output_dict = {
-            'datetime': datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
+            'datetime': datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
+            'is_divine_intervention_passed': GlobalInfo.is_divine_intervention_passed
             }
         for munch_id in GlobalInfo.c_munchkins_by_ids:
             munchkin = GlobalInfo.c_munchkins_by_ids[munch_id]
@@ -483,6 +498,7 @@ class GlobalInfo:
 
     @staticmethod
     def restore(input_data):
+        GlobalInfo.is_divine_intervention_passed = input_data['is_divine_intervention_passed']
         for munch_id in GlobalInfo.c_munchkins_by_ids:
             munchkin = GlobalInfo.c_munchkins_by_ids[munch_id]
             if not str(munch_id) in input_data:
