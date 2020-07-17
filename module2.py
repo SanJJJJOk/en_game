@@ -7,6 +7,101 @@ from RussianWords import *
 import random
 from datetime import datetime, date, time, timedelta
 
+#megakod
+
+class EmojiesMegakod:
+    GreenMark = '\u2705'
+    RedCross = '\u274c'
+    GrayMark = '\u2611\ufe0f'
+    Important = '\u2757\ufe0f'
+    NotFound = '\u2716\ufe0f'
+    GreenCross = '\u274e'
+    MoneyPlus = '\ud83d\udccd\u2795'
+    MoneyMinus = '\ud83d\udccd\u2796'
+
+class GlobalMonopoly:
+    users = {
+        '64798180': 'Адс',
+        '180723701': 'Барик',
+        '416618790': 'Саша',
+        '329578371': 'Калдырь',
+        '228485598': 'Санжок',
+        }
+    group_chat = '-494112903'
+    holder = {}
+    added_items = {}
+    count_card_on_street = 3
+    money = 0
+    money_history = []
+
+    def get_user(id):
+        if id in GlobalMonopoly.users:
+            return GlobalMonopoly.users[id]
+        return 'хуй с горы'
+    #last_ations = {
+    #    '64798180': None,
+    #    '180723701': None,
+    #    '416618790': None,
+    #    '329578371': None,
+    #    '228485598': None,
+    #    }
+    #last_accept = {
+    #    '64798180': False,
+    #    '180723701': False,
+    #    '416618790': False,
+    #    '329578371': False,
+    #    '228485598': False,
+    #    }
+
+
+class Answer:
+    def __init__(self, user_id, symbol):
+        self.user_id = user_id
+        self.symbol = symbol
+        
+class Item:
+    def __init__(self, word, symbol):
+        self.word = word
+        self.symbol = symbol
+
+#class ActionItem:
+#    def __init__(self, user_id, msg_id, is_group_msg, msg, action_word, action_symbol, some_field, action_type):
+#        self.user_id = user_id
+#        self.msg_id = msg_id
+#        self.is_group_msg = is_group_msg
+#        self.msg = msg
+#        self.action_word = action_word
+#        self.action_symbol = action_symbol
+#        self.action_type = action_type
+#        self.some_field = some_field
+
+#class SmartResult:
+#    def __init__(self, added_word, exist_word, is_symbol_exist):
+#        self.added_word = added_word
+#        self.exist_word = exist_word
+#        self.is_symbol_exist = is_symbol_exist
+
+#class ActionTypes:
+#    TypoMiss = 0
+
+
+
+
+
+
+
+
+    
+#-------------------------------------------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------------------------------------------
+#munchkin
 class Emojies:
     OneHandSword = '\ud83d\udde1'
     TwoHandSword = '\u2694\ufe0f'

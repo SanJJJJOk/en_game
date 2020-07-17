@@ -44,423 +44,401 @@ logger = logging.getLogger(__name__)
 def tg_error(update, context):
     err_msg = "Callback: {0}".format(str(context.error))
     update.message.reply_text(err_msg)
-    context.bot.send_message('228485598', err_msg)
     logger.warning('Update "%s" caused error "%s"', update, context.error)
     
 Holder = GlobalInfo()
 
 class TgCommands:
-    Backup = 'backup'
-    Login = 'login'
-    Logout = 'logout'
-    Info = 'info'
+    Del = 'del'
+    Add = 'add'
+    FastAdd = 'fastadd'
+    QuickDel = 'quickdel'
+    Money = 'money'
+    Help = 'help'
+    Count = 'count'
+    Fullstat = 'fullstat'
     Stat = 'stat'
-    Curse = 'curse'
-    Shield = 'shield'
-    Chicken = 'chicken'
-    Refresh = 'refresh'
-    Hand = 'hand'
-    Msg = 'msg'
-    Msgteam = 'msgteam'
-    Log = 'savelog'
-    Autobackup = 'autobackup'
-
-#admin commands - common
     
-def tg_msg(update, context):
-    try:
-        if str(update.message.chat.id)!='228485598':
-            update.message.reply_text('атата!')
-            return
-        if len(update.message.text) < len(TgCommands.Msg)+3:
-            update.message.reply_text('empty')
-            return
-        msg_text = Emojies.Info + update.message.text[len(TgCommands.Msg)+2:]
-        for player_id in GlobalInfo.registered_players:
-            context.bot.send_message(player_id, msg_text)
-    except Exception as e:
-        err_msg = "неизвестная ошибка: {0}".format(str(e))
-        update.message.reply_text(err_msg)
-        context.bot.send_message('228485598', err_msg + 'id:' + update.message.chat.id)
+#def is_meta_check(word1, word2):
+#    if len(word1) != len(word2):
+#        return False
+#    counter = 0
+#    for i in range(0, len(word1)):
+#        if word1[i]!=word2[i]:
+#            counter+=1
+#    return counter == 1
 
-def tg_msgteam(update, context):
-    try:
-        input = tg_admin_default_command(update, context, TgCommands.Msgteam, 2)
-        if len(input)==0:
-            return
-        munch_id = int(input[0])
-        munchkin = GlobalInfo.c_munchkins_by_ids[munch_id]
-        tg_send_to_team(update, context, munchkin, Emojies.Info + input[1])
-    except Exception as e:
-        err_msg = "неизвестная ошибка: {0}".format(str(e))
-        update.message.reply_text(err_msg)
-        context.bot.send_message('228485598', err_msg + 'id:' + update.message.chat.id)
+#def is_logo_check(word1, word2):
+#    long_word = ''
+#    short_word = ''
+#    if len(word1) == len(word2) + 1:
+#        long_word = word1
+#        short_word = word2
+#    else:
+#        if len(word2) == len(word1) + 1:
+#            long_word = word2
+#            short_word = word1
+#        else:
+#            return False
+#    diff_index = 0
+#    for i in range(0, len(short_word)):
+#        if long_word[i]!=short_word[i]:
+#            diff_index = i
+#            break
+#    for i in range(diff_index, len(short_word)):
+#        if long_word[i + 1]!=short_word[i]:
+#            diff_index = -1
+#            break
+#    return diff_index!=-1 or long_word.startswith(short_word)
 
-#admin commands - persistence and logging
+#def smart_check(word, symbol):
+#    if word in GlobalMonopoly.holder:
+#        return None
+#    for exist_word in GlobalMonopoly.holder:
+#        if is_meta_check(exist_word, word) or is_logo_check(exist_word, word):
+#            exist_symbols = [i.symbol for i in GlobalMonopoly.holder[exist_word]]
+#            if symbol in exist_symbols:
+#                return SmartResult(word, exist_word, True)
+#            return SmartResult(word, exist_word, False)
+#    return None
 
-def tg_document(update, context):
-    try:
-        if str(update.message.chat.id)!='228485598':
-            update.message.reply_text('атата!')
-            return
-        file = update.message.document.get_file()
-        input_filedata = file.download_as_bytearray()
-        json_data = json.loads(input_filedata)
-        output_msg = GlobalInfo.restore(json_data)
-        if output_msg is None:
-            update.message.reply_text('збс')
-        else:
-            update.message.reply_text(output_msg)
-    except Exception as e:
-        err_msg = "неизвестная ошибка: {0}".format(str(e))
-        update.message.reply_text(err_msg)
-        context.bot.send_message('228485598', err_msg + 'id:' + update.message.chat.id)
 
-def tg_backup(update, context):
-    try:
-        if str(update.message.chat.id)!='228485598':
-            update.message.reply_text('атата!')
-            return
-        tg_backup_base(context, '228485598')
-    except Exception as e:
-        err_msg = "неизвестная ошибка: {0}".format(str(e))
-        update.message.reply_text(err_msg)
-        context.bot.send_message('228485598', err_msg + 'id:' + update.message.chat.id)
+
+
+
+            #last_action = GlobalMonopoly.last_ations[update.message.from_user.id]
+            #if not last_action is None:
+            #    if last_action.action_type == ActionTypes.TypoMiss and last_action.msg_id == reply_msg.id:
+            #        if update.message.text.startswith('д'):
+            #            del GlobalMonopoly.holder[last_action.some_field.added_word]
+            #            if not last_action.action_symbol in GlobalMonopoly.holder[last_action.action_word]:
+            #                GlobalMonopoly.holder[last_action.action_word].append(last_action.action_symbol)
+            #            update.message.reply_text('сделано')
+            #            return
+            #        if update.message.text.startswith('н'):
+            #            GlobalMonopoly.last_ations[update.message.from_user.id] = None
+            #            update.message.reply_text('ок, буду молчать в тряпочку')
+            #            return
+            #        update.message.reply_text('ну ёба, да или нет скажи, че ты мне пишешь?')
+            #        return
         
-def tg_log(update, context):
-    try:
-        if str(update.message.chat.id)!='228485598':
-            update.message.reply_text('атата!')
+                    #smart_check_result = smart_check(input_word, input_symbol)
+                    #if smart_check_result is None:
+                    #    add_result = add_word_symbol(input_word, input_symbol)
+                    #    if add_result is None:
+                    #        update.message.reply_text(Result.Result1 + 'было уже')
+                    #    else:
+                    #        update.message.reply_text(Result.Result0 + 'опачки, уже ' + str(add_result) + ' штуки')
+                    #else:
+                    #    add_result = add_word_symbol(input_word, input_symbol)
+                    #    if smart_check_result.is_symbol_exist:
+                    #        GlobalMonopoly.last_ations[update.message.from_user.id] = ActionItem(update.message.from_user.id, update.message.message_id, is_group_msg, text, input_word, input_symbol, smart_check_result, ActionTypes.TypoMiss)
+                    #        update.message.reply_text('я, конечно, добавил "' + input_word  + '", но походу ты имел в виду "' + smart_check_result + '". причем "' + symbol + '" там уже существует. ответь реплаем на это сообщение да если хочешь исправить, нет - если не хочешь. или просто проигнорируй')
+                    #    else:
+                    #        GlobalMonopoly.last_ations[update.message.from_user.id] = ActionItem(update.message.from_user.id, update.message.message_id, is_group_msg, text, input_word, input_symbol, smart_check_result, ActionTypes.TypoMiss)
+                    #        update.message.reply_text('я, конечно, добавил "' + input_word  + '", но походу ты имел в виду "' + smart_check_result + '". ответь реплаем на это сообщение да если хочешь исправить, нет - если не хочешь. или просто проигнорируй')
+
+
+        #if text.startswith('+'):
+        #    int_value = get_int(text[1:])
+        #    if int_value is None:
+        #        update.message.reply_text('эт не число')
+        #        return
+        #    GlobalMonopoly.money = GlobalMonopoly.money + int_value
+        #    update.message.reply_text('добавлено ' + str(int_value) + ', осталось ' + str(GlobalMonopoly.money))
+        #    return
+
+        #if text.startswith('-'):
+        #    int_value = get_int(text[1:])
+        #    if int_value is None:
+        #        update.message.reply_text('эт не число')
+        #        return
+        #    GlobalMonopoly.money = GlobalMonopoly.money - int_value
+        #    update.message.reply_text('вычтено ' + str(int_value) + ', осталось ' + str(GlobalMonopoly.money))
+        #    return
+
+
+def tg_add_symbol(update, context, word, symbol):
+    GlobalMonopoly.added_items[update.message.message_id] = Item(word, symbol)
+    if word in GlobalMonopoly.holder:
+        symbols = [i.symbol for i in GlobalMonopoly.holder[word]]
+        if symbol in symbols:
+            update.message.reply_text(EmojiesMegakod.GrayMark + 'было уже')
             return
-        log_str = json.dumps(GlobalInfo.logs, ensure_ascii=False, indent=2)
-        file = open('1234.json', 'w', encoding='utf-8')
-        file.truncate(0)
-        file.write(log_str)
-        file.close()
-        file_to_send = open('1234.json','rb')
-        context.bot.send_document('228485598', file_to_send)
-        file.close()
-    except Exception as e:
-        err_msg = "неизвестная ошибка: {0}".format(str(e))
-        update.message.reply_text(err_msg)
-        context.bot.send_message('228485598', err_msg + 'id:' + update.message.chat.id)
-
-def tg_autobackup(update, context):
-    try:
-        if str(update.message.chat.id)!='228485598':
-            update.message.reply_text('атата!')
-            return
-        GlobalInfo.autobackup_enabled = not GlobalInfo.autobackup_enabled
-        update.message.reply_text('autobackup is ' + str(GlobalInfo.autobackup_enabled))
-    except Exception as e:
-        err_msg = "неизвестная ошибка: {0}".format(str(e))
-        update.message.reply_text(err_msg)
-        context.bot.send_message('228485598', err_msg + 'id:' + update.message.chat.id)
-
-def tg_backup_base(context, id):
-        GlobalInfo.backup()
-        file = open('123.json','rb')
-        context.bot.send_document(id, file)
-        file.close()
-    
-#admin commands - manual control
-
-def tg_send_to_team(update, context, munchkin, msg):
-    for player_id in GlobalInfo.registered_players:
-        if GlobalInfo.registered_players[player_id].id == munchkin.id:
-            context.bot.send_message(player_id, msg)
-
-def tg_admin_default_command(update, context, command, count):
-    if str(update.message.chat.id)!='228485598':
-        update.message.reply_text('атата!')
-        return []
-    if len(update.message.text) < len(command)+3:
-        update.message.reply_text('empty')
-        return []
-    input_text = update.message.text[len(command)+2:]
-    input = input_text.split(' ')
-    if len(input)!=count:
-        update.message.reply_text('args')
-        return []
-    return input
-
-def tg_refresh(update, context):
-    try:
-        input = tg_admin_default_command(update, context, TgCommands.Refresh, 2)
-        if len(input)==0:
-            return
-        munch_id = int(input[0])
-        munchkin = GlobalInfo.c_munchkins_by_ids[munch_id]
-        count = int(input[1])
-        if count < len(munchkin.applied_curses):
-            munchkin.applied_curses = munchkin.applied_curses[:-count]
-            update.message.reply_text('+++' + str(count) + ' refreshed')
         else:
-            munchkin.applied_curses = []
-            update.message.reply_text('+++all refreshed')
-        if GlobalInfo.autobackup_enabled:
-            tg_backup_base(context, '661294614')
-    except Exception as e:
-        err_msg = "неизвестная ошибка: {0}".format(str(e))
-        update.message.reply_text(err_msg)
-        context.bot.send_message('228485598', err_msg + 'id:' + update.message.chat.id)
+            GlobalMonopoly.holder[word].append(Answer(str(update.message.from_user.id), symbol))
+    else:
+        GlobalMonopoly.holder[word] = [Answer(str(update.message.from_user.id), symbol)]
+    count = len(GlobalMonopoly.holder[word])
+    new_symbols = [i.symbol for i in GlobalMonopoly.holder[word]]
+    new_symbols.sort()
+    update.message.reply_text(EmojiesMegakod.GreenMark + 'опачки, ' + get_small_info(word))
+    if count == GlobalMonopoly.count_card_on_street - 1:
+        update.message.reply_text(EmojiesMegakod.Important + 'ещё один ' + word + ' и всё')
+        return
+    if count == GlobalMonopoly.count_card_on_street:
+        update.message.reply_text(EmojiesMegakod.Important + EmojiesMegakod.Important + EmojiesMegakod.Important + 'ЕБАШЬ ЗА ОТЕЛЕМ ' + word)
+        return
 
-def tg_chicken(update, context):
+def tg_rem_sym(update, context, word, symbol):
+    if not word in GlobalMonopoly.holder:
+        update.message.reply_text(EmojiesMegakod.NotFound + word + ' не найден')
+        return
+    for i in GlobalMonopoly.holder[word]:
+        if i.symbol == symbol:
+            GlobalMonopoly.holder[word].remove(i)
+            count = len(GlobalMonopoly.holder[word])
+            new_symbols = [i.symbol for i in GlobalMonopoly.holder[word]]
+            new_symbols.sort()
+            update.message.reply_text(EmojiesMegakod.GreenCross + 'удалил. ' + get_small_info(word))
+            return
+    update.message.reply_text(EmojiesMegakod.NotFound + symbol + ' из ' + word + ' не найден')
+    return
+
+def tg_def_act_base(update, context, text, action):
+    input = text.split(' ')
+    if len(input)>2:
+        update.message.reply_text(EmojiesMegakod.RedCross + 'чёт дохера пробелов')
+        return None
+    if len(input[0].strip()) == 0:
+        update.message.reply_text(EmojiesMegakod.RedCross + 'пустая строка')
+        return None
+    if len(input)==2:
+        return Item(input[0], input[1])
+    else:
+        return Item(text[:-1], str(text[-1]))
+
+def tg_def_act_two(update, context, text, action):
+    item = tg_def_act_base(update, context, text, action)
+    if item is None:
+        return
+    really_input_words = [word for word in GlobalMonopoly.holder if word.startswith(item.word)]
+    if len(really_input_words) == 0:
+        update.message.reply_text(EmojiesMegakod.RedCross + 'пошел нахуй')
+        return
+    if len(really_input_words) > 1:
+        update.message.reply_text(EmojiesMegakod.RedCross + 'нашел дохуя, выбери чёт одно:\n' + '\n'.join(really_input_words))
+        return
+    action(update, context, really_input_words[0], item.symbol)
+
+def tg_def_act_one(update, context, text, action):
+    item = tg_def_act_base(update, context, text, action)
+    if item is None:
+        return
+    action(update, context, item.word, item.symbol)
+
+def tg_m_default(update, context):
     try:
-        input = tg_admin_default_command(update, context, TgCommands.Chicken, 2)
-        if len(input)==0:
+        text = update.message.text.lower()
+        reply_msg = update.message.reply_to_message
+        if not reply_msg is None:
+            if not reply_msg.message_id in GlobalMonopoly.added_items:
+                return
+            item = GlobalMonopoly.added_items[reply_msg.message_id]
+            if text == '-':
+                tg_rem_sym(update, context, item.word, item.symbol)
+                return
+
+            if text.startswith('--') or text.startswith('—'):
+                if item.word in GlobalMonopoly.holder:
+                    del GlobalMonopoly.holder[item.word]
+                    update.message.reply_text(item.word + ' - удалено, збс')
+                    return
+                update.message.reply_text(item.word + ' - нет такого слова, вращайте барабан')
+                return
+            
+            if text.startswith(',,'):
+                tg_rem_sym(update, context, item.word, item.symbol)
+                tg_def_act_two(update, context, tg_add_symbol)
+                return
+
+            if text.startswith(','):
+                tg_rem_sym(update, context, item.word, item.symbol)
+                tg_def_act_one(update, context, tg_add_symbol)
+                return
+
+
+            update.message.reply_text(EmojiesMegakod.RedCross + 'так писать нельзя')
             return
-        munch_id = int(input[0])
-        munchkin = GlobalInfo.c_munchkins_by_ids[munch_id]
-        dt_now = datetime.now()
-        value = int(input[1])
-        munchkin.chicken_datetime = dt_now + timedelta(0, value)
-        update.message.reply_text('+++chicken applied')
-        if GlobalInfo.autobackup_enabled:
-            tg_backup_base(context, '661294614')
+
+        if text.startswith('+++'):
+            input = text[3:].split(' ')
+            for i in input:
+                GlobalMonopoly.holder[i] = []
+            update.message.reply_text(text[3:] + ' - добавлено/очищено, збс')
+            return
+
+        if text.startswith('++'):
+            word = text[2:]
+            GlobalMonopoly.holder[word] = []
+            update.message.reply_text(word + ' - очищено, збс')
+            return
+
+        if text.startswith('--') or text.startswith('—'):
+            word = text[1:]
+            if text.startswith('--'):
+                word = text[2:]
+            if word in GlobalMonopoly.holder:
+                del GlobalMonopoly.holder[word]
+                update.message.reply_text(word + ' - удалено, збс')
+                return
+            update.message.reply_text(word + ' - нет такого слова, вращайте барабан')
+            return
+        
+        if text.startswith('!!'):
+            tg_def_act_two(update, context, text[2:], tg_rem_sym)
+            return
+
+        if text.startswith(',,'):
+            tg_def_act_two(update, context, text[2:], tg_add_symbol)
+            return
+
+        if text.startswith('!'):
+            int_value = get_int(text[1:])
+            if not int_value is None:
+                GlobalMonopoly.money = GlobalMonopoly.money - int_value
+                update.message.reply_text(EmojiesMegakod.MoneyMinus + 'вычтено ' + str(int_value) + ', осталось ' + str(GlobalMonopoly.money))
+                GlobalMonopoly.money_history.append(-int_value)
+                return
+            tg_def_act_one(update, context, text[1:], tg_rem_sym)
+            return
+        
+        if text.startswith(','):
+            int_value = get_int(text[1:])
+            if not int_value is None:
+                GlobalMonopoly.money = GlobalMonopoly.money + int_value
+                update.message.reply_text(EmojiesMegakod.MoneyPlus + 'добавлено ' + str(int_value) + ', осталось ' + str(GlobalMonopoly.money))
+                GlobalMonopoly.money_history.append(int_value)
+                return
+            tg_def_act_one(update, context, text[1:], tg_add_symbol)
+            return
+        
     except Exception as e:
         err_msg = "неизвестная ошибка: {0}".format(str(e))
         update.message.reply_text(err_msg)
-        context.bot.send_message('228485598', err_msg + 'id:' + update.message.chat.id)
-
-def tg_hand(update, context):
+        context.bot.send_message('228485598', err_msg + 'id:' + str(update.message.chat.id))
+        
+def tg_m_add(update, context):
     try:
-        input = tg_admin_default_command(update, context, TgCommands.Hand, 1)
-        if len(input)==0:
-            return
-        munch_id = int(input[0])
-        munchkin = GlobalInfo.c_munchkins_by_ids[munch_id]
-        munchkin.use_three_hands = True
-        update.message.reply_text('+++three hands applied')
-        if GlobalInfo.autobackup_enabled:
-            tg_backup_base(context, '661294614')
+        text = update.message.text[len(TgCommands.Add)+2:]
+        tg_def_act_one(update, context, text, tg_add_symbol)
     except Exception as e:
         err_msg = "неизвестная ошибка: {0}".format(str(e))
         update.message.reply_text(err_msg)
-        context.bot.send_message('228485598', err_msg + 'id:' + update.message.chat.id)
-
-def tg_shield(update, context):
+        context.bot.send_message('228485598', err_msg + 'id:' + str(update.message.chat.id))
+        
+def tg_m_del(update, context):
     try:
-        input = tg_admin_default_command(update, context, TgCommands.Shield, 2)
-        if len(input)==0:
-            return
-        munch_id = int(input[0])
-        munchkin = GlobalInfo.c_munchkins_by_ids[munch_id]
-        dt_now = datetime.now()
-        value = int(input[1])
-        munchkin.shield_datetime = dt_now + timedelta(0, value)
-        update.message.reply_text('+++shield applied')
-        if GlobalInfo.autobackup_enabled:
-            tg_backup_base(context, '661294614')
+        text = update.message.text[len(TgCommands.Del)+2:]
+        tg_def_act_one(update, context, text, tg_rem_sym)
     except Exception as e:
         err_msg = "неизвестная ошибка: {0}".format(str(e))
         update.message.reply_text(err_msg)
-        context.bot.send_message('228485598', err_msg + 'id:' + update.message.chat.id)
-
-def tg_curse(update, context):
+        context.bot.send_message('228485598', err_msg + 'id:' + str(update.message.chat.id))
+        
+def tg_m_fastadd(update, context):
     try:
-        input = tg_admin_default_command(update, context, TgCommands.Curse, 2)
-        if len(input)==0:
-            return
-        munch_id = int(input[0])
-        munchkin = GlobalInfo.c_munchkins_by_ids[munch_id]
-        dt_now = datetime.now()
-        if munchkin.shield_datetime > dt_now:
-            update.message.reply_text('---shield')
-            return
-
-        source_munch_id = int(input[1])
-        source_munchkin = GlobalInfo.c_munchkins_by_ids[source_munch_id]
-        target_msg = Emojies.Important + 'На вас кинул проклятье манчкин ' + source_munchkin.name
-
-        curse_time = dt_now + timedelta(0, 1800)
-        munchkin.applied_curses.append(curse_time)
-
-        tg_send_to_team(update, context, munchkin, target_msg)
-        update.message.reply_text('+++curse applied')
-        if GlobalInfo.autobackup_enabled:
-            tg_backup_base(context, '661294614')
+        text = update.message.text[len(TgCommands.FastAdd)+2:]
+        tg_def_act_two(update, context, text, tg_add_symbol)
     except Exception as e:
         err_msg = "неизвестная ошибка: {0}".format(str(e))
         update.message.reply_text(err_msg)
-        context.bot.send_message('228485598', err_msg + 'id:' + update.message.chat.id)
-
-#user commands
-
-def tg_stat(update, context):
+        context.bot.send_message('228485598', err_msg + 'id:' + str(update.message.chat.id))
+        
+def tg_m_quickdel(update, context):
     try:
-        if not update.message.chat.id in GlobalInfo.registered_players:
-            update.message.reply_text('вы не зарегистрированы')
-            return
-        dt_now = datetime.now()
-        munchkin = GlobalInfo.registered_players[update.message.chat.id]
-        if munchkin.chicken_datetime > dt_now:
-            dt_ck_diff = (munchkin.chicken_datetime - dt_now).total_seconds()
-            update.message.reply_text(Emojies.Chicken + 'вас превратили в курицу, просмотр статистики недоступен\n' + Emojies.Result2 + GlobalInfo.sec_to_str(dt_ck_diff))
-            return
-        if munchkin.stat_datetime > dt_now:
-            dt_st_diff = (munchkin.stat_datetime - dt_now).total_seconds()
-            update.message.reply_text(Emojies.Result2 + 'просмотр статистики будет доступен через \n' + GlobalInfo.sec_to_str(dt_st_diff))
-            return
-        munchkin.stat_datetime = dt_now + timedelta(0, 5)
-        stat_str = 'Общая статистика:'
-        for munch_id in GlobalInfo.c_munchkins_by_ids:
-            other_munchkin = GlobalInfo.c_munchkins_by_ids[munch_id]
-            stat_str = stat_str + '\n' + other_munchkin.name + ' ' + str(other_munchkin.current_lvl) + ' ур. ' + RaceClassType.CRNames[other_munchkin.current_race] + ', ' + RaceClassType.CRNames[other_munchkin.current_class]
-            total_power = other_munchkin.get_total_power()
-            stat_str = stat_str + ' ' + Emojies.Power + '=' + str(total_power)
-            if other_munchkin.chicken_datetime > dt_now:
-                stat_str = stat_str + Emojies.Chicken
-        update.message.reply_text(stat_str)
+        text = update.message.text[len(TgCommands.QuickDel)+2:]
+        tg_def_act_two(update, context, text, tg_rem_sym)
     except Exception as e:
         err_msg = "неизвестная ошибка: {0}".format(str(e))
         update.message.reply_text(err_msg)
-        context.bot.send_message('228485598', err_msg + 'id:' + update.message.chat.id)
-
-def tg_info(update, context):
+        context.bot.send_message('228485598', err_msg + 'id:' + str(update.message.chat.id))
+        
+#def tg_m_stat(update, context):
+#    try:
+#        output = []
+#        for word in GlobalMonopoly.holder:
+#            strtr = str(len(GlobalMonopoly.holder[word])) + ' - ' + word
+#            output.append(strtr)
+#        output.sort()
+#        update.message.reply_text('money=' + str(GlobalMonopoly.money) + '\n' + '\n'.join(output))
+#    except Exception as e:
+#        err_msg = "неизвестная ошибка: {0}".format(str(e))
+#        update.message.reply_text(err_msg)
+#        context.bot.send_message('228485598', err_msg + 'id:' + str(update.message.chat.id))
+        
+def tg_m_stat(update, context):
     try:
-        if not update.message.chat.id in GlobalInfo.registered_players:
-            update.message.reply_text('вы не зарегистрированы')
-            return
-        dt_now = datetime.now()
-        munchkin = GlobalInfo.registered_players[update.message.chat.id]
-        if munchkin.chicken_datetime > dt_now:
-            dt_ck_diff = (munchkin.chicken_datetime - dt_now).total_seconds()
-            update.message.reply_text(Emojies.Chicken + 'вас превратили в курицу, просмотр инфо недоступен\n' + Emojies.Result2 + GlobalInfo.sec_to_str(dt_ck_diff))
-            return
-        output_stat = munchkin.name + ', ***' + str(munchkin.current_lvl) + '*** ур.\n'
-        output_stat = output_stat + '---------------------------\n'
-        output_stat = output_stat + RaceClassType.CREmojies[munchkin.current_race] + ': ' + RaceClassType.CRNames[munchkin.current_race]
-        if munchkin.race_change_datetime > dt_now:
-            dt_r_diff = (munchkin.race_change_datetime - dt_now).total_seconds()
-            output_stat = output_stat + ' ' + Emojies.Result2 + GlobalInfo.sec_to_str(dt_r_diff)
-        output_stat = output_stat + '\n' + RaceClassType.CREmojies[munchkin.current_class] + ': ' + RaceClassType.CRNames[munchkin.current_class]
-        if munchkin.class_change_datetime > dt_now:
-            dt_c_diff = (munchkin.class_change_datetime - dt_now).total_seconds()
-            output_stat = output_stat + ' ' + Emojies.Result2 + GlobalInfo.sec_to_str(dt_c_diff)
-        output_stat = output_stat + '\n---------------------------\n'
-        for tr in munchkin.used_trs:
-            output_stat = output_stat + tr.get_small_info() + '\n' 
-        output_stat = output_stat + '---------------------------\n'
-        if munchkin.shield_datetime > dt_now:
-            dt_s_diff = (munchkin.shield_datetime - dt_now).total_seconds()
-            output_stat = output_stat + 'Защита от проклятий: ' + Emojies.Result2 + GlobalInfo.sec_to_str(dt_s_diff) + '\n'
-        if munchkin.one_shot_bonus > 0:
-            output_stat = output_stat + 'Бонус в следующем бою: +' + str(munchkin.one_shot_bonus) + '\n'
-        for curse in munchkin.applied_curses:
-            if curse > dt_now:
-                dt_curse_diff = (curse - dt_now).total_seconds()
-                output_stat = output_stat + '-1: ' + Emojies.Result2 + GlobalInfo.sec_to_str(dt_curse_diff) + '\n'
-        output_stat = output_stat + '---------------------------\n'
-        total_power = munchkin.get_total_power()
-        output_stat = output_stat + Emojies.Power + '=' + str(total_power)
-        if munchkin.monster_fight_datetime > dt_now:
-            output_stat = output_stat + '\n---------------------------\n'
-            dt_m_diff = (munchkin.monster_fight_datetime - dt_now).total_seconds()
-            output_stat = output_stat + 'Следующий бой доступен через: ' + Emojies.Result2 + GlobalInfo.sec_to_str(dt_m_diff)
-
-        update.message.reply_text(output_stat)
+        output = []
+        for word in GlobalMonopoly.holder:
+            word_data = GlobalMonopoly.holder[word]
+            players = [GlobalMonopoly.get_user(i.user_id) for i in word_data]
+            symbols = [i.symbol for i in word_data]
+            strtr = str(len(word_data)) + ' - ' + word + ' (' + ','.join(symbols) + ')' + ' (' + ','.join(players) + ')'
+            output.append(strtr)
+        output.sort()
+        update.message.reply_text('money=' + str(GlobalMonopoly.money) + '\n' + '\n'.join(output))
     except Exception as e:
         err_msg = "неизвестная ошибка: {0}".format(str(e))
         update.message.reply_text(err_msg)
-        context.bot.send_message('228485598', err_msg + 'id:' + update.message.chat.id)
-
-def tg_login(update, context):
+        context.bot.send_message('228485598', err_msg + 'id:' + str(update.message.chat.id))
+        
+def tg_m_set_count(update, context):
     try:
-        if len(update.message.text)<len(TgCommands.Login)+3:
-            update.message.reply_text('неверный логин')
-            return
-        login_id = update.message.text[len(TgCommands.Login)+2:]
-        if not login_id in GlobalInfo.munchkins_logins:
-            update.message.reply_text('неверный логин')
-            return
-        munchkin = GlobalInfo.munchkins_logins[login_id]
-        GlobalInfo.registered_players[update.message.chat.id] = munchkin
-        update.message.reply_text('регистрация успешна: ' + munchkin.name)
+        GlobalMonopoly.count_card_on_street = int(update.message.text[len(TgCommands.Count)+2:])
+        update.message.reply_text('збс')
     except Exception as e:
         err_msg = "неизвестная ошибка: {0}".format(str(e))
         update.message.reply_text(err_msg)
-        context.bot.send_message('228485598', err_msg + 'id:' + update.message.chat.id)
-
-def tg_logout(update, context):
+        context.bot.send_message('228485598', err_msg + 'id:' + str(update.message.chat.id))
+         
+def tg_m_money(update, context):
     try:
-        chat_id = update.message.chat.id
-        if chat_id in GlobalInfo.registered_players:
-            del GlobalInfo.registered_players[chat_id]
-            update.message.reply_text('неверный логин')
-        update.message.reply_text('вы не относитесь ни к одной команде')
+        update.message.reply_text('money=' + str(GlobalMonopoly.money) + '\n' + '\n'.join([str(i) for i in GlobalMonopoly.money_history]))
     except Exception as e:
         err_msg = "неизвестная ошибка: {0}".format(str(e))
         update.message.reply_text(err_msg)
-        context.bot.send_message('228485598', err_msg + 'id:' + update.message.chat.id)
-
-def tg_default(update, context):
+        context.bot.send_message('228485598', err_msg + 'id:' + str(update.message.chat.id))
+          
+def tg_m_help(update, context):
     try:
-        if not update.message.chat.id in GlobalInfo.registered_players:
-            update.message.reply_text('вы не зарегистрированы')
-            return
-        munchkin = GlobalInfo.registered_players[update.message.chat.id]
-        input_text = update.message.text.strip().lower()
-        if len(input_text)==0:
-            update.message.reply_text('ошибка: пустое сообщение')
-            return
-        if input_text in GlobalInfo.c_singlecode_handlers:
-            handler = GlobalInfo.c_singlecode_handlers[input_text]
-            result = handler(munchkin, input_text)
-            tg_check_lv_cheaters(update, context, munchkin, input_text)
-            update.message.reply_text(Result.ResultEmojies[result.code] + result.message)
-            if result.code==0:
-                GlobalInfo.add_log_row(munchkin.name, update.message.chat.id, input_text)
-                if GlobalInfo.autobackup_enabled:
-                    tg_backup_base(context, '661294614')
-            return
-        if input_text == GlobalInfo.divine_intervention_code:
-            if GlobalInfo.is_divine_intervention_passed:
-                update.message.reply_text(Result.ResultEmojies[1] + 'Божественное вмешательство уже было использовано')
-            else:
-                GlobalInfo.is_divine_intervention_passed = True
-                dt_now = datetime.now()
-                output_str = Emojies.Important + 'Божественное вмешательство применил манчкин ' + munchkin.name + '\nУровень получили: '
-                for munch_id in GlobalInfo.c_munchkins_by_ids:
-                    tmp_munch = GlobalInfo.c_munchkins_by_ids[munch_id]
-                    if tmp_munch.current_class==RaceClassType.Cleric:
-                        tmp_munch.current_lvl = tmp_munch.current_lvl + 1
-                        output_str = output_str + tmp_munch.name + ', '
-                for player_id in GlobalInfo.registered_players:
-                    context.bot.send_message(player_id, output_str)
-                context.bot.send_message('228485598', output_str + dt_now.strftime("%m/%d/%Y, %H:%M:%S"))
-                if GlobalInfo.autobackup_enabled:
-                    tg_backup_base(context, '661294614')
-            return
-        parsed_codes = GlobalInfo.split_and_remove_empty(input_text)
-        if len(parsed_codes)==0:
-            update.message.reply_text('ошибка: пустое сообщение')
-            return
-        tg_check_tr_cheaters(update, context, munchkin, parsed_codes)
-        result_treasure = GlobalInfo.do_beautiful_with_treasures(munchkin, parsed_codes)
-        update.message.reply_text(Result.ResultEmojies[result_treasure.code] + result_treasure.message)
-        if result_treasure.code==0:
-            GlobalInfo.add_log_row(munchkin.name, update.message.chat.id, input_text)
+        update.message.reply_text(',синий1 или ,синий 1 или /add синий1 - добавить на улицу "СИНИЙ" дом "1"\n'
+        +',синий 123нахуй - добавить на улицу "СИНИЙ" дом "123нахуй"\n'
+        +'!синий1 или !синий 1 или /del синий1 - удалить с улицы "СИНИЙ" дом "1"\n'
+        +'!синий 123нахуй - удалить с улицы "СИНИЙ" дом "123нахуй"\n'
+        +'---------------------\n'
+        +'"-" на реплаенное сообщение ",синий1" удаляет с улицы "СИНИЙ" дом "1"\n'
+        +'",красный3" на реплаенное сообщение ",синий1" удаляет с улицы "СИНИЙ" дом "1" и добавляет на улицу "КРАСНЫЙ" дом "3"\n'
+        +'---------------------\n'
+        +',100 - добавить 100 бабла\n'
+        +'!100 - убрать 100 бабла\n'
+        +'---------------------\n'
+        +',,с1 или ,,с 1 или /fastadd c1 - бот находит улицу "СИНИЙ" и добавляет дом "1"\n'
+        +',,с1 или ,,с 1 или /fastadd c1 - бот находит улицу "СИНИЙ" и "СИРЕНЕВЫЙ" и не может определиться\n'
+        +',,с1 или ,,с 1 или /fastadd c1 - бот не находит улицу "СИНИЙ" и посылает вас нахуй\n'
+        +'!!с1 или !!c 1 или /quickdel c1 - всё то же самое для удаления\n'
+        )
     except Exception as e:
         err_msg = "неизвестная ошибка: {0}".format(str(e))
         update.message.reply_text(err_msg)
-        context.bot.send_message('228485598', err_msg + 'id:' + update.message.chat.id)
+        context.bot.send_message('228485598', err_msg + 'id:' + str(update.message.chat.id))
+        
+def get_small_info(word):
+    if not word in GlobalMonopoly.holder:
+        return None
+    count = len(GlobalMonopoly.holder[word])
+    new_symbols = [i.symbol for i in GlobalMonopoly.holder[word]]
+    new_symbols.sort()
+    return word + ' уже ' + str(count) + ' штук(' + ', '.join(new_symbols) + ')'
 
-def tg_check_lv_cheaters(update, context, munchkin, lvl_code):
-    #return
-    if lvl_code in GlobalInfo.c_level_codes:
-        if not GlobalInfo.c_check_m_by_lvlc[lvl_code] in munchkin.killed_monsters:
-            context.bot.send_message('228485598', Emojies.Important + Emojies.Important + 'lvl cheater found:' + munchkin.name + ',' + lvl_code)
-
-def tg_check_tr_cheaters(update, context, munchkin, tr_codes):
-    #return
-    for tr_code in tr_codes:
-        if tr_code in GlobalInfo.c_treasure_codes:
-            if not GlobalInfo.c_check_m_by_trc[tr_code] in munchkin.killed_monsters:
-                context.bot.send_message('228485598', Emojies.Important + Emojies.Important + 'treasure cheater found:' + munchkin.name + ',' + tr_code)
+def get_int(text):
+    try:
+        return int(text)
+    except Exception as e:
+        return None
 
 def main():
-    GlobalInfo.initialize()
+    #GlobalInfo.initialize()
     #update = FakeUpdate()
     #context = FakeContext()
     #tg_backup(update, context)
@@ -481,23 +459,16 @@ def main():
     updater = Updater("408100374:AAEhMleUbdVH_G1xmKeCAy8MlNfyBwB9AOo", use_context=True)
     #updater = Updater("979411435:AAEHIVLx8L8CxmjIHtitaH4L1GeV_OCRJ7M", use_context=True)
     dp = updater.dispatcher
-
-    dp.add_handler(CommandHandler(TgCommands.Log, tg_log))
-    dp.add_handler(CommandHandler(TgCommands.Autobackup, tg_autobackup))
-    dp.add_handler(CommandHandler(TgCommands.Msgteam, tg_msgteam))
-    dp.add_handler(CommandHandler(TgCommands.Msg, tg_msg))
-    dp.add_handler(CommandHandler(TgCommands.Backup, tg_backup))
-    dp.add_handler(CommandHandler(TgCommands.Hand, tg_hand))
-    dp.add_handler(CommandHandler(TgCommands.Refresh, tg_refresh))
-    dp.add_handler(CommandHandler(TgCommands.Chicken, tg_chicken))
-    dp.add_handler(CommandHandler(TgCommands.Shield, tg_shield))
-    dp.add_handler(CommandHandler(TgCommands.Curse, tg_curse))
-    dp.add_handler(CommandHandler(TgCommands.Info, tg_info))
-    dp.add_handler(CommandHandler(TgCommands.Stat, tg_stat))
-    dp.add_handler(CommandHandler(TgCommands.Login, tg_login))
-    dp.add_handler(CommandHandler(TgCommands.Logout, tg_logout))
-    dp.add_handler(MessageHandler(Filters.text, tg_default))
-    dp.add_handler(MessageHandler(Filters.document, tg_document))
+    
+    dp.add_handler(CommandHandler(TgCommands.Del, tg_m_del))
+    dp.add_handler(CommandHandler(TgCommands.Add, tg_m_add))
+    dp.add_handler(CommandHandler(TgCommands.FastAdd, tg_m_fastadd))
+    dp.add_handler(CommandHandler(TgCommands.QuickDel, tg_m_quickdel))
+    dp.add_handler(CommandHandler(TgCommands.Money, tg_m_money))
+    dp.add_handler(CommandHandler(TgCommands.Help, tg_m_help))
+    dp.add_handler(CommandHandler(TgCommands.Count, tg_m_set_count))
+    dp.add_handler(CommandHandler(TgCommands.Stat, tg_m_stat))
+    dp.add_handler(MessageHandler(Filters.text, tg_m_default))
 
     dp.add_error_handler(tg_error)
 
