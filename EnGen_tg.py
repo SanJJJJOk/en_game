@@ -49,6 +49,7 @@ def tg_error(update, context):
 Holder = GlobalInfo()
 
 class TgCommands:
+    Move = 'move'
     Del = 'del'
     Add = 'add'
     FastAdd = 'fastadd'
@@ -195,6 +196,13 @@ def tg_rem_sym(update, context, word, symbol):
     update.message.reply_text(EmojiesMegakod.NotFound + symbol + ' из ' + word + ' не найден')
     return
 
+def tg_rem_wrd(update, context, word):
+    if word in GlobalMonopoly.holder:
+        del GlobalMonopoly.holder[word]
+        update.message.reply_text(word + ' - удалено, збс')
+        return
+    update.message.reply_text(word + ' - нет такого слова, вращайте барабан')
+
 def tg_def_act_base(update, context, text, action):
     input = text.split(' ')
     if len(input)>2:
@@ -240,23 +248,18 @@ def tg_m_default(update, context):
                 return
 
             if text.startswith('--') or text.startswith('—'):
-                if item.word in GlobalMonopoly.holder:
-                    del GlobalMonopoly.holder[item.word]
-                    update.message.reply_text(item.word + ' - удалено, збс')
-                    return
-                update.message.reply_text(item.word + ' - нет такого слова, вращайте барабан')
+                tg_rem_wrd(update, context, item.word)
                 return
             
             if text.startswith(',,'):
                 tg_rem_sym(update, context, item.word, item.symbol)
-                tg_def_act_two(update, context, tg_add_symbol)
+                tg_def_act_two(update, context, text[2:], tg_add_symbol)
                 return
 
             if text.startswith(','):
                 tg_rem_sym(update, context, item.word, item.symbol)
-                tg_def_act_one(update, context, tg_add_symbol)
+                tg_def_act_one(update, context, text[2:], tg_add_symbol)
                 return
-
 
             update.message.reply_text(EmojiesMegakod.RedCross + 'так писать нельзя')
             return
@@ -278,11 +281,7 @@ def tg_m_default(update, context):
             word = text[1:]
             if text.startswith('--'):
                 word = text[2:]
-            if word in GlobalMonopoly.holder:
-                del GlobalMonopoly.holder[word]
-                update.message.reply_text(word + ' - удалено, збс')
-                return
-            update.message.reply_text(word + ' - нет такого слова, вращайте барабан')
+            tg_rem_wrd(update, context, word)
             return
         
         if text.startswith('!!'):
@@ -320,7 +319,7 @@ def tg_m_default(update, context):
         
 def tg_m_add(update, context):
     try:
-        text = update.message.text[len(TgCommands.Add)+2:]
+        text = update.message.text[len(TgCommands.Add)+2:].lower()
         tg_def_act_one(update, context, text, tg_add_symbol)
     except Exception as e:
         err_msg = "неизвестная ошибка: {0}".format(str(e))
@@ -329,7 +328,7 @@ def tg_m_add(update, context):
         
 def tg_m_del(update, context):
     try:
-        text = update.message.text[len(TgCommands.Del)+2:]
+        text = update.message.text[len(TgCommands.Del)+2:].lower()
         tg_def_act_one(update, context, text, tg_rem_sym)
     except Exception as e:
         err_msg = "неизвестная ошибка: {0}".format(str(e))
@@ -338,7 +337,7 @@ def tg_m_del(update, context):
         
 def tg_m_fastadd(update, context):
     try:
-        text = update.message.text[len(TgCommands.FastAdd)+2:]
+        text = update.message.text[len(TgCommands.FastAdd)+2:].lower()
         tg_def_act_two(update, context, text, tg_add_symbol)
     except Exception as e:
         err_msg = "неизвестная ошибка: {0}".format(str(e))
@@ -347,7 +346,7 @@ def tg_m_fastadd(update, context):
         
 def tg_m_quickdel(update, context):
     try:
-        text = update.message.text[len(TgCommands.QuickDel)+2:]
+        text = update.message.text[len(TgCommands.QuickDel)+2:].lower()
         tg_def_act_two(update, context, text, tg_rem_sym)
     except Exception as e:
         err_msg = "неизвестная ошибка: {0}".format(str(e))
@@ -395,6 +394,42 @@ def tg_m_set_count(update, context):
 def tg_m_money(update, context):
     try:
         update.message.reply_text('money=' + str(GlobalMonopoly.money) + '\n' + '\n'.join([str(i) for i in GlobalMonopoly.money_history]))
+    except Exception as e:
+        err_msg = "неизвестная ошибка: {0}".format(str(e))
+        update.message.reply_text(err_msg)
+        context.bot.send_message('228485598', err_msg + 'id:' + str(update.message.chat.id))
+          
+def tg_m_move(update, context):
+    try:
+        text = update.message.text[len(TgCommands.Move)+2:].lower()
+        if len(text)==0:
+            update.message.reply_text('пустота - пустотайд')
+            return
+        input = text.split(' ')
+        if len(input)!=2:
+            update.message.reply_text('надо 2 части, фром и ту')
+            return
+        from_word = input[0]
+        to_word = input[1]
+        if not from_word in GlobalMonopoly.holder:
+            update.message.reply_text('фром нету')
+            return
+        if not to_word in GlobalMonopoly.holder:
+            update.message.reply_text('ту нету')
+            return
+        added = []
+        not_added = []
+        for from_value in GlobalMonopoly.holder[from_word]:
+            is_exist = False
+            for to_value in GlobalMonopoly.holder[to_word]:
+                if from_value.symbol == to_value.symbol:
+                    is_exist = True
+                    not_added.append(from_value.symbol)
+            if not is_exist:
+                GlobalMonopoly.holder[to_word].append(Answer(from_value.user_id, from_value.symbol))
+                added.append(from_value.symbol)
+        update.message.reply_text('адд:\n' + '\n'.join(added) + '\nнот адд:\n' + '\n'.join(not_added))
+        #update.message.reply_text('money=' + str(GlobalMonopoly.money) + '\n' + '\n'.join([str(i) for i in GlobalMonopoly.money_history]))
     except Exception as e:
         err_msg = "неизвестная ошибка: {0}".format(str(e))
         update.message.reply_text(err_msg)
@@ -460,6 +495,7 @@ def main():
     #updater = Updater("979411435:AAEHIVLx8L8CxmjIHtitaH4L1GeV_OCRJ7M", use_context=True)
     dp = updater.dispatcher
     
+    dp.add_handler(CommandHandler(TgCommands.Move, tg_m_move))
     dp.add_handler(CommandHandler(TgCommands.Del, tg_m_del))
     dp.add_handler(CommandHandler(TgCommands.Add, tg_m_add))
     dp.add_handler(CommandHandler(TgCommands.FastAdd, tg_m_fastadd))
