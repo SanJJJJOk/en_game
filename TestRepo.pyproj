@@ -22,7 +22,6 @@
   <ItemGroup>
     <Content Include="123.json" />
     <Content Include="1234.json" />
-    <Content Include="ForStat\ConsoleApp1\ConsoleApp1\obj\Debug\ConsoleApp1.csproj.FileListAbsolute.txt" />
     <Content Include="requirements.txt" />
     <Content Include="runtime.txt" />
     <Content Include="test.txt" />
@@ -41,13 +40,6 @@
     <Compile Include="RussianWords.py" />
     <Compile Include="speed_test.py" />
     <Compile Include="TgTest.py" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="ForStat\" />
-    <Folder Include="ForStat\ConsoleApp1\" />
-    <Folder Include="ForStat\ConsoleApp1\ConsoleApp1\" />
-    <Folder Include="ForStat\ConsoleApp1\ConsoleApp1\obj\" />
-    <Folder Include="ForStat\ConsoleApp1\ConsoleApp1\obj\Debug" />
   </ItemGroup>
   <ItemGroup>
     <Interpreter Include="venv\">
