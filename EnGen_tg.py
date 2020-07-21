@@ -314,7 +314,7 @@ def tg_stat(update, context):
             total_power = other_munchkin.get_total_power()
             stat_str = stat_str + ' ' + Emojies.Power + '=' + str(total_power)
             if other_munchkin.chicken_datetime > dt_now:
-                stat_str = stat_str + Emojies.Chicken
+                stat_str = stat_str + ' | ' + Emojies.Chicken
         update.message.reply_text(stat_str)
     except Exception as e:
         err_msg = "неизвестная ошибка: {0}".format(str(e))

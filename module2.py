@@ -426,11 +426,11 @@ class GlobalInfo:
         for cr_bonus in monster.bonuses_to_mnch:
             if munchkin.current_class == cr_bonus or munchkin.current_race == cr_bonus:
                 total_power = total_power + monster.bonuses_to_mnch[cr_bonus]
-        munchkin.monster_fight_datetime = dt_now + timedelta(0,5)
         if total_power > monster.monster_lvl or (total_power == monster.monster_lvl and munchkin.current_class == RaceClassType.Warrior):
             munchkin.killed_monsters.append(monster.id)
             return Result(0, 'Ура! Монстр победжен! Код побежденного монстра:' + monster.monster_defeatcode)
         else:
+            munchkin.monster_fight_datetime = dt_now + timedelta(0,5)
             return Result(1, 'вы не смогли победить монстра =(')
     
     @staticmethod
