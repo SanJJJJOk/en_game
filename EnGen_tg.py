@@ -213,6 +213,10 @@ def tg_chicken(update, context):
         munch_id = int(input[0])
         munchkin = GlobalInfo.c_munchkins_by_ids[munch_id]
         dt_now = datetime.now()
+        if munchkin.shield_datetime > dt_now:
+            update.message.reply_text('---shield')
+            return
+
         value = int(input[1])
         munchkin.chicken_datetime = dt_now + timedelta(0, value)
         update.message.reply_text('+++chicken applied')
