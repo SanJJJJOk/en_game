@@ -59,6 +59,7 @@ class TgCommands:
     Shield = 'shield'
     Chicken = 'chicken'
     Refresh = 'refresh'
+    Sell = 'sell'
     Hand = 'hand'
     Msg = 'msg'
     Msgteam = 'msgteam'
@@ -227,6 +228,23 @@ def tg_chicken(update, context):
         update.message.reply_text(err_msg)
         context.bot.send_message('228485598', err_msg + 'id:' + update.message.chat.id)
 
+def tg_sell(update, context):
+    try:
+        input = tg_admin_default_command(update, context, TgCommands.Hand, 1)
+        if len(input)==0:
+            return
+        munch_id = int(input[0])
+        munchkin = GlobalInfo.c_munchkins_by_ids[munch_id]
+        msg = str(munchkin.current_money)
+        munchkin.current_money = 0
+        update.message.reply_text('+++money ' + msg + ' for ' + munchkin.name)
+        if GlobalInfo.autobackup_enabled:
+            tg_backup_base(context, '661294614')
+    except Exception as e:
+        err_msg = "неизвестная ошибка: {0}".format(str(e))
+        update.message.reply_text(err_msg)
+        context.bot.send_message('228485598', err_msg + 'id:' + update.message.chat.id)
+
 def tg_hand(update, context):
     try:
         input = tg_admin_default_command(update, context, TgCommands.Hand, 1)
@@ -332,7 +350,7 @@ def tg_info(update, context):
             dt_ck_diff = (munchkin.chicken_datetime - dt_now).total_seconds()
             update.message.reply_text(Emojies.Chicken + 'вас превратили в курицу, просмотр инфо недоступен\n' + Emojies.Result2 + GlobalInfo.sec_to_str(dt_ck_diff))
             return
-        output_stat = munchkin.name + ', ***' + str(munchkin.current_lvl) + '*** ур.\n'
+        output_stat = munchkin.name + ', ***' + str(munchkin.current_lvl) + '*** ур., ' + str(munchkin.current_money) + Emojies.Money + '\n'
         output_stat = output_stat + '---------------------------\n'
         output_stat = output_stat + RaceClassType.CREmojies[munchkin.current_race] + ': ' + RaceClassType.CRNames[munchkin.current_race]
         if munchkin.race_change_datetime > dt_now:
@@ -391,7 +409,8 @@ def tg_logout(update, context):
         chat_id = update.message.chat.id
         if chat_id in GlobalInfo.registered_players:
             del GlobalInfo.registered_players[chat_id]
-            update.message.reply_text('неверный логин')
+            update.message.reply_text('успешно')
+            return
         update.message.reply_text('вы не относитесь ни к одной команде')
     except Exception as e:
         err_msg = "неизвестная ошибка: {0}".format(str(e))
@@ -414,7 +433,7 @@ def tg_default(update, context):
             tg_check_lv_cheaters(update, context, munchkin, input_text)
             update.message.reply_text(Result.ResultEmojies[result.code] + result.message)
             if result.code==0:
-                GlobalInfo.add_log_row(munchkin.name, update.message.chat.id, input_text)
+                GlobalInfo.add_log_row(munchkin.name, update.message.chat.id, input_text, 1)
                 if GlobalInfo.autobackup_enabled:
                     tg_backup_base(context, '661294614')
             return
@@ -444,7 +463,7 @@ def tg_default(update, context):
         result_treasure = GlobalInfo.do_beautiful_with_treasures(munchkin, parsed_codes)
         update.message.reply_text(Result.ResultEmojies[result_treasure.code] + result_treasure.message)
         if result_treasure.code==0:
-            GlobalInfo.add_log_row(munchkin.name, update.message.chat.id, input_text)
+            GlobalInfo.add_log_row(munchkin.name, update.message.chat.id, input_text, 2)
     except Exception as e:
         err_msg = "неизвестная ошибка: {0}".format(str(e))
         update.message.reply_text(err_msg)
@@ -491,11 +510,14 @@ def main():
     dp.add_handler(CommandHandler(TgCommands.Msgteam, tg_msgteam))
     dp.add_handler(CommandHandler(TgCommands.Msg, tg_msg))
     dp.add_handler(CommandHandler(TgCommands.Backup, tg_backup))
+
+    dp.add_handler(CommandHandler(TgCommands.Sell, tg_sell))
     dp.add_handler(CommandHandler(TgCommands.Hand, tg_hand))
     dp.add_handler(CommandHandler(TgCommands.Refresh, tg_refresh))
     dp.add_handler(CommandHandler(TgCommands.Chicken, tg_chicken))
     dp.add_handler(CommandHandler(TgCommands.Shield, tg_shield))
     dp.add_handler(CommandHandler(TgCommands.Curse, tg_curse))
+
     dp.add_handler(CommandHandler(TgCommands.Info, tg_info))
     dp.add_handler(CommandHandler(TgCommands.Stat, tg_stat))
     dp.add_handler(CommandHandler(TgCommands.Login, tg_login))

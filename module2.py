@@ -30,6 +30,7 @@ class Emojies:
     Chicken = '\ud83d\udc25'#time
     Important = '\u2757\ufe0f'
     Info = '\u2139\ufe0f'
+    Money = '\ud83d\udcb2'
 
 class RaceClassType:
     NoClass = 1
@@ -107,8 +108,9 @@ class Result:
         self.message = message
 
 class Treasure:
-    def __init__(self, id, name, rc_type, tr_type, power, is_big, tr_code, monster_id):
+    def __init__(self, id, cost, name, rc_type, tr_type, power, is_big, tr_code, monster_id):
         self.id = id
+        self.cost = cost
         self.name = name
         self.rc_type = rc_type
         self.tr_type = tr_type
@@ -148,10 +150,12 @@ class Munchkin:
         self.id = id
         self.name = name
         self.current_lvl = 1
+        self.current_money = 0
         self.current_race = RaceClassType.Human
         self.current_class = RaceClassType.NoClass
         self.used_trs = []
         self.used_levels_codes = []
+        self.used_money_codes = []
         self.killed_monsters = []
         self.use_three_hands = False
         self.race_change_datetime = None
@@ -185,10 +189,12 @@ class Munchkin:
             'id': self.id,
             'name': self.name,
             'current_lvl': self.current_lvl,
+            'current_money': self.current_money,
             'current_race': self.current_race,
             'current_class': self.current_class,
             'used_trs': [i.tr_code for i in self.used_trs],
             'used_levels_codes': self.used_levels_codes,
+            'used_money_codes': self.used_money_codes,
             'killed_monsters': self.killed_monsters,
             'use_three_hands': self.use_three_hands,
             'race_change_datetime': self.race_change_datetime.strftime("%m/%d/%Y, %H:%M:%S"),
@@ -205,10 +211,12 @@ class Munchkin:
     def load(self, input):
          self.name = input['name']
          self.current_lvl = input['current_lvl']
+         self.current_money = input['current_money']
          self.current_race = input['current_race']
          self.current_class = input['current_class']
          self.used_trs = [GlobalInfo.c_treasure_codes[i] for i in input['used_trs']]
          self.used_levels_codes = input['used_levels_codes']
+         self.used_money_codes = input['used_money_codes']
          self.killed_monsters = input['killed_monsters']
          self.use_three_hands = input['use_three_hands']
          self.race_change_datetime = datetime.strptime(input['race_change_datetime'], "%m/%d/%Y, %H:%M:%S")
@@ -262,28 +270,28 @@ class GlobalInfo:
             }),
         ]
     treasures = [
-        Treasure(1,'карнавальная маска', RaceClassType.Wizard, TreasureType.Headgear, 1, False, 'гуп7', 5),#5
-        Treasure(2,'сланцы', RaceClassType.Elf, TreasureType.Footgear, 1, False, 'сан2', 6),#6
-        Treasure(3,'жилетка новичка', RaceClassType.Wizard, TreasureType.Armor, 1, False, 'бор6', 7),#8
-        Treasure(4,'шлем из картона', RaceClassType.Warrior, TreasureType.Headgear, 1, False, 'гус9', 8),#9
-        Treasure(5,'палка', RaceClassType.Warrior, TreasureType.OneHandWeapon, 1, False, 'ора5', 8),#9
-        Treasure(6,'шелковые тапочки', RaceClassType.Wizard, TreasureType.Footgear, 2, False, 'сок7', 9),#10
-        Treasure(7,'длинный лук', RaceClassType.Elf, TreasureType.TwoHandWeapon, 2, True, 'трс3', 9),#10
-        Treasure(8,'бронька', None, TreasureType.Armor, 1, False, 'бас2', 10),#12
-        Treasure(9,'эльфомечик', RaceClassType.Elf, TreasureType.OneHandWeapon, 2, False, 'ому7', 10),#12
-        Treasure(10,'тапки вязаные', None, TreasureType.Footgear, 1, False, 'сыч8', 11),#13
-        Treasure(11,'массивный шлем', RaceClassType.Warrior, TreasureType.Headgear, 2, True, 'гон6', 11),#13
-        Treasure(12,'защитный шлем', None, TreasureType.Headgear, 1, False, 'гав4', 12),#15
-        Treasure(13,'доспех воина', RaceClassType.Warrior, TreasureType.Armor, 2, False, 'бух5', 12),#15
-        Treasure(14,'высокие сапоги', None, TreasureType.Footgear, 2, False, 'сфи4', 13),#19
-        Treasure(15,'божественная тиара', None, TreasureType.Headgear, 2, False, 'гкк2', 13),#19
-        Treasure(16,'великая броня света', RaceClassType.Wizard, TreasureType.Armor, 3, True, 'буа5', 13),#19
-        Treasure(17,'минипосох', RaceClassType.Wizard, TreasureType.OneHandWeapon, 1, False, 'оля2', 14),#21
-        Treasure(18,'нейроботы', RaceClassType.Wizard, TreasureType.Footgear, 3, False, 'сем9', 14),#21
-        Treasure(19,'бронежилет', None, TreasureType.Armor, 2, False, 'бур4', 14),#21
-        Treasure(20,'мегамеч', RaceClassType.Warrior, TreasureType.TwoHandWeapon, 4, True, 'тен3', 15),#23
-        Treasure(21,'леви-кроссы', RaceClassType.Elf, TreasureType.Footgear, 3, False, 'сук2', 15),#23
-        Treasure(22,'крепкие латы', RaceClassType.Warrior, TreasureType.Footgear, 2, False, 'ска5', 15),#23
+        Treasure(1, 100,'карнавальная маска', RaceClassType.Wizard, TreasureType.Headgear, 1, False, 'гуп7', 5),#5
+        Treasure(2, 200,'сланцы', RaceClassType.Elf, TreasureType.Footgear, 1, False, 'сан2', 6),#6
+        Treasure(3, 200,'жилетка новичка', RaceClassType.Wizard, TreasureType.Armor, 1, False, 'бор6', 7),#8
+        Treasure(4, 200,'шлем из картона', RaceClassType.Warrior, TreasureType.Headgear, 1, False, 'гус9', 8),#9
+        Treasure(5, 200,'палка', RaceClassType.Warrior, TreasureType.OneHandWeapon, 1, False, 'ора5', 8),#9
+        Treasure(6, 300,'шелковые тапочки', RaceClassType.Wizard, TreasureType.Footgear, 2, False, 'сок7', 9),#10
+        Treasure(7, 400,'длинный лук', RaceClassType.Elf, TreasureType.TwoHandWeapon, 2, True, 'трс3', 9),#10
+        Treasure(8, 500,'бронька', None, TreasureType.Armor, 1, False, 'бас2', 10),#12
+        Treasure(9, 600,'эльфомечик', RaceClassType.Elf, TreasureType.OneHandWeapon, 2, False, 'ому7', 10),#12
+        Treasure(10, 700,'тапки вязаные', None, TreasureType.Footgear, 1, False, 'сыч8', 11),#13
+        Treasure(11, 700,'массивный шлем', RaceClassType.Warrior, TreasureType.Headgear, 2, True, 'гон6', 11),#13
+        Treasure(12, 800,'защитный шлем', None, TreasureType.Headgear, 1, False, 'гав4', 12),#15
+        Treasure(13, 700,'доспех воина', RaceClassType.Warrior, TreasureType.Armor, 2, False, 'бух5', 12),#15
+        Treasure(14, 700,'высокие сапоги', None, TreasureType.Footgear, 2, False, 'сфи4', 13),#19
+        Treasure(15, 700,'божественная тиара', None, TreasureType.Headgear, 2, False, 'гкк2', 13),#19
+        Treasure(16, 700,'великая броня света', RaceClassType.Wizard, TreasureType.Armor, 3, True, 'буа5', 13),#19
+        Treasure(17, 900,'минипосох', RaceClassType.Wizard, TreasureType.OneHandWeapon, 1, False, 'оля2', 14),#21
+        Treasure(18, 1000,'нейроботы', RaceClassType.Wizard, TreasureType.Footgear, 3, False, 'сем9', 14),#21
+        Treasure(19, 1100,'бронежилет', None, TreasureType.Armor, 2, False, 'бур4', 14),#21
+        Treasure(20, 1100,'мегамеч', RaceClassType.Warrior, TreasureType.TwoHandWeapon, 4, True, 'тен3', 15),#23
+        Treasure(21, 1200,'леви-кроссы', RaceClassType.Elf, TreasureType.Footgear, 3, False, 'сук2', 15),#23
+        Treasure(22, 1200,'крепкие латы', RaceClassType.Warrior, TreasureType.Footgear, 2, False, 'ска5', 15),#23
         ]
     classes = {
         RaceClassType.NoClass: 'ком1',
@@ -303,6 +311,12 @@ class GlobalInfo:
         'ф6183',
         'ф9114',
         ]
+    money_codes = {
+        'г1039':100,
+        'г1729':100,
+        'г9166':200,
+        'г8162':400,
+        }
     divine_intervention_code = 'дв01012'
     is_divine_intervention_passed = False
     c_level_codes = {}
@@ -334,6 +348,8 @@ class GlobalInfo:
             GlobalInfo.c_singlecode_handlers[r_code] = GlobalInfo.simple_text_handler_race
         for one_shot_bonus_code in GlobalInfo.one_shot_bonus_codes:
             GlobalInfo.c_singlecode_handlers[one_shot_bonus_code] = GlobalInfo.simple_text_handler_oneshot
+        for money_code in GlobalInfo.money_codes:
+            GlobalInfo.c_singlecode_handlers[money_code] = GlobalInfo.simple_text_handler_money
         for treasure in GlobalInfo.treasures:
             GlobalInfo.c_treasure_codes[treasure.tr_code] = treasure
             GlobalInfo.c_check_m_by_trc[treasure.tr_code] = treasure.monster_id
@@ -349,12 +365,13 @@ class GlobalInfo:
             GlobalInfo.c_munchkins_by_ids[munchkin.id] = munchkin
 
     @staticmethod
-    def add_log_row(name, chatid, text):
+    def add_log_row(name, chatid, text, flag):
         GlobalInfo.logs.append({
             'datetime': datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
             'name': name,
             'chatid': chatid,
             'text': text,
+            'flag': flag,
             })
     
     @staticmethod
@@ -429,9 +446,8 @@ class GlobalInfo:
         if total_power > monster.monster_lvl or (total_power == monster.monster_lvl and munchkin.current_class == RaceClassType.Warrior):
             munchkin.killed_monsters.append(monster.id)
             return Result(0, 'Ура! Монстр победжен! Код побежденного монстра:' + monster.monster_defeatcode)
-        else:
-            munchkin.monster_fight_datetime = dt_now + timedelta(0,5)
-            return Result(1, 'вы не смогли победить монстра =(')
+        munchkin.monster_fight_datetime = dt_now + timedelta(0,5)
+        return Result(1, 'вы не смогли победить монстра =(')
     
     @staticmethod
     def simple_text_handler_oneshot(munchkin, input_text):
@@ -439,10 +455,20 @@ class GlobalInfo:
             raise Exception('орг косяк, сообщите ему об этом( @sanjjjjok )')
         if input_text in munchkin.used_one_shot_codes:
             return Result(1, 'вы уже использовали этот код')
-        else:
-            munchkin.used_one_shot_codes.append(input_text)
-            munchkin.one_shot_bonus = munchkin.one_shot_bonus + 1
-            return Result(0, 'Ура! Вы получили дополнительную единицу силы в следующем бою')
+        munchkin.used_one_shot_codes.append(input_text)
+        munchkin.one_shot_bonus = munchkin.one_shot_bonus + 1
+        return Result(0, 'Ура! Вы получили дополнительную единицу силы в следующем бою')
+
+    @staticmethod
+    def simple_text_handler_money(munchkin, input_text):
+        if not input_text in GlobalInfo.money_codes:
+            raise Exception('орг косяк, сообщите ему об этом( @sanjjjjok )')
+        if input_text in munchkin.used_money_codes:
+            return Result(1, 'вы уже использовали этот код')
+        munchkin.used_money_codes.append(input_text)
+        added_money = GlobalInfo.money_codes[input_text]
+        munchkin.current_money = munchkin.current_money + added_money
+        return Result(0, 'Ура! Вы получили ' + str(added_money) + ' голды')
 
     @staticmethod
     def do_beautiful_with_treasures(munchkin, treasure_codes):
