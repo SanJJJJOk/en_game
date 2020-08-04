@@ -306,11 +306,11 @@ class GlobalInfo:
         RaceClassType.Halfling: 'абв8',
         RaceClassType.Dwarf: 'абв9',
         }
-    one_shot_bonus_codes = [
-        'ф3152',
-        'ф6183',
-        'ф9114',
-        ]
+    one_shot_bonus_codes = {
+        'ф3152':1,
+        'ф6183':1,
+        'ф9114':2,
+        }
     money_codes = {
         'г1039':100,
         'г1729':100,
@@ -456,8 +456,9 @@ class GlobalInfo:
         if input_text in munchkin.used_one_shot_codes:
             return Result(1, 'вы уже использовали этот код')
         munchkin.used_one_shot_codes.append(input_text)
-        munchkin.one_shot_bonus = munchkin.one_shot_bonus + 1
-        return Result(0, 'Ура! Вы получили дополнительную единицу силы в следующем бою')
+        added_bonus = GlobalInfo.one_shot_bonus_codes[input_text]
+        munchkin.one_shot_bonus = munchkin.one_shot_bonus + added_bonus
+        return Result(0, 'Ура! Вы получили +' + str(added_bonus) + ' единиц силы в следующем бою')
 
     @staticmethod
     def simple_text_handler_money(munchkin, input_text):

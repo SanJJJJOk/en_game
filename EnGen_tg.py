@@ -59,7 +59,7 @@ class TgCommands:
     Shield = 'shield'
     Chicken = 'chicken'
     Refresh = 'refresh'
-    Sell = 'sell'
+    Money = 'money'
     Hand = 'hand'
     Msg = 'msg'
     Msgteam = 'msgteam'
@@ -228,16 +228,20 @@ def tg_chicken(update, context):
         update.message.reply_text(err_msg)
         context.bot.send_message('228485598', err_msg + 'id:' + update.message.chat.id)
 
-def tg_sell(update, context):
+def tg_money(update, context):
     try:
-        input = tg_admin_default_command(update, context, TgCommands.Hand, 1)
+        input = tg_admin_default_command(update, context, TgCommands.Money, 2)
         if len(input)==0:
             return
         munch_id = int(input[0])
         munchkin = GlobalInfo.c_munchkins_by_ids[munch_id]
-        msg = str(munchkin.current_money)
-        munchkin.current_money = 0
-        update.message.reply_text('+++money ' + msg + ' for ' + munchkin.name)
+        value = int(input[1])
+        str_money = str(munchkin.current_money)
+        if value > munchkin.current_money:
+            update.message.reply_text('---money ' + munchkin.name + ' = ' + str_money)
+            return
+        munchkin.current_money = munchkin.current_money - value
+        update.message.reply_text('+++money ' + munchkin.name + ': ' + str_money + '-' + str(value) + '=' + str(munchkin.current_money))
         if GlobalInfo.autobackup_enabled:
             tg_backup_base(context, '661294614')
     except Exception as e:
@@ -511,7 +515,7 @@ def main():
     dp.add_handler(CommandHandler(TgCommands.Msg, tg_msg))
     dp.add_handler(CommandHandler(TgCommands.Backup, tg_backup))
 
-    dp.add_handler(CommandHandler(TgCommands.Sell, tg_sell))
+    dp.add_handler(CommandHandler(TgCommands.Money, tg_money))
     dp.add_handler(CommandHandler(TgCommands.Hand, tg_hand))
     dp.add_handler(CommandHandler(TgCommands.Refresh, tg_refresh))
     dp.add_handler(CommandHandler(TgCommands.Chicken, tg_chicken))
