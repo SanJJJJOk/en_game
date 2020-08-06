@@ -221,6 +221,7 @@ def tg_chicken(update, context):
         value = int(input[1])
         munchkin.chicken_datetime = dt_now + timedelta(0, value)
         update.message.reply_text('+++chicken applied')
+        tg_send_to_team(update, context, munchkin, Emojies.Important + 'вас превратили в курицу')
         if GlobalInfo.autobackup_enabled:
             tg_backup_base(context, '661294614')
     except Exception as e:
@@ -372,7 +373,9 @@ def tg_info(update, context):
             dt_s_diff = (munchkin.shield_datetime - dt_now).total_seconds()
             output_stat = output_stat + 'Защита от проклятий: ' + Emojies.Result2 + GlobalInfo.sec_to_str(dt_s_diff) + '\n'
         if munchkin.one_shot_bonus > 0:
-            output_stat = output_stat + 'Бонус в следующем бою: +' + str(munchkin.one_shot_bonus) + '\n'
+            output_stat = output_stat + 'Бонус в следующем бою: +' + str(munchkin.one_shot_bonus) + ' силы\n'
+        if munchkin.one_shot_bonus < 0:
+            output_stat = output_stat + 'Штраф в следующем бою: -' + str(-munchkin.one_shot_bonus) + ' силы\n'
         for curse in munchkin.applied_curses:
             if curse > dt_now:
                 dt_curse_diff = (curse - dt_now).total_seconds()
@@ -394,7 +397,7 @@ def tg_info(update, context):
 def tg_login(update, context):
     try:
         if len(update.message.text)<len(TgCommands.Login)+3:
-            update.message.reply_text('неверный логин')
+            update.message.reply_text('пустое сообщение')
             return
         login_id = update.message.text[len(TgCommands.Login)+2:]
         if not login_id in GlobalInfo.munchkins_logins:
@@ -408,18 +411,18 @@ def tg_login(update, context):
         update.message.reply_text(err_msg)
         context.bot.send_message('228485598', err_msg + 'id:' + update.message.chat.id)
 
-def tg_logout(update, context):
-    try:
-        chat_id = update.message.chat.id
-        if chat_id in GlobalInfo.registered_players:
-            del GlobalInfo.registered_players[chat_id]
-            update.message.reply_text('успешно')
-            return
-        update.message.reply_text('вы не относитесь ни к одной команде')
-    except Exception as e:
-        err_msg = "неизвестная ошибка: {0}".format(str(e))
-        update.message.reply_text(err_msg)
-        context.bot.send_message('228485598', err_msg + 'id:' + update.message.chat.id)
+#def tg_logout(update, context):
+#    try:
+#        chat_id = update.message.chat.id
+#        if chat_id in GlobalInfo.registered_players:
+#            del GlobalInfo.registered_players[chat_id]
+#            update.message.reply_text('успешно')
+#            return
+#        update.message.reply_text('вы не относитесь ни к одной команде')
+#    except Exception as e:
+#        err_msg = "неизвестная ошибка: {0}".format(str(e))
+#        update.message.reply_text(err_msg)
+#        context.bot.send_message('228485598', err_msg + 'id:' + update.message.chat.id)
 
 def tg_default(update, context):
     try:
@@ -429,8 +432,10 @@ def tg_default(update, context):
         munchkin = GlobalInfo.registered_players[update.message.chat.id]
         input_text = update.message.text.strip().lower()
         if len(input_text)==0:
-            update.message.reply_text('ошибка: пустое сообщение')
+            update.message.reply_text('пустое сообщение')
             return
+
+        #single code
         if input_text in GlobalInfo.c_singlecode_handlers:
             handler = GlobalInfo.c_singlecode_handlers[input_text]
             result = handler(munchkin, input_text)
@@ -441,6 +446,8 @@ def tg_default(update, context):
                 if GlobalInfo.autobackup_enabled:
                     tg_backup_base(context, '661294614')
             return
+
+        #divine intervention
         if input_text == GlobalInfo.divine_intervention_code:
             if GlobalInfo.is_divine_intervention_passed:
                 update.message.reply_text(Result.ResultEmojies[1] + 'Божественное вмешательство уже было использовано')
@@ -459,15 +466,32 @@ def tg_default(update, context):
                 if GlobalInfo.autobackup_enabled:
                     tg_backup_base(context, '661294614')
             return
+
+        #parse
         parsed_codes = GlobalInfo.split_and_remove_empty(input_text)
         if len(parsed_codes)==0:
             update.message.reply_text('ошибка: пустое сообщение')
             return
+
+        #to team
+        if len(parsed_codes)==2:
+            if parsed_codes[0] in GlobalInfo.c_toteam_handlers:
+                toteam_handler = GlobalInfo.c_toteam_handlers[parsed_codes[0]]
+                result_tt = toteam_handler(munchkin, parsed_codes[0], parsed_codes[1])
+                update.message.reply_text(Result.ResultEmojies[result_tt.code] + result_tt.message)
+                if result_tt.code==0:
+                    GlobalInfo.add_log_row(munchkin.name, update.message.chat.id, input_text, 2)
+                    tg_send_to_team(update, context, result_tt.target_munchkin, Emojies.Important + result_tt.target_message)
+                    if GlobalInfo.autobackup_enabled:
+                        tg_backup_base(context, '661294614')
+                return
+
+        #treasures
         tg_check_tr_cheaters(update, context, munchkin, parsed_codes)
         result_treasure = GlobalInfo.do_beautiful_with_treasures(munchkin, parsed_codes)
         update.message.reply_text(Result.ResultEmojies[result_treasure.code] + result_treasure.message)
         if result_treasure.code==0:
-            GlobalInfo.add_log_row(munchkin.name, update.message.chat.id, input_text, 2)
+            GlobalInfo.add_log_row(munchkin.name, update.message.chat.id, input_text, 3)
     except Exception as e:
         err_msg = "неизвестная ошибка: {0}".format(str(e))
         update.message.reply_text(err_msg)
@@ -525,7 +549,7 @@ def main():
     dp.add_handler(CommandHandler(TgCommands.Info, tg_info))
     dp.add_handler(CommandHandler(TgCommands.Stat, tg_stat))
     dp.add_handler(CommandHandler(TgCommands.Login, tg_login))
-    dp.add_handler(CommandHandler(TgCommands.Logout, tg_logout))
+    #dp.add_handler(CommandHandler(TgCommands.Logout, tg_logout))
     dp.add_handler(MessageHandler(Filters.text, tg_default))
     dp.add_handler(MessageHandler(Filters.document, tg_document))
 

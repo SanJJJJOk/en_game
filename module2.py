@@ -103,14 +103,15 @@ class Result:
         2: Emojies.Result2,
         3: Emojies.Chicken,
         }
-    def __init__(self, code, message):
+    def __init__(self, code, message, target_munchkin = None, target_message = None):
         self.code = code
         self.message = message
+        self.target_munchkin = target_munchkin
+        self.target_message = target_message
 
 class Treasure:
-    def __init__(self, id, cost, name, rc_type, tr_type, power, is_big, tr_code, monster_id):
+    def __init__(self, id, name, rc_type, tr_type, power, is_big, tr_code, monster_id):
         self.id = id
-        self.cost = cost
         self.name = name
         self.rc_type = rc_type
         self.tr_type = tr_type
@@ -155,6 +156,7 @@ class Munchkin:
         self.current_class = RaceClassType.NoClass
         self.used_trs = []
         self.used_levels_codes = []
+        self.used_curse_codes = []
         self.used_money_codes = []
         self.killed_monsters = []
         self.use_three_hands = False
@@ -194,6 +196,7 @@ class Munchkin:
             'current_class': self.current_class,
             'used_trs': [i.tr_code for i in self.used_trs],
             'used_levels_codes': self.used_levels_codes,
+            'used_curse_codes': self.used_curse_codes,
             'used_money_codes': self.used_money_codes,
             'killed_monsters': self.killed_monsters,
             'use_three_hands': self.use_three_hands,
@@ -216,6 +219,7 @@ class Munchkin:
          self.current_class = input['current_class']
          self.used_trs = [GlobalInfo.c_treasure_codes[i] for i in input['used_trs']]
          self.used_levels_codes = input['used_levels_codes']
+         self.used_curse_codes = input['used_curse_codes']
          self.used_money_codes = input['used_money_codes']
          self.killed_monsters = input['killed_monsters']
          self.use_three_hands = input['use_three_hands']
@@ -233,6 +237,7 @@ class GlobalInfo:
     logs = []
     autobackup_enabled = True
     final_code = 'imfinalcode19482730'
+    munchkin_count = 3
     munchkins_logins = {
         'com1': Munchkin('otwt', 1),
         'com2': Munchkin('div', 2),
@@ -270,28 +275,28 @@ class GlobalInfo:
             }),
         ]
     treasures = [
-        Treasure(1, 100,'карнавальная маска', RaceClassType.Wizard, TreasureType.Headgear, 1, False, 'гуп7', 5),#5
-        Treasure(2, 200,'сланцы', RaceClassType.Elf, TreasureType.Footgear, 1, False, 'сан2', 6),#6
-        Treasure(3, 200,'жилетка новичка', RaceClassType.Wizard, TreasureType.Armor, 1, False, 'бор6', 7),#8
-        Treasure(4, 200,'шлем из картона', RaceClassType.Warrior, TreasureType.Headgear, 1, False, 'гус9', 8),#9
-        Treasure(5, 200,'палка', RaceClassType.Warrior, TreasureType.OneHandWeapon, 1, False, 'ора5', 8),#9
-        Treasure(6, 300,'шелковые тапочки', RaceClassType.Wizard, TreasureType.Footgear, 2, False, 'сок7', 9),#10
-        Treasure(7, 400,'длинный лук', RaceClassType.Elf, TreasureType.TwoHandWeapon, 2, True, 'трс3', 9),#10
-        Treasure(8, 500,'бронька', None, TreasureType.Armor, 1, False, 'бас2', 10),#12
-        Treasure(9, 600,'эльфомечик', RaceClassType.Elf, TreasureType.OneHandWeapon, 2, False, 'ому7', 10),#12
-        Treasure(10, 700,'тапки вязаные', None, TreasureType.Footgear, 1, False, 'сыч8', 11),#13
-        Treasure(11, 700,'массивный шлем', RaceClassType.Warrior, TreasureType.Headgear, 2, True, 'гон6', 11),#13
-        Treasure(12, 800,'защитный шлем', None, TreasureType.Headgear, 1, False, 'гав4', 12),#15
-        Treasure(13, 700,'доспех воина', RaceClassType.Warrior, TreasureType.Armor, 2, False, 'бух5', 12),#15
-        Treasure(14, 700,'высокие сапоги', None, TreasureType.Footgear, 2, False, 'сфи4', 13),#19
-        Treasure(15, 700,'божественная тиара', None, TreasureType.Headgear, 2, False, 'гкк2', 13),#19
-        Treasure(16, 700,'великая броня света', RaceClassType.Wizard, TreasureType.Armor, 3, True, 'буа5', 13),#19
-        Treasure(17, 900,'минипосох', RaceClassType.Wizard, TreasureType.OneHandWeapon, 1, False, 'оля2', 14),#21
-        Treasure(18, 1000,'нейроботы', RaceClassType.Wizard, TreasureType.Footgear, 3, False, 'сем9', 14),#21
-        Treasure(19, 1100,'бронежилет', None, TreasureType.Armor, 2, False, 'бур4', 14),#21
-        Treasure(20, 1100,'мегамеч', RaceClassType.Warrior, TreasureType.TwoHandWeapon, 4, True, 'тен3', 15),#23
-        Treasure(21, 1200,'леви-кроссы', RaceClassType.Elf, TreasureType.Footgear, 3, False, 'сук2', 15),#23
-        Treasure(22, 1200,'крепкие латы', RaceClassType.Warrior, TreasureType.Footgear, 2, False, 'ска5', 15),#23
+        Treasure(1, 'карнавальная маска', RaceClassType.Wizard, TreasureType.Headgear, 1, False, 'гуп7', 5),#5
+        Treasure(2, 'сланцы', RaceClassType.Elf, TreasureType.Footgear, 1, False, 'сан2', 6),#6
+        Treasure(3, 'жилетка новичка', RaceClassType.Wizard, TreasureType.Armor, 1, False, 'бор6', 7),#8
+        Treasure(4, 'шлем из картона', RaceClassType.Warrior, TreasureType.Headgear, 1, False, 'гус9', 8),#9
+        Treasure(5, 'палка', RaceClassType.Warrior, TreasureType.OneHandWeapon, 1, False, 'ора5', 8),#9
+        Treasure(6, 'шелковые тапочки', RaceClassType.Wizard, TreasureType.Footgear, 2, False, 'сок7', 9),#10
+        Treasure(7, 'длинный лук', RaceClassType.Elf, TreasureType.TwoHandWeapon, 2, True, 'трс3', 9),#10
+        Treasure(8, 'бронька', None, TreasureType.Armor, 1, False, 'бас2', 10),#12
+        Treasure(9, 'эльфомечик', RaceClassType.Elf, TreasureType.OneHandWeapon, 2, False, 'ому7', 10),#12
+        Treasure(10, 'тапки вязаные', None, TreasureType.Footgear, 1, False, 'сыч8', 11),#13
+        Treasure(11, 'массивный шлем', RaceClassType.Warrior, TreasureType.Headgear, 2, True, 'гон6', 11),#13
+        Treasure(12, 'защитный шлем', None, TreasureType.Headgear, 1, False, 'гав4', 12),#15
+        Treasure(13, 'доспех воина', RaceClassType.Warrior, TreasureType.Armor, 2, False, 'бух5', 12),#15
+        Treasure(14, 'высокие сапоги', None, TreasureType.Footgear, 2, False, 'сфи4', 13),#19
+        Treasure(15, 'божественная тиара', None, TreasureType.Headgear, 2, False, 'гкк2', 13),#19
+        Treasure(16, 'великая броня света', RaceClassType.Wizard, TreasureType.Armor, 3, True, 'буа5', 13),#19
+        Treasure(17, 'минипосох', RaceClassType.Wizard, TreasureType.OneHandWeapon, 1, False, 'оля2', 14),#21
+        Treasure(18, 'нейроботы', RaceClassType.Wizard, TreasureType.Footgear, 3, False, 'сем9', 14),#21
+        Treasure(19, 'бронежилет', None, TreasureType.Armor, 2, False, 'бур4', 14),#21
+        Treasure(20, 'мегамеч', RaceClassType.Warrior, TreasureType.TwoHandWeapon, 4, True, 'тен3', 15),#23
+        Treasure(21, 'леви-кроссы', RaceClassType.Elf, TreasureType.Footgear, 3, False, 'сук2', 15),#23
+        Treasure(22, 'крепкие латы', RaceClassType.Warrior, TreasureType.Footgear, 2, False, 'ска5', 15),#23
         ]
     classes = {
         RaceClassType.NoClass: 'ком1',
@@ -306,6 +311,11 @@ class GlobalInfo:
         RaceClassType.Halfling: 'абв8',
         RaceClassType.Dwarf: 'абв9',
         }
+    curse_codes = [
+        'п1927',
+        'п1716',
+        'п1162',
+        ]
     one_shot_bonus_codes = {
         'ф3152':1,
         'ф6183':1,
@@ -325,12 +335,14 @@ class GlobalInfo:
     c_race_codes = {}
     c_treasure_codes = {}
     c_singlecode_handlers = {}
+    c_toteam_handlers = {}
     c_munchkins_by_ids = {}
     c_check_m_by_lvlc = {}
     c_check_m_by_trc = {}
 
     @staticmethod
     def initialize():
+        GlobalInfo.registered_players[-495810366] = GlobalInfo.munchkins_logins['com1']
         for monster in GlobalInfo.monsters:
             for lvlcode in monster.monster_lvlcodes:
                 GlobalInfo.c_level_codes[lvlcode] = monster
@@ -346,8 +358,12 @@ class GlobalInfo:
             r_code = GlobalInfo.races[race]
             GlobalInfo.c_race_codes[r_code] = race
             GlobalInfo.c_singlecode_handlers[r_code] = GlobalInfo.simple_text_handler_race
+        for curse_code in GlobalInfo.curse_codes:
+            GlobalInfo.c_singlecode_handlers[curse_code] = GlobalInfo.simple_text_handler_fail_curse
+            GlobalInfo.c_toteam_handlers[curse_code] = GlobalInfo.simple_text_handler_curse
         for one_shot_bonus_code in GlobalInfo.one_shot_bonus_codes:
             GlobalInfo.c_singlecode_handlers[one_shot_bonus_code] = GlobalInfo.simple_text_handler_oneshot
+            GlobalInfo.c_toteam_handlers[one_shot_bonus_code] = GlobalInfo.simple_text_handler_oneshotpenalty
         for money_code in GlobalInfo.money_codes:
             GlobalInfo.c_singlecode_handlers[money_code] = GlobalInfo.simple_text_handler_money
         for treasure in GlobalInfo.treasures:
@@ -373,7 +389,9 @@ class GlobalInfo:
             'text': text,
             'flag': flag,
             })
-    
+
+    #single or to team handlers ------------------------------------------------------------------------------------------------------------------------------
+
     @staticmethod
     def simple_text_handler_level(munchkin, input_text):
         if not input_text in GlobalInfo.c_level_codes:
@@ -459,7 +477,7 @@ class GlobalInfo:
         added_bonus = GlobalInfo.one_shot_bonus_codes[input_text]
         munchkin.one_shot_bonus = munchkin.one_shot_bonus + added_bonus
         return Result(0, 'Ура! Вы получили +' + str(added_bonus) + ' единиц силы в следующем бою')
-
+    
     @staticmethod
     def simple_text_handler_money(munchkin, input_text):
         if not input_text in GlobalInfo.money_codes:
@@ -472,11 +490,62 @@ class GlobalInfo:
         return Result(0, 'Ура! Вы получили ' + str(added_money) + ' голды')
 
     @staticmethod
+    def simple_text_handler_fail_curse(munchkin, input_text):
+        if not input_text in GlobalInfo.curse_codes:
+            raise Exception('орг косяк, сообщите ему об этом( @sanjjjjok )')
+        return Result(1, 'вы не ввели команду, к которой применить проклятие')
+    
+    @staticmethod
+    def simple_text_handler_oneshotpenalty(munchkin, input_text, munch_id_str):
+        if not input_text in GlobalInfo.one_shot_bonus_codes:
+            raise Exception('орг косяк, сообщите ему об этом( @sanjjjjok )')
+        if not GlobalInfo.is_int(munch_id_str):
+            return Result(1, 'неверный номер манчкина: ' + munch_id_str)
+        munch_id = int(munch_id_str)
+        if munch_id < 1 or munch_id > GlobalInfo.munchkin_count:
+            return Result(1, 'неверный номер манчкина: ' + munch_id_str)
+        if munch_id == munchkin.id:
+            return Result(1, 'нельзя применить штраф на себя')
+        if input_text in munchkin.used_one_shot_codes:
+            return Result(1, 'вы уже использовали этот код')
+        munchkin.used_one_shot_codes.append(input_text)
+        added_penalty = GlobalInfo.one_shot_bonus_codes[input_text]
+        target_muhcnkin = GlobalInfo.c_munchkins_by_ids[munch_id]
+        target_muhcnkin.one_shot_bonus = target_muhcnkin.one_shot_bonus - added_penalty
+        return Result(0, 'Ура! Манчкин ' + target_muhcnkin.name + ' получил -' + str(added_penalty) + ' единиц силы в следующем бою', 
+                      target_muhcnkin, 'Вы получили -' + str(added_penalty) + ' единиц силы в следующем бою от манчкина ' + munchkin.name)
+
+    @staticmethod
+    def simple_text_handler_curse(munchkin, input_text, munch_id_str):
+        if not input_text in GlobalInfo.curse_codes:
+            raise Exception('орг косяк, сообщите ему об этом( @sanjjjjok )')
+        if not GlobalInfo.is_int(munch_id_str):
+            return Result(1, 'неверный номер манчкина: ' + munch_id_str)
+        munch_id = int(munch_id_str)
+        if munch_id < 1 or munch_id > GlobalInfo.munchkin_count:
+            return Result(1, 'неверный номер манчкина: ' + munch_id_str)
+        if munch_id == munchkin.id:
+            return Result(1, 'нельзя применить проклятие на себя')
+        if input_text in munchkin.used_curse_codes:
+            return Result(1, 'вы уже использовали этот код')
+        munchkin.used_curse_codes.append(input_text)
+        target_muhcnkin = GlobalInfo.c_munchkins_by_ids[munch_id]
+        dt_now = datetime.now()
+        if target_muhcnkin.shield_datetime > dt_now:
+            return Result(1, 'у манчкина ' + target_muhcnkin.name + ' активирована защита от проклятий, проклятие сгорает')
+        curse_time = dt_now + timedelta(0, 1800)
+        target_muhcnkin.applied_curses.append(curse_time)
+        return Result(0, 'Ура! На манчкина ' + target_muhcnkin.name + ' сработало проклятие', 
+                      target_muhcnkin, 'Вы получили проклятие от манчкина ' + munchkin.name)
+
+    #single or to team handlers ------------------------------------------------------------------------------------------------------------------------------
+
+    @staticmethod
     def do_beautiful_with_treasures(munchkin, treasure_codes):
         input_treasures = []
         for tr_code in treasure_codes:
             if not tr_code in GlobalInfo.c_treasure_codes:
-                return Result(1, 'нет сокровища с таким кодом: ' + tr_code)
+                return Result(1, 'не существует такого кода: ' + tr_code)
             input_treasures.append(GlobalInfo.c_treasure_codes[tr_code])
         check_equip_msg = GlobalInfo.check_equip(munchkin, input_treasures)
         if check_equip_msg is None:
@@ -521,6 +590,14 @@ class GlobalInfo:
             return 'нельзя носить более одного элемента одежды ' + TreasureType.TreasureNames[TreasureType.Footgear]
         return None
         
+    @staticmethod
+    def is_int(input_str):
+        try:
+            temp = int(input_str)
+            return True
+        except:
+            return False
+
     @staticmethod
     def sec_to_str(amount):
         return str(round(amount // 60)) + 'мин ' + str(round(amount % 60)) + 'с'

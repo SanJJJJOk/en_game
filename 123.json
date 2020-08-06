@@ -1,5 +1,5 @@
 {
-  "datetime": "08/04/2020, 18:43:04",
+  "datetime": "08/05/2020, 20:24:20",
   "is_divine_intervention_passed": false,
   "1": {
     "id": 1,
@@ -10,16 +10,21 @@
     "current_class": 1,
     "used_trs": [],
     "used_levels_codes": [],
+    "used_curse_codes": [
+      "п1162"
+    ],
     "used_money_codes": [],
     "killed_monsters": [],
     "use_three_hands": false,
-    "race_change_datetime": "08/04/2020, 18:42:24",
-    "class_change_datetime": "08/04/2020, 18:42:24",
-    "monster_fight_datetime": "08/04/2020, 18:42:24",
-    "shield_datetime": "08/04/2020, 18:42:24",
-    "chicken_datetime": "08/04/2020, 18:42:24",
-    "stat_datetime": "08/04/2020, 18:42:24",
-    "used_one_shot_codes": [],
+    "race_change_datetime": "08/05/2020, 20:06:32",
+    "class_change_datetime": "08/05/2020, 20:06:32",
+    "monster_fight_datetime": "08/05/2020, 20:06:32",
+    "shield_datetime": "08/05/2020, 20:06:32",
+    "chicken_datetime": "08/05/2020, 20:06:32",
+    "stat_datetime": "08/05/2020, 20:06:32",
+    "used_one_shot_codes": [
+      "ф6183"
+    ],
     "one_shot_bonus": 0,
     "applied_curses": []
   },
@@ -32,18 +37,21 @@
     "current_class": 1,
     "used_trs": [],
     "used_levels_codes": [],
+    "used_curse_codes": [],
     "used_money_codes": [],
     "killed_monsters": [],
     "use_three_hands": false,
-    "race_change_datetime": "08/04/2020, 18:42:24",
-    "class_change_datetime": "08/04/2020, 18:42:24",
-    "monster_fight_datetime": "08/04/2020, 18:42:24",
-    "shield_datetime": "08/04/2020, 18:42:24",
-    "chicken_datetime": "08/04/2020, 18:42:24",
-    "stat_datetime": "08/04/2020, 18:42:24",
+    "race_change_datetime": "08/05/2020, 20:06:32",
+    "class_change_datetime": "08/05/2020, 20:06:32",
+    "monster_fight_datetime": "08/05/2020, 20:06:32",
+    "shield_datetime": "08/05/2020, 20:06:32",
+    "chicken_datetime": "08/05/2020, 20:06:32",
+    "stat_datetime": "08/05/2020, 20:06:32",
     "used_one_shot_codes": [],
-    "one_shot_bonus": 0,
-    "applied_curses": []
+    "one_shot_bonus": -1,
+    "applied_curses": [
+      "08/05/2020, 20:54:20"
+    ]
   },
   "3": {
     "id": 3,
@@ -54,15 +62,16 @@
     "current_class": 1,
     "used_trs": [],
     "used_levels_codes": [],
+    "used_curse_codes": [],
     "used_money_codes": [],
     "killed_monsters": [],
     "use_three_hands": false,
-    "race_change_datetime": "08/04/2020, 18:42:24",
-    "class_change_datetime": "08/04/2020, 18:42:24",
-    "monster_fight_datetime": "08/04/2020, 18:42:24",
-    "shield_datetime": "08/04/2020, 18:42:24",
-    "chicken_datetime": "08/04/2020, 18:42:24",
-    "stat_datetime": "08/04/2020, 18:42:24",
+    "race_change_datetime": "08/05/2020, 20:06:32",
+    "class_change_datetime": "08/05/2020, 20:06:32",
+    "monster_fight_datetime": "08/05/2020, 20:06:32",
+    "shield_datetime": "08/05/2020, 20:06:32",
+    "chicken_datetime": "08/05/2020, 20:06:32",
+    "stat_datetime": "08/05/2020, 20:06:32",
     "used_one_shot_codes": [],
     "one_shot_bonus": 0,
     "applied_curses": []
