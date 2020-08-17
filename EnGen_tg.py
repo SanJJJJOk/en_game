@@ -161,7 +161,7 @@ def tg_autobackup(update, context):
 def tg_backup_base(context, id):
         GlobalInfo.backup()
         file = open('123.json','rb')
-        context.bot.send_document(id, file)
+        #context.bot.send_document(id, file)#todo:disabled for a while
         file.close()
     
 #admin commands - manual control
@@ -212,16 +212,17 @@ def tg_chicken(update, context):
         if len(input)==0:
             return
         munch_id = int(input[0])
-        munchkin = GlobalInfo.c_munchkins_by_ids[munch_id]
+        target_munchkin = GlobalInfo.c_munchkins_by_ids[munch_id]
         dt_now = datetime.now()
-        if munchkin.shield_datetime > dt_now:
+        if target_munchkin.shield_datetime > dt_now:
             update.message.reply_text('---shield')
+            tg_send_to_team(update, context, target_munchkin, Emojies.Important + 'вас пытались превратить в курицу')
             return
 
         value = int(input[1])
-        munchkin.chicken_datetime = dt_now + timedelta(0, value)
+        target_munchkin.chicken_datetime = dt_now + timedelta(0, value)
         update.message.reply_text('+++chicken applied')
-        tg_send_to_team(update, context, munchkin, Emojies.Important + 'вас превратили в курицу')
+        tg_send_to_team(update, context, target_munchkin, Emojies.Important + 'вас превратили в курицу')
         if GlobalInfo.autobackup_enabled:
             tg_backup_base(context, '661294614')
     except Exception as e:
@@ -257,8 +258,11 @@ def tg_hand(update, context):
             return
         munch_id = int(input[0])
         munchkin = GlobalInfo.c_munchkins_by_ids[munch_id]
-        munchkin.use_three_hands = True
-        update.message.reply_text('+++three hands applied')
+        munchkin.use_three_hands = not munchkin.use_three_hands
+        if munchkin.use_three_hands:
+            update.message.reply_text('+++three hands applied for ' + munchkin.name)
+        else:
+            update.message.reply_text('---three hands disabled for ' + munchkin.name)
         if GlobalInfo.autobackup_enabled:
             tg_backup_base(context, '661294614')
     except Exception as e:
@@ -298,7 +302,7 @@ def tg_curse(update, context):
 
         source_munch_id = int(input[1])
         source_munchkin = GlobalInfo.c_munchkins_by_ids[source_munch_id]
-        target_msg = Emojies.Important + 'На вас кинул проклятье манчкин ' + source_munchkin.name
+        target_msg = Emojies.Important + 'Вы получили проклятие от манчкина ' + source_munchkin.name
 
         curse_time = dt_now + timedelta(0, 1800)
         munchkin.applied_curses.append(curse_time)
@@ -479,9 +483,10 @@ def tg_default(update, context):
                 toteam_handler = GlobalInfo.c_toteam_handlers[parsed_codes[0]]
                 result_tt = toteam_handler(munchkin, parsed_codes[0], parsed_codes[1])
                 update.message.reply_text(Result.ResultEmojies[result_tt.code] + result_tt.message)
+                if not result_tt.target_munchkin is None:
+                    tg_send_to_team(update, context, result_tt.target_munchkin, Emojies.Important + result_tt.target_message)
                 if result_tt.code==0:
                     GlobalInfo.add_log_row(munchkin.name, update.message.chat.id, input_text, 2)
-                    tg_send_to_team(update, context, result_tt.target_munchkin, Emojies.Important + result_tt.target_message)
                     if GlobalInfo.autobackup_enabled:
                         tg_backup_base(context, '661294614')
                 return
