@@ -225,7 +225,7 @@ class Munchkin:
 
 class GlobalInfo:
     logs = []
-    autobackup_enabled = True
+    autobackup_enabled = False#todo:return to true
     final_code = 'imfinalcode19482730'
     munchkin_count = 3
     munchkins_logins = {

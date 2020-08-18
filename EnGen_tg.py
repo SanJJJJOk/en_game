@@ -161,7 +161,7 @@ def tg_autobackup(update, context):
 def tg_backup_base(context, id):
         GlobalInfo.backup()
         file = open('123.json','rb')
-        #context.bot.send_document(id, file)#todo:disabled for a while
+        context.bot.send_document(id, file)
         file.close()
     
 #admin commands - manual control
