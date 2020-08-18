@@ -229,6 +229,7 @@ class GlobalInfo:
     final_code = 'imfinalcode19482730'
     munchkin_count = 3
     munchkins_logins = {
+        'admin': Munchkin('admin', 0),
         'com1': Munchkin('otwt', 1),
         'com2': Munchkin('div', 2),
         'com3': Munchkin('mars', 3),
