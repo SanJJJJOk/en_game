@@ -435,28 +435,6 @@ def tg_m_move(update, context):
         update.message.reply_text(err_msg)
         context.bot.send_message('228485598', err_msg + 'id:' + str(update.message.chat.id))
           
-def tg_m_help(update, context):
-    try:
-        update.message.reply_text(',синий1 или ,синий 1 или /add синий1 - добавить на улицу "СИНИЙ" дом "1"\n'
-        +',синий 123нахуй - добавить на улицу "СИНИЙ" дом "123нахуй"\n'
-        +'!синий1 или !синий 1 или /del синий1 - удалить с улицы "СИНИЙ" дом "1"\n'
-        +'!синий 123нахуй - удалить с улицы "СИНИЙ" дом "123нахуй"\n'
-        +'---------------------\n'
-        +'"-" на реплаенное сообщение ",синий1" удаляет с улицы "СИНИЙ" дом "1"\n'
-        +'",красный3" на реплаенное сообщение ",синий1" удаляет с улицы "СИНИЙ" дом "1" и добавляет на улицу "КРАСНЫЙ" дом "3"\n'
-        +'---------------------\n'
-        +',100 - добавить 100 бабла\n'
-        +'!100 - убрать 100 бабла\n'
-        +'---------------------\n'
-        +',,с1 или ,,с 1 или /fastadd c1 - бот находит улицу "СИНИЙ" и добавляет дом "1"\n'
-        +',,с1 или ,,с 1 или /fastadd c1 - бот находит улицу "СИНИЙ" и "СИРЕНЕВЫЙ" и не может определиться\n'
-        +',,с1 или ,,с 1 или /fastadd c1 - бот не находит улицу "СИНИЙ" и посылает вас нахуй\n'
-        +'!!с1 или !!c 1 или /quickdel c1 - всё то же самое для удаления\n'
-        )
-    except Exception as e:
-        err_msg = "неизвестная ошибка: {0}".format(str(e))
-        update.message.reply_text(err_msg)
-        context.bot.send_message('228485598', err_msg + 'id:' + str(update.message.chat.id))
         
 def get_small_info(word):
     if not word in GlobalMonopoly.holder:
@@ -472,44 +450,165 @@ def get_int(text):
     except Exception as e:
         return None
 
+def tg_p_default(update, context):
+    try:
+        text = update.message.text.lower()
+    except Exception as e:
+        err_msg = "неизвестная ошибка: {0}".format(str(e))
+        update.message.reply_text(err_msg)
+        context.bot.send_message('228485598', err_msg + 'id:' + str(update.message.chat.id))
+       
+def tg_p_stat(update, context):
+    try:
+        #fp = request.urlopen("http://m.kurgan.en.cx/GameStat.aspx?gid=68107")
+        output_dict = {}
+        fp = request.urlopen(update.message.text[6:])
+        mybytes = fp.read()
+
+        mystr = mybytes.decode("utf8")
+        fp.close()
+
+        soup = BeautifulSoup(mystr, 'html.parser')
+        regex_m = re.compile("^totalCell")
+        find_text3 = soup.find_all("td", {'class': regex_m})
+
+        for i in find_text3:
+            txtitem = i.get_text()
+            if 'бонус' in txtitem:
+                ind = txtitem.index('бонус')
+                txtbp = txtitem[ind+5:].replace(' ','')
+                ttertert = get_count_sec(txtbp)
+                team_name = i.find("a").get_text()
+                output_dict[team_name] = ttertert
+            if 'штраф' in txtitem:
+                ind = txtitem.index('штраф')
+                txtbp = txtitem[ind+5:].replace(' ','')
+                ttertert = get_count_sec(txtbp)
+                team_name = i.find("a").get_text()
+                output_dict[team_name] = -ttertert
+        
+        otwt_val = -1
+        for key in output_dict:
+            if 'WinTeam' in key:
+                otwt_val = output_dict[key]
+        for key in output_dict:
+            output_dict[key] = output_dict[key] - otwt_val
+
+        output_sorted = {}
+        list_d = list(output_dict.items())
+        list_d.sort(key=lambda i: i[1], reverse=True)
+        output_str = ''
+        for i in list_d:
+            output_str = output_str + '\n' +  str(i[1]) + '-' + i[0]
+        update.message.reply_text(output_str)
+
+    except Exception as e:
+        err_msg = "неизвестная ошибка: {0}".format(str(e))
+        update.message.reply_text(err_msg)
+        context.bot.send_message('228485598', err_msg + 'id:' + str(update.message.chat.id))
+
+def get_count_sec(input_str):
+    output_sec = 0
+    if 'ч' in input_str:
+        ind = input_str.index('ч')
+        curr = int(input_str[:ind])
+        output_sec = output_sec + curr * 3600
+        input_str = input_str[ind + 1:]
+    if 'м' in input_str:
+        ind = input_str.index('м')
+        curr = int(input_str[:ind])
+        output_sec = output_sec + curr * 60
+        input_str = input_str[ind + 1:]
+    if 'с' in input_str:
+        ind = input_str.index('с')
+        curr = int(input_str[:ind])
+        output_sec = output_sec + curr
+    return output_sec
+
 def main():
-    #GlobalInfo.initialize()
-    #update = FakeUpdate()
-    #context = FakeContext()
-    #tg_backup(update, context)
-    #update.message.text = '/login 1234'
-    #update.message.chat.id = '123'
-    #tg_login(update, context)
-    #GlobalInfo.registered_players[update.message.chat.id].current_lvl = 3
-    #update.message.text = '/login 1234'
-    #update.message.chat.id = '456'
-    #tg_login(update, context)
-    
+    #fp = request.urlopen("http://m.kurgan.en.cx/GameBonusPenaltyTime.aspx?tid=10301&level=0&gid=68107")
+    #mybytes = fp.read()
 
-    #t1 = GlobalInfo.registered_players
-    #t2 = GlobalInfo.munchkins_logins
+    #mystr = mybytes.decode("utf8")
+    #fp.close()
 
-    #t3 = Munchkin('name123')
+    #file = open('123.txt', 'w', encoding='utf-8')
+    #file.truncate(0)
+    #file.write(mystr)
+    #file.close()
+
+    #fp = request.urlopen("http://m.kurgan.en.cx/GameStat.aspx?gid=68107")
+    #mybytes = fp.read()
+
+    #mystr = mybytes.decode("utf8")
+    #fp.close()
+
+    #file = open('124.txt', 'w', encoding='utf-8')
+    #file.truncate(0)
+    #file.write(mystr)
+    #file.close()
+
+    #file = open('124.txt', 'r', encoding='utf-8')
+    #mystr = file.read()
+    #file.close()
+    #output_dict = {}
+
+    #soup = BeautifulSoup(mystr, 'html.parser')
+    #regex_m = re.compile("^totalCell")
+    #find_text3 = soup.find_all("td", {'class': regex_m})
+
+    #for i in find_text3:
+    #    txtitem = i.get_text()
+    #    if 'бонус' in txtitem:
+    #        ind = txtitem.index('бонус')
+    #        txtbp = txtitem[ind+5:].replace(' ','')
+    #        ttertert = get_count_sec(txtbp)
+    #        team_name = i.find("a").get_text()
+    #        output_dict[team_name] = ttertert
+    #    if 'штраф' in txtitem:
+    #        ind = txtitem.index('штраф')
+    #        txtbp = txtitem[ind+5:].replace(' ','')
+    #        ttertert = get_count_sec(txtbp)
+    #        team_name = i.find("a").get_text()
+    #        output_dict[team_name] = -ttertert
+
+    #otwt_val = -1
+    #for key in output_dict:
+    #    if 'Team' in key:
+    #        otwt_val = output_dict[key]
+    #for key in output_dict:
+    #    output_dict[key] = output_dict[key] - otwt_val
+
+    #output_sorted = {}
+    #list_d = list(output_dict.items())
+    #list_d.sort(key=lambda i: i[1], reverse=True)
+    #output_str = ''
+    #for i in list_d:
+    #    output_str = output_str + '\n' +  str(i[1]) + '-' + i[0]
+
+    #soup = BeautifulSoup(mystr, 'html.parser')
+    #regex_t = re.compile("^PlayersRepeater")
+    #find_text1 = soup.find_all('tr', {'id': regex_t})
+
+    #for i in find_text1:
+    #    listt = [ ii for ii in i.children if ii.name=='td' ]
+    #    st_time = listt[0].get_text()
+    #    st_text = listt[-1].get_text()
+    #    if not st_time in output_dict:
+    #        #send message
+    #        output_dict[st_time] = st_text
 
     updater = Updater("408100374:AAEhMleUbdVH_G1xmKeCAy8MlNfyBwB9AOo", use_context=True)
     #updater = Updater("979411435:AAEHIVLx8L8CxmjIHtitaH4L1GeV_OCRJ7M", use_context=True)
     dp = updater.dispatcher
     
-    dp.add_handler(CommandHandler(TgCommands.Move, tg_m_move))
-    dp.add_handler(CommandHandler(TgCommands.Del, tg_m_del))
-    dp.add_handler(CommandHandler(TgCommands.Add, tg_m_add))
-    dp.add_handler(CommandHandler(TgCommands.FastAdd, tg_m_fastadd))
-    dp.add_handler(CommandHandler(TgCommands.QuickDel, tg_m_quickdel))
-    dp.add_handler(CommandHandler(TgCommands.Money, tg_m_money))
-    dp.add_handler(CommandHandler(TgCommands.Help, tg_m_help))
-    dp.add_handler(CommandHandler(TgCommands.Count, tg_m_set_count))
-    dp.add_handler(CommandHandler(TgCommands.Stat, tg_m_stat))
-    dp.add_handler(MessageHandler(Filters.text, tg_m_default))
-
+    dp.add_handler(CommandHandler(TgCommands.Stat, tg_p_stat))
+    #dp.add_handler(MessageHandler(Filters.text, tg_p_default))
+    
     dp.add_error_handler(tg_error)
 
     updater.start_polling()
-
+    
     updater.idle()
 
 
