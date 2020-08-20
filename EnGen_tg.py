@@ -182,8 +182,40 @@ def tg_p_default(update, context):
        
 def tg_p_stat(update, context):
     try:
-        #fp = request.urlopen("http://m.kurgan.en.cx/GameStat.aspx?gid=68107")
+        #----------------------------------------count bonuses and penalties----------------------------
+        soup = BeautifulSoup(mystr, 'html.parser')
+        regex_t = re.compile("^PlayersRepeater")
+        find_text1 = soup.find_all('tr', {'id': regex_t})
+
+        count_bonuses = {}
+        count_penalties = {}
+        count_something = {}
+        for i in find_text1:
+            listt = [ ii for ii in i.children if ii.name=='td' ]
+            st_teamname = listt[1].get_text()
+            st_textbonus = listt[-2].get_text().lower()
+            if 'бонус' in st_textbonus:
+                if st_teamname in count_bonuses:
+                    count_bonuses[st_teamname] = count_bonuses[st_teamname] + 1
+                else:
+                    count_bonuses[st_teamname] = 1
+                continue
+            if 'штраф' in st_textbonus:
+                if st_teamname in count_penalties:
+                    count_penalties[st_teamname] = count_penalties[st_teamname] + 1
+                else:
+                    count_penalties[st_teamname] = 1
+                continue
+            if st_teamname in count_something:
+                count_something[st_teamname] = count_something[st_teamname] + 1
+            else:
+                count_something[st_teamname] = 1
+
+        #----------------------------------------stat----------------------------
+
         output_dict = {}
+
+
         fp = request.urlopen(update.message.text[6:])
         mybytes = fp.read()
 
@@ -221,7 +253,18 @@ def tg_p_stat(update, context):
         list_d.sort(key=lambda i: i[1], reverse=True)
         output_str = ''
         for i in list_d:
-            output_str = output_str + '\n' +  str(i[1]) + '-' + i[0]
+            output_str = output_str + '\n' +  str(i[1]) + '-' + i[0] + '( '
+            if i[0] in count_bonuses:
+                output_str = output_str + str(count_bonuses[i[0]])
+            else:
+                output_str = output_str + '0'
+            output_str = output_str + ' - '
+            if i[0] in count_penalties:
+                output_str = output_str + str(count_penalties[i[0]])
+            else:
+                output_str = output_str + '0'
+            output_str = output_str + ' )'
+
         update.message.reply_text(output_str)
 
     except Exception as e:
