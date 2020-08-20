@@ -179,10 +179,8 @@ def tg_p_default(update, context):
         err_msg = "неизвестная ошибка: {0}".format(str(e))
         update.message.reply_text(err_msg)
         context.bot.send_message('228485598', err_msg + 'id:' + str(update.message.chat.id))
-       
-def tg_p_stat(update, context):
-    try:
-        #----------------------------------------count bonuses and penalties----------------------------
+
+def tg_p_fullstat(update, context):
         fp = request.urlopen("http://m.kurgan.en.cx/GameBonusPenaltyTime.aspx?gid=68107")
         mybytes = fp.read()
 
@@ -217,10 +215,11 @@ def tg_p_stat(update, context):
             else:
                 count_something[st_teamname] = 1
 
-        #----------------------------------------stat----------------------------
+        tg_base_stat(update, context, count_bonuses, count_penalties, count_something)
 
+def tg_base_stat(update, context, count_bonuses, count_penalties, count_something):
+    try:
         output_dict = {}
-
 
         fp = request.urlopen(update.message.text[6:])
         mybytes = fp.read()
@@ -279,6 +278,9 @@ def tg_p_stat(update, context):
         err_msg = "неизвестная ошибка: {0}".format(str(e))
         update.message.reply_text(err_msg)
         context.bot.send_message('228485598', err_msg + 'id:' + str(update.message.chat.id))
+       
+def tg_p_stat(update, context):
+    tg_base_stat(update, context, {}, {}, {})
 
 def get_count_sec(input_str):
     output_sec = 0
@@ -303,7 +305,8 @@ def main():
     #updater = Updater("979411435:AAEHIVLx8L8CxmjIHtitaH4L1GeV_OCRJ7M", use_context=True)
     dp = updater.dispatcher
     
-    dp.add_handler(CommandHandler(TgCommands.Stat, tg_p_stat))
+    dp.add_handler(CommandHandler('stat', tg_p_stat))
+    dp.add_handler(CommandHandler('fullstat', tg_p_fullstat))
     #dp.add_handler(MessageHandler(Filters.text, tg_p_default))
     
     dp.add_error_handler(tg_error)
