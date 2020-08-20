@@ -183,7 +183,13 @@ def tg_p_default(update, context):
 def tg_p_stat(update, context):
     try:
         #----------------------------------------count bonuses and penalties----------------------------
-        soup = BeautifulSoup(mystr, 'html.parser')
+        fp = request.urlopen("http://m.kurgan.en.cx/GameBonusPenaltyTime.aspx?gid=68107")
+        mybytes = fp.read()
+
+        mystr_monitoring = mybytes.decode("utf8")
+        fp.close()
+
+        soup = BeautifulSoup(mystr_monitoring, 'html.parser')
         regex_t = re.compile("^PlayersRepeater")
         find_text1 = soup.find_all('tr', {'id': regex_t})
 
@@ -264,6 +270,8 @@ def tg_p_stat(update, context):
             else:
                 output_str = output_str + '0'
             output_str = output_str + ' )'
+            if i[0] in count_something:
+                output_str = output_str + '***' + str(count_something[i[0]])
 
         update.message.reply_text(output_str)
 
