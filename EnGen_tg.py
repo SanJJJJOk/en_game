@@ -178,23 +178,24 @@ def tg_update(update, context):
                         st_acttxt = listt[-2].get_text()
                         reply_str = reply_str + '\n' + get_emjs(st_team, st_acttxt) + st_text
                     if Is_zeroarmormode_active:
-                        st_acttxt = listt[-2].get_text()
+                        st_acttxt = listt[-1].get_text()
                         zeromatch = regex_zero.findall(st_acttxt)
                         if len(zeromatch)==0:
                             zero_str = zero_str + '\n' + '...хуита(==0)'
-                        if len(zeromatch)>1:
-                            zero_str = zero_str + '\n' + '...говно(>1)'
-                        intsecs = int(zeromatch[0])
-                        if intsecs>=60:
-                            st_textzero = listt[-1].get_text()
-                            zero_str = zero_str + '\n' + st_textzero
-                        t = 1
+                        else:
+                            if len(zeromatch)>1:
+                                zero_str = zero_str + '\n' + '...говно(>1)'
+                            else:
+                                intsecs = int(zeromatch[0])
+                                if intsecs>=60:
+                                    st_textzero = listt[-1].get_text()
+                                    zero_str = zero_str + '\n' + st_textzero
                     Output_arr.append(st_key)
 
             if not reply_str=='':
-                print_long(update, reply_str)
+                print_long(update, context, reply_str)
             if Is_zeroarmormode_active and not zero_str=='':
-                print_long(update, Emjs.Point + zero_str)
+                print_long(update, context, Emjs.Point + zero_str)
             time.sleep(5)
         update.message.reply_text("i'm off")
     except Exception as e:
@@ -214,7 +215,7 @@ def get_emjs(teamname, actiontxt):
         return teamemjs + '-' + Emjs.Bonus
     return teamemjs + '-' + Emjs.Penalty
 
-def print_long(update, input_text):
+def print_long(update, context, input_text):
     global Is_monitoring_active, Teams, Output_arr, Domain, Gameid
     if len(input_text) == 0:
         context.bot.send_message('-442090041', '-')
