@@ -67,6 +67,8 @@ Teams = []
 Output_arr = []
 Domain = 'demo'
 Gameid = '30837'
+Team1 = 'Win Team'
+Team2 = 'полоскун'
 
 def tg_set(update, context):
     global Is_monitoring_active, Teams, Domain, Gameid
@@ -102,7 +104,7 @@ def tg_set(update, context):
         update.message.reply_text(err_msg)
 
 def tg_auto_teams(update, context):
-    global Is_monitoring_active, Teams, Domain, Gameid
+    global Is_monitoring_active, Teams, Domain, Gameid, Team1, Team2
     try:
         teams = []
         fp = request.urlopen("http://m."+Domain+".en.cx/GameStat.aspx?gid="+Gameid)
@@ -116,13 +118,13 @@ def tg_auto_teams(update, context):
         find_text3 = soup.find_all("td", {'class': regex_m})
     
         teamname = find_text3[1].find("a").get_text()
-        if not 'Win Team' in teamname:
+        if not Team1 in teamname and not Team2 in teamname:
             teams.append(teamname)
         teamname = find_text3[3].find("a").get_text()
-        if not 'Win Team' in teamname:
+        if not Team1 in teamname and not Team2 in teamname:
             teams.append(teamname)
         teamname = find_text3[5].find("a").get_text()
-        if not 'Win Team' in teamname:
+        if not Team1 in teamname and not Team2 in teamname:
             teams.append(teamname)
         Teams = teams
         update.message.reply_text('\n'.join(teams))
@@ -174,7 +176,7 @@ def get_emjs(teamname, actiontxt):
         teamemjs = Emjs.Second
     if len(Teams)>2 and teamname==Teams[2]:
         teamemjs = Emjs.Third
-    if 'бонус' in actiontxt:
+    if 'бонус' in actiontxt or 'bonus' in actiontxt:
         return teamemjs + '-' + Emjs.Bonus
     return teamemjs + '-' + Emjs.Penalty
 
@@ -229,8 +231,8 @@ def get_count_sec(input_str):
     return output_sec
 
 def main():
-    updater = Updater("408100374:AAEhMleUbdVH_G1xmKeCAy8MlNfyBwB9AOo", use_context=True)
-    #updater = Updater("979411435:AAEHIVLx8L8CxmjIHtitaH4L1GeV_OCRJ7M", use_context=True)
+    #updater = Updater("408100374:AAEhMleUbdVH_G1xmKeCAy8MlNfyBwB9AOo", use_context=True)
+    updater = Updater("979411435:AAEHIVLx8L8CxmjIHtitaH4L1GeV_OCRJ7M", use_context=True)
     dp = updater.dispatcher
     
     dp.add_handler(CommandHandler(TgCommands.Auto, tg_auto_teams))
