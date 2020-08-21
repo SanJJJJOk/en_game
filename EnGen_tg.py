@@ -42,6 +42,12 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 
 logger = logging.getLogger(__name__)
 
+class TgCommands:
+    Auto = 'auto'
+    Go = 'go'
+    Stop = 'stop'
+    Set = 'set'
+
 def tg_error(update, context):
     err_msg = "Callback: {0}".format(str(context.error))
     update.message.reply_text(err_msg)
@@ -49,20 +55,78 @@ def tg_error(update, context):
     
 Holder = GlobalInfo()
 Is_monitoring_active = False
-Output_dict = {}
+Teams = []
+Output_arr = []
+Domain = 'kurgan'
+Gameid = '68107'
 
-def get_int(text):
+def tg_set(update, context):
+    global Is_monitoring_active, Teams, Domain, Gameid
     try:
-        return int(text)
-    except Exception as e:
-        return None
+        input_teams = update.message.text[len(TgCommands.Set)+2:].split(' ')
+        
+        teams = []
+        fp = request.urlopen("http://m."+Domain+".en.cx/GameStat.aspx?gid="+Gameid)
+        mybytes = fp.read()
 
-def tg_update(update, context, url):
-    global Is_monitoring_active
+        mystr = mybytes.decode("utf8")
+        fp.close()
+
+        soup = BeautifulSoup(mystr, 'html.parser')
+        regex_m = re.compile("^totalCell")
+        find_text3 = soup.find_all("td", {'class': regex_m})
+    
+        allteams = []
+        for itemstat in find_text3:
+            teamname = itemstat.find("a").get_text()
+            if not teamname in allteams:
+                allteams.append(teamname)
+
+        for team in allteams:
+            for inputteam in input_teams:
+                if inputteam in team and not team in teams:
+                    teams.append(team)
+
+        Teams = teams
+        update.message.reply_text('\n'.join(teams))
+    except Exception as e:
+        err_msg = "неизвестная ошибка: {0}".format(str(e))
+        update.message.reply_text(err_msg)
+
+def tg_auto_teams(update, context):
+    global Is_monitoring_active, Teams, Domain, Gameid
+    try:
+        teams = []
+        fp = request.urlopen("http://m."+Domain+".en.cx/GameStat.aspx?gid="+Gameid)
+        mybytes = fp.read()
+
+        mystr = mybytes.decode("utf8")
+        fp.close()
+
+        soup = BeautifulSoup(mystr, 'html.parser')
+        regex_m = re.compile("^totalCell")
+        find_text3 = soup.find_all("td", {'class': regex_m})
+    
+        teamname = find_text3[1].find("a").get_text()
+        if not 'Win Team' in teamname:
+            teams.append(teamname)
+        teamname = find_text3[3].find("a").get_text()
+        if not 'Win Team' in teamname:
+            teams.append(teamname)
+        teamname = find_text3[5].find("a").get_text()
+        if not 'Win Team' in teamname:
+            teams.append(teamname)
+        Teams = teams
+        update.message.reply_text('\n'.join(teams))
+    except Exception as e:
+        err_msg = "неизвестная ошибка: {0}".format(str(e))
+        update.message.reply_text(err_msg)
+
+def tg_update(update, context, domain, gameid):
+    global Is_monitoring_active, Teams, Output_arr, Domain, Gameid
     try:
         while Is_monitoring_active:
-            #fp = request.urlopen("http://m.kurgan.en.cx/GameBonusPenaltyTime.aspx?tid=10301&level=0&gid=68107")
-            fp = request.urlopen(url)
+            fp = request.urlopen("http://m."+Domain+".en.cx/GameBonusPenaltyTime.aspx?gid="+Gameid)
             mybytes = fp.read()
 
             mystr = mybytes.decode("utf8")
@@ -75,17 +139,16 @@ def tg_update(update, context, url):
             reply_str = ''
             for i in find_text1:
                 listt = [ ii for ii in i.children if ii.name=='td' ]
+                st_team = listt[1].get_text()
                 st_time = listt[0].get_text()
-                st_text = listt[-1].get_text()
-                if not st_time in output_dict:
-                    reply_str = reply_str + '\n' + st_text
-                    output_dict[st_time] = st_text
+                st_key = st_team + st_time
+                if not st_key in Output_arr:
+                    if st_team in Teams:
+                        st_text = listt[-1].get_text()
+                        reply_str = reply_str + '\n' + st_text
+                    Output_arr.append(st_key)
 
-
-
-
-            update.message.reply_text('q')
-            time.sleep(10)
+            time.sleep(5)
         update.message.reply_text("i'm off")
     except Exception as e:
         err_msg = "неизвестная ошибка: {0}".format(str(e))
@@ -95,7 +158,7 @@ def tg_go(update, context):
     global Is_monitoring_active
     try:
         Is_monitoring_active = True
-        url = update.message.text[4:]
+        url = update.message.text[len(TgCommands.Go)+2:]
         x = Thread(target=tg_update, args=(update,context,url,))
         x.start()
         update.message.reply_text('started')
@@ -224,8 +287,10 @@ def main():
     #updater = Updater("979411435:AAEHIVLx8L8CxmjIHtitaH4L1GeV_OCRJ7M", use_context=True)
     dp = updater.dispatcher
     
-    dp.add_handler(CommandHandler('go', tg_go))
-    dp.add_handler(CommandHandler('stop', tg_stop))
+    dp.add_handler(CommandHandler(TgCommands.Auto, tg_auto_teams))
+    dp.add_handler(CommandHandler(TgCommands.Go, tg_go))
+    dp.add_handler(CommandHandler(TgCommands.Stop, tg_stop))
+    dp.add_handler(CommandHandler(TgCommands.Set, tg_set))
     #dp.add_handler(MessageHandler(Filters.text, tg_p_default))
     
     dp.add_error_handler(tg_error)
