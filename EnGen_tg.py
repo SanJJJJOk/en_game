@@ -34,6 +34,7 @@ from datetime import datetime, date, time, timedelta
 
 from threading import Timer
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
+from telegram import ParseMode
 
 # Enable logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -47,137 +48,17 @@ def tg_error(update, context):
     logger.warning('Update "%s" caused error "%s"', update, context.error)
     
 Holder = GlobalInfo()
+Domain = 'kurgan'
+Gameid = '68107'
 
 class TgCommands:
     Fullstat = 'fullstat'
     Stat = 'stat'
     
-#def is_meta_check(word1, word2):
-#    if len(word1) != len(word2):
-#        return False
-#    counter = 0
-#    for i in range(0, len(word1)):
-#        if word1[i]!=word2[i]:
-#            counter+=1
-#    return counter == 1
-
-#def is_logo_check(word1, word2):
-#    long_word = ''
-#    short_word = ''
-#    if len(word1) == len(word2) + 1:
-#        long_word = word1
-#        short_word = word2
-#    else:
-#        if len(word2) == len(word1) + 1:
-#            long_word = word2
-#            short_word = word1
-#        else:
-#            return False
-#    diff_index = 0
-#    for i in range(0, len(short_word)):
-#        if long_word[i]!=short_word[i]:
-#            diff_index = i
-#            break
-#    for i in range(diff_index, len(short_word)):
-#        if long_word[i + 1]!=short_word[i]:
-#            diff_index = -1
-#            break
-#    return diff_index!=-1 or long_word.startswith(short_word)
-
-#def smart_check(word, symbol):
-#    if word in GlobalMonopoly.holder:
-#        return None
-#    for exist_word in GlobalMonopoly.holder:
-#        if is_meta_check(exist_word, word) or is_logo_check(exist_word, word):
-#            exist_symbols = [i.symbol for i in GlobalMonopoly.holder[exist_word]]
-#            if symbol in exist_symbols:
-#                return SmartResult(word, exist_word, True)
-#            return SmartResult(word, exist_word, False)
-#    return None
-
-
-
-
-
-            #last_action = GlobalMonopoly.last_ations[update.message.from_user.id]
-            #if not last_action is None:
-            #    if last_action.action_type == ActionTypes.TypoMiss and last_action.msg_id == reply_msg.id:
-            #        if update.message.text.startswith('д'):
-            #            del GlobalMonopoly.holder[last_action.some_field.added_word]
-            #            if not last_action.action_symbol in GlobalMonopoly.holder[last_action.action_word]:
-            #                GlobalMonopoly.holder[last_action.action_word].append(last_action.action_symbol)
-            #            update.message.reply_text('сделано')
-            #            return
-            #        if update.message.text.startswith('н'):
-            #            GlobalMonopoly.last_ations[update.message.from_user.id] = None
-            #            update.message.reply_text('ок, буду молчать в тряпочку')
-            #            return
-            #        update.message.reply_text('ну ёба, да или нет скажи, че ты мне пишешь?')
-            #        return
-        
-                    #smart_check_result = smart_check(input_word, input_symbol)
-                    #if smart_check_result is None:
-                    #    add_result = add_word_symbol(input_word, input_symbol)
-                    #    if add_result is None:
-                    #        update.message.reply_text(Result.Result1 + 'было уже')
-                    #    else:
-                    #        update.message.reply_text(Result.Result0 + 'опачки, уже ' + str(add_result) + ' штуки')
-                    #else:
-                    #    add_result = add_word_symbol(input_word, input_symbol)
-                    #    if smart_check_result.is_symbol_exist:
-                    #        GlobalMonopoly.last_ations[update.message.from_user.id] = ActionItem(update.message.from_user.id, update.message.message_id, is_group_msg, text, input_word, input_symbol, smart_check_result, ActionTypes.TypoMiss)
-                    #        update.message.reply_text('я, конечно, добавил "' + input_word  + '", но походу ты имел в виду "' + smart_check_result + '". причем "' + symbol + '" там уже существует. ответь реплаем на это сообщение да если хочешь исправить, нет - если не хочешь. или просто проигнорируй')
-                    #    else:
-                    #        GlobalMonopoly.last_ations[update.message.from_user.id] = ActionItem(update.message.from_user.id, update.message.message_id, is_group_msg, text, input_word, input_symbol, smart_check_result, ActionTypes.TypoMiss)
-                    #        update.message.reply_text('я, конечно, добавил "' + input_word  + '", но походу ты имел в виду "' + smart_check_result + '". ответь реплаем на это сообщение да если хочешь исправить, нет - если не хочешь. или просто проигнорируй')
-
-
-        #if text.startswith('+'):
-        #    int_value = get_int(text[1:])
-        #    if int_value is None:
-        #        update.message.reply_text('эт не число')
-        #        return
-        #    GlobalMonopoly.money = GlobalMonopoly.money + int_value
-        #    update.message.reply_text('добавлено ' + str(int_value) + ', осталось ' + str(GlobalMonopoly.money))
-        #    return
-
-        #if text.startswith('-'):
-        #    int_value = get_int(text[1:])
-        #    if int_value is None:
-        #        update.message.reply_text('эт не число')
-        #        return
-        #    GlobalMonopoly.money = GlobalMonopoly.money - int_value
-        #    update.message.reply_text('вычтено ' + str(int_value) + ', осталось ' + str(GlobalMonopoly.money))
-        #    return
-
-def get_small_info(word):
-    if not word in GlobalMonopoly.holder:
-        return None
-    count = len(GlobalMonopoly.holder[word])
-    new_symbols = [i.symbol for i in GlobalMonopoly.holder[word]]
-    new_symbols.sort()
-    return word + ' уже ' + str(count) + ' штук(' + ', '.join(new_symbols) + ')'
-
-def get_int(text):
-    try:
-        return int(text)
-    except Exception as e:
-        return None
-
-def tg_p_default(update, context):
-    try:
-        text = update.message.text.lower()
-    except Exception as e:
-        err_msg = "неизвестная ошибка: {0}".format(str(e))
-        update.message.reply_text(err_msg)
-        context.bot.send_message('228485598', err_msg + 'id:' + str(update.message.chat.id))
-
 def tg_p_fullstat(update, context):
+    global Domain, Gameid
     try:
-        input_text = update.message.text[len(TgCommands.Fullstat)+2:].split(' ')
-        domain = input_text[0]
-        gameid = input_text[1]
-        fp = request.urlopen("http://m."+domain+".en.cx/GameBonusPenaltyTime.aspx?gid="+gameid)
+        fp = request.urlopen("http://m."+Domain+".en.cx/GameBonusPenaltyTime.aspx?gid="+Gameid)
         mybytes = fp.read()
 
         mystr_monitoring = mybytes.decode("utf8")
@@ -211,7 +92,7 @@ def tg_p_fullstat(update, context):
             else:
                 count_something[st_teamname] = 1
 
-        tg_base_stat(update, context, count_bonuses, count_penalties, count_something, domain, gameid)
+        tg_base_stat(update, context, count_bonuses, count_penalties, count_something, True)
 
     except Exception as e:
         err_msg = "неизвестная ошибка: {0}".format(str(e))
@@ -219,20 +100,19 @@ def tg_p_fullstat(update, context):
         context.bot.send_message('228485598', err_msg + 'id:' + str(update.message.chat.id))
         
 def tg_p_stat(update, context):
+    global Domain, Gameid
     try:
-        input_text = update.message.text[len(TgCommands.Stat)+2:].split(' ')
-        domain = input_text[0]
-        gameid = input_text[1]
-        tg_base_stat(update, context, {}, {}, {}, domain, gameid)
+        tg_base_stat(update, context, {}, {}, {}, False)
     except Exception as e:
         err_msg = "неизвестная ошибка: {0}".format(str(e))
         update.message.reply_text(err_msg)
         context.bot.send_message('228485598', err_msg + 'id:' + str(update.message.chat.id))
 
-def tg_base_stat(update, context, count_bonuses, count_penalties, count_something, domain, gameid):
+def tg_base_stat(update, context, count_bonuses, count_penalties, count_something, add_bp):
+    global Domain, Gameid
     output_dict = {}
 
-    fp = request.urlopen("http://m."+domain+".en.cx/GameStat.aspx?gid="+gameid)
+    fp = request.urlopen("http://m."+Domain+".en.cx/GameStat.aspx?gid="+Gameid)
     mybytes = fp.read()
 
     mystr = mybytes.decode("utf8")
@@ -269,22 +149,39 @@ def tg_base_stat(update, context, count_bonuses, count_penalties, count_somethin
     list_d.sort(key=lambda i: i[1], reverse=True)
     output_str = ''
     for i in list_d:
-        output_str = output_str + '\n' +  str(i[1]) + '-' + i[0] + '( '
+        output_str = output_str + '\n`' +  smart_extend(str(i[1]), 5) + '-' + smart_extend(i[0], 13) + '`'
+        if not add_bp:
+            continue
+        output_str = output_str + '` '
         if i[0] in count_bonuses:
-            output_str = output_str + str(count_bonuses[i[0]])
+            output_str = output_str + int_extend_reverse(count_bonuses[i[0]])
         else:
             output_str = output_str + '0'
-        output_str = output_str + ' - '
+        output_str = output_str + '-'
         if i[0] in count_penalties:
-            output_str = output_str + str(count_penalties[i[0]])
+            output_str = output_str + int_extend_reverse(count_penalties[i[0]])
         else:
             output_str = output_str + '0'
-        output_str = output_str + ' )'
+        output_str = output_str + '`'
         if i[0] in count_something:
-            output_str = output_str + '***' + str(count_something[i[0]])
+            output_str = output_str + '***' + int_extend_reverse(count_something[i[0]])
 
-    update.message.reply_text(output_str)
+    update.message.reply_text(output_str, parse_mode='markdown')
        
+def smart_extend(input_str, amount):
+    input_str = input_str.replace('`', '_')
+    if len(input_str)>amount:
+        return input_str[:amount]
+    while len(input_str)<amount:
+        input_str = input_str + ' '
+    return input_str
+
+def int_extend_reverse(input_int):
+    input_str = str(input_int)
+    while len(input_str)<3:
+        input_str = ' ' + input_str
+    return input_str
+
 def get_count_sec(input_str):
     output_sec = 0
     if 'ч' in input_str:
