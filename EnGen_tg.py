@@ -78,13 +78,13 @@ def tg_p_fullstat(update, context):
             listt = [ ii for ii in i.children if ii.name=='td' ]
             st_teamname = listt[1].get_text()
             st_textbonus = listt[-2].get_text().lower()
-            if 'бонус' in st_textbonus:
+            if 'bonus' in st_textbonus:
                 if st_teamname in count_bonuses:
                     count_bonuses[st_teamname] = count_bonuses[st_teamname] + 1
                 else:
                     count_bonuses[st_teamname] = 1
                 continue
-            if 'штраф' in st_textbonus:
+            if 'penalty' in st_textbonus:
                 if st_teamname in count_penalties:
                     count_penalties[st_teamname] = count_penalties[st_teamname] + 1
                 else:
@@ -139,14 +139,14 @@ def tg_base_stat(update, context, count_bonuses, count_penalties, count_somethin
 
     for i in find_text3:
         txtitem = i.get_text()
-        if 'бонус' in txtitem:
-            ind = txtitem.index('бонус')
+        if 'bonus' in txtitem:
+            ind = txtitem.index('bonus')
             txtbp = txtitem[ind+5:].replace(' ','')
             ttertert = get_count_sec(txtbp)
             team_name = i.find("a").get_text()
             output_dict[team_name] = ttertert
-        if 'штраф' in txtitem:
-            ind = txtitem.index('штраф')
+        if 'penalty' in txtitem:
+            ind = txtitem.index('penalty')
             txtbp = txtitem[ind+5:].replace(' ','')
             ttertert = get_count_sec(txtbp)
             team_name = i.find("a").get_text()
@@ -199,18 +199,18 @@ def int_extend_reverse(input_int):
 
 def get_count_sec(input_str):
     output_sec = 0
-    if 'ч' in input_str:
-        ind = input_str.index('ч')
+    if 'h' in input_str:
+        ind = input_str.index('h')
         curr = int(input_str[:ind])
         output_sec = output_sec + curr * 3600
         input_str = input_str[ind + 1:]
-    if 'м' in input_str:
-        ind = input_str.index('м')
+    if 'm' in input_str:
+        ind = input_str.index('m')
         curr = int(input_str[:ind])
         output_sec = output_sec + curr * 60
         input_str = input_str[ind + 1:]
-    if 'с' in input_str:
-        ind = input_str.index('с')
+    if 's' in input_str:
+        ind = input_str.index('s')
         curr = int(input_str[:ind])
         output_sec = output_sec + curr
     return output_sec
