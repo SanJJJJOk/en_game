@@ -47,6 +47,7 @@ class TgCommands:
     Go = 'go'
     Stop = 'stop'
     Set = 'set'
+    Game = 'game'
 
 class Emjs:
     First = '\ud83e\udd47'
@@ -69,6 +70,18 @@ Domain = 'demo'
 Gameid = '30837'
 Team1 = 'Win Team'
 Team2 = 'полоскун'
+
+def tg_p_game(update, context):
+    global Domain, Gameid
+    try:
+        input = update.message.text[len(TgCommands.Game)+2:].split(' ')
+        Domain = input[0]
+        Gameid = input[1]
+        update.message.reply_text('збс,'+Domain+Gameid)
+    except Exception as e:
+        err_msg = "неизвестная ошибка: {0}".format(str(e))
+        update.message.reply_text(err_msg)
+        context.bot.send_message('228485598', err_msg + 'id:' + str(update.message.chat.id))
 
 def tg_set(update, context):
     global Is_monitoring_active, Teams, Domain, Gameid
@@ -239,6 +252,7 @@ def main():
     dp.add_handler(CommandHandler(TgCommands.Go, tg_go))
     dp.add_handler(CommandHandler(TgCommands.Stop, tg_stop))
     dp.add_handler(CommandHandler(TgCommands.Set, tg_set))
+    dp.add_handler(CommandHandler(TgCommands.Game, tg_p_game))
     #dp.add_handler(MessageHandler(Filters.text, tg_p_default))
     
     dp.add_error_handler(tg_error)
