@@ -48,6 +48,14 @@ class TgCommands:
     Stop = 'stop'
     Set = 'set'
 
+class Emjs:
+    First = '\ud83e\udd47'
+    Second = '\ud83e\udd48'
+    Third = '\ud83e\udd49'
+    Other = '\ud83d\udd35'
+    Bonus = '\u2705'
+    Penalty = '\u274c'
+
 def tg_error(update, context):
     err_msg = "Callback: {0}".format(str(context.error))
     update.message.reply_text(err_msg)
@@ -145,7 +153,8 @@ def tg_update(update, context):
                 if not st_key in Output_arr:
                     if st_team in Teams:
                         st_text = listt[-1].get_text()
-                        reply_str = reply_str + '\n' + st_text
+                        st_acttxt = listt[-2].get_text()
+                        reply_str = reply_str + '\n' + get_emjs(st_team, st_acttxt) + st_text
                     Output_arr.append(st_key)
 
             if not reply_str=='':
@@ -156,7 +165,21 @@ def tg_update(update, context):
         err_msg = "неизвестная ошибка: {0}".format(str(e))
         update.message.reply_text(err_msg)
         
+def get_emjs(teamname, actiontxt):
+    global Is_monitoring_active, Teams, Output_arr, Domain, Gameid
+    teamemjs = Emjs.Other
+    if len(Teams)>0 and teamname==Teams[0]:
+        teamemjs = Emjs.First
+    if len(Teams)>1 and teamname==Teams[1]:
+        teamemjs = Emjs.Second
+    if len(Teams)>2 and teamname==Teams[2]:
+        teamemjs = Emjs.Third
+    if 'бонус' in actiontxt:
+        return teamemjs + '-' + Emjs.Bonus
+    return teamemjs + '-' + Emjs.Penalty
+
 def print_long(update, input_text):
+    global Is_monitoring_active, Teams, Output_arr, Domain, Gameid
     if len(input_text) == 0:
         update.message.reply_text('-')
         return
