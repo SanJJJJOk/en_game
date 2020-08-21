@@ -49,6 +49,8 @@ class TgCommands:
     Stop = 'stop'
     Set = 'set'
     Game = 'game'
+    Zeroon = 'zeroon'
+    Zerooff = 'zerooff'
 
 class Emjs:
     First = '\ud83e\udd47'
@@ -215,13 +217,13 @@ def get_emjs(teamname, actiontxt):
 def print_long(update, input_text):
     global Is_monitoring_active, Teams, Output_arr, Domain, Gameid
     if len(input_text) == 0:
-        update.message.reply_text('-')
+        context.bot.send_message('-442090041', '-')
         return
     if len(input_text) > 4096:
         for x in range(0, len(input_text), 4096):
-            update.message.reply_text(input_text[x:x+4096])
+            context.bot.send_message('-442090041', input_text[x:x+4096])
     else:
-        update.message.reply_text(input_text)
+        context.bot.send_message('-442090041', input_text)
 
 def tg_go(update, context):
     global Is_monitoring_active
@@ -275,6 +277,8 @@ def main():
     dp.add_handler(CommandHandler(TgCommands.Stop, tg_stop))
     dp.add_handler(CommandHandler(TgCommands.Set, tg_set))
     dp.add_handler(CommandHandler(TgCommands.Game, tg_p_game))
+    dp.add_handler(CommandHandler(TgCommands.Zeroon, tg_zeroon))
+    dp.add_handler(CommandHandler(TgCommands.Zerooff, tg_zerooff))
     #dp.add_handler(MessageHandler(Filters.text, tg_p_default))
     
     dp.add_error_handler(tg_error)
