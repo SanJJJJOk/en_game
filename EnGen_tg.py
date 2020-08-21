@@ -48,12 +48,15 @@ def tg_error(update, context):
     logger.warning('Update "%s" caused error "%s"', update, context.error)
     
 Holder = GlobalInfo()
-Domain = 'kurgan'
-Gameid = '68107'
+Domain = 'demo'
+Gameid = '30837'
+Team1 = 'Win Team'
+Team2 = 'полоскун'
 
 class TgCommands:
     Fullstat = 'fullstat'
     Stat = 'stat'
+    Game = 'game'
     
 def tg_p_fullstat(update, context):
     global Domain, Gameid
@@ -108,8 +111,20 @@ def tg_p_stat(update, context):
         update.message.reply_text(err_msg)
         context.bot.send_message('228485598', err_msg + 'id:' + str(update.message.chat.id))
 
-def tg_base_stat(update, context, count_bonuses, count_penalties, count_something, add_bp):
+def tg_p_game(update, context):
     global Domain, Gameid
+    try:
+        input = update.message.text[len(TgCommands.Game)+2:].split(' ')
+        Domain = input[0]
+        Gameid = input[1]
+        update.message.reply_text('збс,'+Domain+Gameid)
+    except Exception as e:
+        err_msg = "неизвестная ошибка: {0}".format(str(e))
+        update.message.reply_text(err_msg)
+        context.bot.send_message('228485598', err_msg + 'id:' + str(update.message.chat.id))
+
+def tg_base_stat(update, context, count_bonuses, count_penalties, count_something, add_bp):
+    global Domain, Gameid, Team1, Team2
     output_dict = {}
 
     fp = request.urlopen("http://m."+Domain+".en.cx/GameStat.aspx?gid="+Gameid)
@@ -139,7 +154,7 @@ def tg_base_stat(update, context, count_bonuses, count_penalties, count_somethin
         
     otwt_val = -1
     for key in output_dict:
-        if 'Win Team' in key:
+        if Team1 in key or Team2 in key:
             otwt_val = output_dict[key]
     for key in output_dict:
         output_dict[key] = output_dict[key] - otwt_val
@@ -205,6 +220,7 @@ def main():
     #updater = Updater("979411435:AAEHIVLx8L8CxmjIHtitaH4L1GeV_OCRJ7M", use_context=True)
     dp = updater.dispatcher
     
+    dp.add_handler(CommandHandler(TgCommands.Game, tg_p_game))
     dp.add_handler(CommandHandler(TgCommands.Stat, tg_p_stat))
     dp.add_handler(CommandHandler(TgCommands.Fullstat, tg_p_fullstat))
     #dp.add_handler(MessageHandler(Filters.text, tg_p_default))
