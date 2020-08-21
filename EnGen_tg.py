@@ -65,8 +65,8 @@ Holder = GlobalInfo()
 Is_monitoring_active = False
 Teams = []
 Output_arr = []
-Domain = 'kurgan'
-Gameid = '68107'
+Domain = 'demo'
+Gameid = '30837'
 
 def tg_set(update, context):
     global Is_monitoring_active, Teams, Domain, Gameid
