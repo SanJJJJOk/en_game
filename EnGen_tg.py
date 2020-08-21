@@ -49,14 +49,6 @@ def tg_error(update, context):
 Holder = GlobalInfo()
 
 class TgCommands:
-    Move = 'move'
-    Del = 'del'
-    Add = 'add'
-    FastAdd = 'fastadd'
-    QuickDel = 'quickdel'
-    Money = 'money'
-    Help = 'help'
-    Count = 'count'
     Fullstat = 'fullstat'
     Stat = 'stat'
     
@@ -181,7 +173,11 @@ def tg_p_default(update, context):
         context.bot.send_message('228485598', err_msg + 'id:' + str(update.message.chat.id))
 
 def tg_p_fullstat(update, context):
-        fp = request.urlopen("http://m.kurgan.en.cx/GameBonusPenaltyTime.aspx?gid=68107")
+    try:
+        input_text = update.message.text[len(TgCommands.Fullstat)+2:].split(' ')
+        domain = input_text[0]
+        gameid = input_text[1]
+        fp = request.urlopen("http://m."+domain+".en.cx/GameBonusPenaltyTime.aspx?gid="+gameid)
         mybytes = fp.read()
 
         mystr_monitoring = mybytes.decode("utf8")
@@ -215,73 +211,80 @@ def tg_p_fullstat(update, context):
             else:
                 count_something[st_teamname] = 1
 
-        tg_base_stat(update, context, count_bonuses, count_penalties, count_something)
-
-def tg_base_stat(update, context, count_bonuses, count_penalties, count_something):
-    try:
-        output_dict = {}
-
-        fp = request.urlopen(update.message.text[6:])
-        mybytes = fp.read()
-
-        mystr = mybytes.decode("utf8")
-        fp.close()
-
-        soup = BeautifulSoup(mystr, 'html.parser')
-        regex_m = re.compile("^totalCell")
-        find_text3 = soup.find_all("td", {'class': regex_m})
-
-        for i in find_text3:
-            txtitem = i.get_text()
-            if 'бонус' in txtitem:
-                ind = txtitem.index('бонус')
-                txtbp = txtitem[ind+5:].replace(' ','')
-                ttertert = get_count_sec(txtbp)
-                team_name = i.find("a").get_text()
-                output_dict[team_name] = ttertert
-            if 'штраф' in txtitem:
-                ind = txtitem.index('штраф')
-                txtbp = txtitem[ind+5:].replace(' ','')
-                ttertert = get_count_sec(txtbp)
-                team_name = i.find("a").get_text()
-                output_dict[team_name] = -ttertert
-        
-        otwt_val = -1
-        for key in output_dict:
-            if 'Win Team' in key:
-                otwt_val = output_dict[key]
-        for key in output_dict:
-            output_dict[key] = output_dict[key] - otwt_val
-
-        output_sorted = {}
-        list_d = list(output_dict.items())
-        list_d.sort(key=lambda i: i[1], reverse=True)
-        output_str = ''
-        for i in list_d:
-            output_str = output_str + '\n' +  str(i[1]) + '-' + i[0] + '( '
-            if i[0] in count_bonuses:
-                output_str = output_str + str(count_bonuses[i[0]])
-            else:
-                output_str = output_str + '0'
-            output_str = output_str + ' - '
-            if i[0] in count_penalties:
-                output_str = output_str + str(count_penalties[i[0]])
-            else:
-                output_str = output_str + '0'
-            output_str = output_str + ' )'
-            if i[0] in count_something:
-                output_str = output_str + '***' + str(count_something[i[0]])
-
-        update.message.reply_text(output_str)
+        tg_base_stat(update, context, count_bonuses, count_penalties, count_something, domain, gameid)
 
     except Exception as e:
         err_msg = "неизвестная ошибка: {0}".format(str(e))
         update.message.reply_text(err_msg)
         context.bot.send_message('228485598', err_msg + 'id:' + str(update.message.chat.id))
-       
+        
 def tg_p_stat(update, context):
-    tg_base_stat(update, context, {}, {}, {})
+    try:
+        input_text = update.message.text[len(TgCommands.Stat)+2:].split(' ')
+        domain = input_text[0]
+        gameid = input_text[1]
+        tg_base_stat(update, context, {}, {}, {}, domain, gameid)
+    except Exception as e:
+        err_msg = "неизвестная ошибка: {0}".format(str(e))
+        update.message.reply_text(err_msg)
+        context.bot.send_message('228485598', err_msg + 'id:' + str(update.message.chat.id))
 
+def tg_base_stat(update, context, count_bonuses, count_penalties, count_something, domain, gameid):
+    output_dict = {}
+
+    fp = request.urlopen("http://m."+domain+".en.cx/GameStat.aspx?gid="+gameid)
+    mybytes = fp.read()
+
+    mystr = mybytes.decode("utf8")
+    fp.close()
+
+    soup = BeautifulSoup(mystr, 'html.parser')
+    regex_m = re.compile("^totalCell")
+    find_text3 = soup.find_all("td", {'class': regex_m})
+
+    for i in find_text3:
+        txtitem = i.get_text()
+        if 'бонус' in txtitem:
+            ind = txtitem.index('бонус')
+            txtbp = txtitem[ind+5:].replace(' ','')
+            ttertert = get_count_sec(txtbp)
+            team_name = i.find("a").get_text()
+            output_dict[team_name] = ttertert
+        if 'штраф' in txtitem:
+            ind = txtitem.index('штраф')
+            txtbp = txtitem[ind+5:].replace(' ','')
+            ttertert = get_count_sec(txtbp)
+            team_name = i.find("a").get_text()
+            output_dict[team_name] = -ttertert
+        
+    otwt_val = -1
+    for key in output_dict:
+        if 'Win Team' in key:
+            otwt_val = output_dict[key]
+    for key in output_dict:
+        output_dict[key] = output_dict[key] - otwt_val
+
+    output_sorted = {}
+    list_d = list(output_dict.items())
+    list_d.sort(key=lambda i: i[1], reverse=True)
+    output_str = ''
+    for i in list_d:
+        output_str = output_str + '\n' +  str(i[1]) + '-' + i[0] + '( '
+        if i[0] in count_bonuses:
+            output_str = output_str + str(count_bonuses[i[0]])
+        else:
+            output_str = output_str + '0'
+        output_str = output_str + ' - '
+        if i[0] in count_penalties:
+            output_str = output_str + str(count_penalties[i[0]])
+        else:
+            output_str = output_str + '0'
+        output_str = output_str + ' )'
+        if i[0] in count_something:
+            output_str = output_str + '***' + str(count_something[i[0]])
+
+    update.message.reply_text(output_str)
+       
 def get_count_sec(input_str):
     output_sec = 0
     if 'ч' in input_str:
@@ -305,8 +308,8 @@ def main():
     #updater = Updater("979411435:AAEHIVLx8L8CxmjIHtitaH4L1GeV_OCRJ7M", use_context=True)
     dp = updater.dispatcher
     
-    dp.add_handler(CommandHandler('stat', tg_p_stat))
-    dp.add_handler(CommandHandler('fullstat', tg_p_fullstat))
+    dp.add_handler(CommandHandler(TgCommands.Stat, tg_p_stat))
+    dp.add_handler(CommandHandler(TgCommands.Fullstat, tg_p_fullstat))
     #dp.add_handler(MessageHandler(Filters.text, tg_p_default))
     
     dp.add_error_handler(tg_error)
