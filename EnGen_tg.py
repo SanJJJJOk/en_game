@@ -45,6 +45,7 @@ logger = logging.getLogger(__name__)
 class TgCommands:
     Auto = 'auto'
     Go = 'go'
+    Got = 'got'
     Stop = 'stop'
     Set = 'set'
     Game = 'game'
@@ -56,6 +57,7 @@ class Emjs:
     Other = '\ud83d\udd35'
     Bonus = '\u2705'
     Penalty = '\u274c'
+    Point = '\ud83d\udccd'
 
 def tg_error(update, context):
     err_msg = "Callback: {0}".format(str(context.error))
@@ -64,6 +66,7 @@ def tg_error(update, context):
     
 Holder = GlobalInfo()
 Is_monitoring_active = False
+Is_zeroarmormode_active = False
 Teams = []
 Output_arr = []
 Domain = 'demo'
@@ -105,8 +108,8 @@ def tg_set(update, context):
             if not teamname in allteams:
                 allteams.append(teamname)
 
-        for team in allteams:
-            for inputteam in input_teams:
+        for inputteam in input_teams:
+            for team in allteams:
                 if inputteam in team and not team in teams:
                     teams.append(team)
 
@@ -146,7 +149,7 @@ def tg_auto_teams(update, context):
         update.message.reply_text(err_msg)
 
 def tg_update(update, context):
-    global Is_monitoring_active, Teams, Output_arr, Domain, Gameid
+    global Is_monitoring_active, Is_zeroarmormode_active, Teams, Output_arr, Domain, Gameid
     try:
         while Is_monitoring_active:
             fp = request.urlopen("http://m."+Domain+".en.cx/GameBonusPenaltyTime.aspx?gid="+Gameid)
@@ -157,9 +160,11 @@ def tg_update(update, context):
 
             soup = BeautifulSoup(mystr, 'html.parser')
             regex_t = re.compile("^PlayersRepeater")
+            regex_zero = re.compile("([0-9]+)с")
             find_text1 = soup.find_all('tr', {'id': regex_t})
 
             reply_str = ''
+            zero_str = ''
             for i in find_text1:
                 listt = [ ii for ii in i.children if ii.name=='td' ]
                 st_team = listt[1].get_text()
@@ -170,10 +175,24 @@ def tg_update(update, context):
                         st_text = listt[-1].get_text()
                         st_acttxt = listt[-2].get_text()
                         reply_str = reply_str + '\n' + get_emjs(st_team, st_acttxt) + st_text
+                    if Is_zeroarmormode_active:
+                        st_acttxt = listt[-2].get_text()
+                        zeromatch = regex_zero.findall(st_acttxt)
+                        if len(zeromatch)==0:
+                            zero_str = zero_str + '\n' + '...хуита(==0)'
+                        if len(zeromatch)>1:
+                            zero_str = zero_str + '\n' + '...говно(>1)'
+                        intsecs = int(zeromatch[0])
+                        if intsecs>=60:
+                            st_textzero = listt[-1].get_text()
+                            zero_str = zero_str + '\n' + st_textzero
+                        t = 1
                     Output_arr.append(st_key)
 
             if not reply_str=='':
                 print_long(update, reply_str)
+            if Is_zeroarmormode_active and not zero_str=='':
+                print_long(update, Emjs.Point + zero_str)
             time.sleep(5)
         update.message.reply_text("i'm off")
     except Exception as e:
@@ -224,6 +243,27 @@ def tg_stop(update, context):
     except Exception as e:
         err_msg = "неизвестная ошибка: {0}".format(str(e))
         update.message.reply_text(err_msg)
+
+#--------------------------------------2--------------------------------------------------------
+def tg_zeroon(update, context):
+    global Is_zeroarmormode_active
+    try:
+        Is_zeroarmormode_active = True
+        update.message.reply_text('zero+')
+    except Exception as e:
+        err_msg = "неизвестная ошибка: {0}".format(str(e))
+        update.message.reply_text(err_msg)
+        
+def tg_zerooff(update, context):
+    global Is_zeroarmormode_active
+    try:
+        Is_zeroarmormode_active = False
+        update.message.reply_text('zero-')
+    except Exception as e:
+        err_msg = "неизвестная ошибка: {0}".format(str(e))
+        update.message.reply_text(err_msg)
+
+#--------------------------------------main--------------------------------------------------------
 
 def main():
     #updater = Updater("408100374:AAEhMleUbdVH_G1xmKeCAy8MlNfyBwB9AOo", use_context=True)
