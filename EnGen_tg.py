@@ -225,24 +225,6 @@ def tg_stop(update, context):
         err_msg = "неизвестная ошибка: {0}".format(str(e))
         update.message.reply_text(err_msg)
 
-def get_count_sec(input_str):
-    output_sec = 0
-    if 'ч' in input_str:
-        ind = input_str.index('ч')
-        curr = int(input_str[:ind])
-        output_sec = output_sec + curr * 3600
-        input_str = input_str[ind + 1:]
-    if 'м' in input_str:
-        ind = input_str.index('м')
-        curr = int(input_str[:ind])
-        output_sec = output_sec + curr * 60
-        input_str = input_str[ind + 1:]
-    if 'с' in input_str:
-        ind = input_str.index('с')
-        curr = int(input_str[:ind])
-        output_sec = output_sec + curr
-    return output_sec
-
 def main():
     #updater = Updater("408100374:AAEhMleUbdVH_G1xmKeCAy8MlNfyBwB9AOo", use_context=True)
     updater = Updater("979411435:AAEHIVLx8L8CxmjIHtitaH4L1GeV_OCRJ7M", use_context=True)
