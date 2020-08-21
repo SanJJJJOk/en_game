@@ -178,8 +178,8 @@ def tg_update(update, context):
                         st_acttxt = listt[-2].get_text()
                         reply_str = reply_str + '\n' + get_emjs(st_team, st_acttxt) + st_text
                     if Is_zeroarmormode_active:
-                        st_acttxt = listt[-1].get_text()
-                        zeromatch = regex_zero.findall(st_acttxt)
+                        st_textzero = listt[-1].get_text()
+                        zeromatch = regex_zero.findall(st_textzero)
                         if len(zeromatch)==0:
                             zero_str = zero_str + '\n' + '...хуита(==0)'
                         else:
@@ -188,7 +188,6 @@ def tg_update(update, context):
                             else:
                                 intsecs = int(zeromatch[0])
                                 if intsecs>=60:
-                                    st_textzero = listt[-1].get_text()
                                     zero_str = zero_str + '\n' + st_textzero
                     Output_arr.append(st_key)
 
