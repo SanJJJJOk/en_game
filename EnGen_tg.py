@@ -122,7 +122,7 @@ def tg_auto_teams(update, context):
         err_msg = "неизвестная ошибка: {0}".format(str(e))
         update.message.reply_text(err_msg)
 
-def tg_update(update, context, domain, gameid):
+def tg_update(update, context):
     global Is_monitoring_active, Teams, Output_arr, Domain, Gameid
     try:
         while Is_monitoring_active:
@@ -148,18 +148,30 @@ def tg_update(update, context, domain, gameid):
                         reply_str = reply_str + '\n' + st_text
                     Output_arr.append(st_key)
 
+            if not reply_str=='':
+                print_long(update, reply_str)
             time.sleep(5)
         update.message.reply_text("i'm off")
     except Exception as e:
         err_msg = "неизвестная ошибка: {0}".format(str(e))
         update.message.reply_text(err_msg)
+        
+def print_long(update, input_text):
+    if len(input_text) == 0:
+        update.message.reply_text('-')
+        return
+    if len(input_text) > 4096:
+        for x in range(0, len(input_text), 4096):
+            update.message.reply_text(input_text[x:x+4096])
+    else:
+        update.message.reply_text(input_text)
 
 def tg_go(update, context):
     global Is_monitoring_active
     try:
         Is_monitoring_active = True
         url = update.message.text[len(TgCommands.Go)+2:]
-        x = Thread(target=tg_update, args=(update,context,url,))
+        x = Thread(target=tg_update, args=(update,context,))
         x.start()
         update.message.reply_text('started')
     except Exception as e:
@@ -194,95 +206,6 @@ def get_count_sec(input_str):
     return output_sec
 
 def main():
-    #fp = request.urlopen("http://m.kurgan.en.cx/GameBonusPenaltyTime.aspx?tid=10301&level=0&gid=68107")
-    #fp = request.urlopen("http://m.kurgan.en.cx/GameBonusPenaltyTime.aspx?gid=68107")
-    #fp = request.urlopen("http://m.kurgan.en.cx/GameStat.aspx?gid=68107")
-    #mybytes = fp.read()
-
-    #mystr = mybytes.decode("utf8")
-    #fp.close()
-
-    #file = open('125.txt', 'w', encoding='utf-8')
-    #file.truncate(0)
-    #file.write(mystr)
-    #file.close()
-
-    
-    file = open('124.txt', 'r', encoding='utf-8')
-    mystr_stat = file.read()
-    file.close()
-
-
-    file = open('125.txt', 'r', encoding='utf-8')
-    mystr = file.read()
-    file.close()
-    output_dict = {}
-
-    soup = BeautifulSoup(mystr_stat, 'html.parser')
-    regex_m = re.compile("^totalCell")
-    find_text3 = soup.find_all("td", {'class': regex_m})
-
-    #------------------------------------------top team------------------------------------------
-    list_top4 = []
-    top_team = find_text3[0].find("a").get_text()
-    if not 'Win Team' in top_team:
-        list_top4.append(top_team)
-        
-    top_team = find_text3[2].find("a").get_text()
-    if not 'Win Team' in top_team:
-        list_top4.append(top_team)
-        
-    top_team = find_text3[4].find("a").get_text()
-    if not 'Win Team' in top_team:
-        list_top4.append(top_team)
-        
-    top_team = find_text3[6].find("a").get_text()
-    if not 'Win Team' in top_team:
-        list_top4.append(top_team)
-    #------------------------------------------top team------------------------------------------
-    #otwt_val = -1
-    #for key in output_dict:
-    #    if 'Win Team' in key:
-    #        otwt_val = output_dict[key]
-    #for key in output_dict:
-    #    output_dict[key] = output_dict[key] - otwt_val
-
-    #output_sorted = {}
-    #list_d = list(output_dict.items())
-    #list_d.sort(key=lambda i: i[1], reverse=True)
-    #output_str = ''
-    #for i in list_d:
-    #    output_str = output_str + '\n' +  str(i[1]) + '-' + i[0]
-
-    soup = BeautifulSoup(mystr, 'html.parser')
-    regex_t = re.compile("^PlayersRepeater")
-    find_text1 = soup.find_all('tr', {'id': regex_t})
-
-
-    count_bonuses = {}
-    count_penalties = {}
-    count_something = {}
-    for i in find_text1:
-        listt = [ ii for ii in i.children if ii.name=='td' ]
-        st_teamname = listt[1].get_text()
-        st_textbonus = listt[-2].get_text().lower()
-        if 'бонус' in st_textbonus:
-            if st_teamname in count_bonuses:
-                count_bonuses[st_teamname] = count_bonuses[st_teamname] + 1
-            else:
-                count_bonuses[st_teamname] = 1
-            continue
-        if 'штраф' in st_textbonus:
-            if st_teamname in count_penalties:
-                count_penalties[st_teamname] = count_penalties[st_teamname] + 1
-            else:
-                count_penalties[st_teamname] = 1
-            continue
-        if st_teamname in count_something:
-            count_something[st_teamname] = count_something[st_teamname] + 1
-        else:
-            count_something[st_teamname] = 1
-
     updater = Updater("408100374:AAEhMleUbdVH_G1xmKeCAy8MlNfyBwB9AOo", use_context=True)
     #updater = Updater("979411435:AAEHIVLx8L8CxmjIHtitaH4L1GeV_OCRJ7M", use_context=True)
     dp = updater.dispatcher
