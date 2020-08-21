@@ -177,7 +177,7 @@ def tg_update(update, context):
             time.sleep(5)
         update.message.reply_text("i'm off")
     except Exception as e:
-        err_msg = "неизвестная ошибка: {0}".format(str(e))
+        err_msg = "неизвестная ошибка update: {0}".format(str(e))
         update.message.reply_text(err_msg)
         
 def get_emjs(teamname, actiontxt):
