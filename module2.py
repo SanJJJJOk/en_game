@@ -654,6 +654,7 @@ class GlobalInfo:
     def initialize():
         GlobalInfo.registered_players[-495810366] = GlobalInfo.munchkins_logins['com1']
         GlobalInfo.registered_players[-442872279] = GlobalInfo.munchkins_logins['com2']
+        GlobalInfo.registered_players[-456257520] = GlobalInfo.munchkins_logins['com3']
         for monster in GlobalInfo.monsters:
             for lvlcode in monster.monster_lvlcodes:
                 GlobalInfo.c_level_codes[lvlcode] = monster
@@ -690,6 +691,7 @@ class GlobalInfo:
             munchkin.shield_datetime = dt_now
             munchkin.stat_datetime = dt_now
             GlobalInfo.c_munchkins_by_ids[munchkin.id] = munchkin
+        GlobalInfo.munchkins_logins['admin'].current_lvl = 999
 
     @staticmethod
     def add_log_row(name, chatid, text, flag):

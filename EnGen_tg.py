@@ -60,6 +60,7 @@ class TgCommands:
     Chicken = 'chicken'
     Refresh = 'refresh'
     Money = 'money'
+    Tax = 'tax'
     Hand = 'hand'
     Msg = 'msg'
     Msgteam = 'msgteam'
@@ -171,6 +172,12 @@ def tg_send_to_team(update, context, munchkin, msg):
         if GlobalInfo.registered_players[player_id].id == munchkin.id:
             context.bot.send_message(player_id, msg)
 
+def tg_send_all(update, context, msg):
+    dt_now = datetime.now()
+    for player_id in GlobalInfo.registered_players:
+        context.bot.send_message(player_id, msg)
+    context.bot.send_message('228485598', msg + dt_now.strftime("%m/%d/%Y, %H:%M:%S"))
+
 def tg_admin_default_command(update, context, command, count):
     if str(update.message.chat.id)!='228485598':
         update.message.reply_text('атата!')
@@ -220,16 +227,20 @@ def tg_chicken(update, context):
             return
 
         value = int(input[1])
-        target_munchkin.chicken_datetime = dt_now + timedelta(0, value)
-        update.message.reply_text('+++chicken applied')
-        tg_send_to_team(update, context, target_munchkin, Emojies.Important + 'вас превратили в курицу')
+        new_dt = dt_now + timedelta(0, value)
+        if new_dt > target_munchkin.chicken_datetime:
+            target_munchkin.chicken_datetime = dt_now + timedelta(0, value)
+            update.message.reply_text('+++chicken applied')
+            tg_send_to_team(update, context, target_munchkin, Emojies.Important + 'вас превратили в курицу')
+        else:
+            update.message.reply_text('---chicken diff:' + str(new_dt) + ', ' + str(target_munchkin.chicken_datetime))
         if GlobalInfo.autobackup_enabled:
             tg_backup_base(context, '661294614')
     except Exception as e:
         err_msg = "неизвестная ошибка: {0}".format(str(e))
         update.message.reply_text(err_msg)
         context.bot.send_message('228485598', err_msg + 'id:' + update.message.chat.id)
-
+        
 def tg_money(update, context):
     try:
         input = tg_admin_default_command(update, context, TgCommands.Money, 2)
@@ -244,6 +255,29 @@ def tg_money(update, context):
             return
         munchkin.current_money = munchkin.current_money - value
         update.message.reply_text('+++money ' + munchkin.name + ': ' + str_money + '-' + str(value) + '=' + str(munchkin.current_money))
+        if GlobalInfo.autobackup_enabled:
+            tg_backup_base(context, '661294614')
+    except Exception as e:
+        err_msg = "неизвестная ошибка: {0}".format(str(e))
+        update.message.reply_text(err_msg)
+        context.bot.send_message('228485598', err_msg + 'id:' + update.message.chat.id)
+
+def tg_tax(update, context):
+    try:
+        input = tg_admin_default_command(update, context, TgCommands.Tax, 2)
+        if len(input)==0:
+            return
+        munch_id = int(input[0])
+        money_amount = int(input[1])
+        munchkin = GlobalInfo.c_munchkins_by_ids[munch_id]
+        for munch_id in GlobalInfo.c_munchkins_by_ids:
+            other_munchkin = GlobalInfo.c_munchkins_by_ids[munch_id]
+            if money_amount > other_munchkin.current_money:
+                other_munchkin.current_money = 0
+            else:
+                other_munchkin.current_money = other_munchkin.current_money - money_amount
+        output_str = Emojies.Important + 'Манчкин ' + munchkin.name + ' применил Подоходный налог на ' + str(money_amount) +' голды'
+        tg_send_all(update, context, output_str)
         if GlobalInfo.autobackup_enabled:
             tg_backup_base(context, '661294614')
     except Exception as e:
@@ -320,20 +354,22 @@ def tg_curse(update, context):
 
 def tg_stat(update, context):
     try:
-        if not update.message.chat.id in GlobalInfo.registered_players:
-            update.message.reply_text('вы не зарегистрированы')
-            return
         dt_now = datetime.now()
-        munchkin = GlobalInfo.registered_players[update.message.chat.id]
-        if munchkin.chicken_datetime > dt_now:
-            dt_ck_diff = (munchkin.chicken_datetime - dt_now).total_seconds()
-            update.message.reply_text(Emojies.Chicken + 'вас превратили в курицу, просмотр статистики недоступен\n' + Emojies.Result2 + GlobalInfo.sec_to_str(dt_ck_diff))
-            return
-        if munchkin.stat_datetime > dt_now:
-            dt_st_diff = (munchkin.stat_datetime - dt_now).total_seconds()
-            update.message.reply_text(Emojies.Result2 + 'просмотр статистики будет доступен через \n' + GlobalInfo.sec_to_str(dt_st_diff))
-            return
-        munchkin.stat_datetime = dt_now + timedelta(0, 5)
+        if str(update.message.chat.id)!='228485598':
+            if not update.message.chat.id in GlobalInfo.registered_players:
+                update.message.reply_text('вы не зарегистрированы')
+                return
+            munchkin = GlobalInfo.registered_players[update.message.chat.id]
+            if munchkin.chicken_datetime > dt_now:
+                dt_ck_diff = (munchkin.chicken_datetime - dt_now).total_seconds()
+                update.message.reply_text(Emojies.Chicken + 'вас превратили в курицу, просмотр статистики недоступен\n' + Emojies.Result2 + GlobalInfo.sec_to_str(dt_ck_diff))
+                return
+            if munchkin.stat_datetime > dt_now:
+                dt_st_diff = (munchkin.stat_datetime - dt_now).total_seconds()
+                update.message.reply_text(Emojies.Result2 + 'просмотр статистики будет доступен через \n' + GlobalInfo.sec_to_str(dt_st_diff))
+                return
+            munchkin.stat_datetime = dt_now + timedelta(0, 5)
+
         stat_str = 'Общая статистика:'
         for munch_id in GlobalInfo.c_munchkins_by_ids:
             other_munchkin = GlobalInfo.c_munchkins_by_ids[munch_id]
@@ -457,16 +493,13 @@ def tg_default(update, context):
                 update.message.reply_text(Result.ResultEmojies[1] + 'Божественное вмешательство уже было использовано')
             else:
                 GlobalInfo.is_divine_intervention_passed = True
-                dt_now = datetime.now()
                 output_str = Emojies.Important + 'Божественное вмешательство применил манчкин ' + munchkin.name + '\nУровень получили: '
                 for munch_id in GlobalInfo.c_munchkins_by_ids:
                     tmp_munch = GlobalInfo.c_munchkins_by_ids[munch_id]
                     if tmp_munch.current_class==RaceClassType.Cleric:
                         tmp_munch.current_lvl = tmp_munch.current_lvl + 1
                         output_str = output_str + tmp_munch.name + ', '
-                for player_id in GlobalInfo.registered_players:
-                    context.bot.send_message(player_id, output_str)
-                context.bot.send_message('228485598', output_str + dt_now.strftime("%m/%d/%Y, %H:%M:%S"))
+                tg_send_all(update, context, output_str)
                 if GlobalInfo.autobackup_enabled:
                     tg_backup_base(context, '661294614')
             return
@@ -545,6 +578,7 @@ def main():
     dp.add_handler(CommandHandler(TgCommands.Backup, tg_backup))
 
     dp.add_handler(CommandHandler(TgCommands.Money, tg_money))
+    dp.add_handler(CommandHandler(TgCommands.Tax, tg_tax))
     dp.add_handler(CommandHandler(TgCommands.Hand, tg_hand))
     dp.add_handler(CommandHandler(TgCommands.Refresh, tg_refresh))
     dp.add_handler(CommandHandler(TgCommands.Chicken, tg_chicken))
