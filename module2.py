@@ -65,14 +65,6 @@ class RaceClassType:
         9: Emojies.Dwarf,
         }
 
-    #@staticmethod
-    #def is_class(type):
-    #    return type==RaceClassType.NoClass or type==RaceClassType.Warrior or type==RaceClassType.Wizard or type==RaceClassType.Thief or type==RaceClassType.Cleric
-
-    #@staticmethod
-    #def is_race(type):
-    #    return type==RaceClassType.Human or type==RaceClassType.Elf or type==RaceClassType.Halfling or type==RaceClassType.Dwarf
-    
 class TreasureType:
     Headgear = 1
     Armor = 2
@@ -142,12 +134,14 @@ class Munchkin:
         self.name = name
         self.current_lvl = 1
         self.current_money = 0
+        self.one_shot_bonus = 0
         self.current_race = RaceClassType.Human
         self.current_class = RaceClassType.NoClass
         self.used_trs = []
         self.used_levels_codes = []
         self.used_curse_codes = []
         self.used_money_codes = []
+        self.used_one_shot_codes = []
         self.killed_monsters = []
         self.use_three_hands = False
         self.race_change_datetime = None
@@ -156,8 +150,6 @@ class Munchkin:
         self.shield_datetime = None
         self.chicken_datetime = None
         self.stat_datetime = None
-        self.used_one_shot_codes = []
-        self.one_shot_bonus = 0
         self.applied_curses = []
 
     def get_total_power(self):

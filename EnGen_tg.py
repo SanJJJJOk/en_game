@@ -59,6 +59,8 @@ class TgCommands:
     Shield = 'shield'
     Chicken = 'chicken'
     Refresh = 'refresh'
+    ClearRace = 'crc'
+    ClearClass = 'ccls'
     Money = 'money'
     Tax = 'tax'
     Hand = 'hand'
@@ -191,6 +193,46 @@ def tg_admin_default_command(update, context, command, count):
         update.message.reply_text('args')
         return []
     return input
+
+def tg_clear_race(update, context):
+    try:
+        input = tg_admin_default_command(update, context, TgCommands.ClearRace, 1)
+        if len(input)==0:
+            return
+        dt_now = datetime.now()
+        munch_id = int(input[0])
+        munchkin = GlobalInfo.c_munchkins_by_ids[munch_id]
+        munchkin.current_race = RaceClassType.Human
+        munchkin.used_trs = []
+        munchkin.race_change_datetime = dt_now + timedelta(0,10)
+        update.message.reply_text('+++clear race')
+        tg_send_to_team(update, context, munchkin, Emojies.Important + 'Ваша раса сброшена')
+        if GlobalInfo.autobackup_enabled:
+            tg_backup_base(context, '661294614')
+    except Exception as e:
+        err_msg = "неизвестная ошибка: {0}".format(str(e))
+        update.message.reply_text(err_msg)
+        context.bot.send_message('228485598', err_msg + 'id:' + update.message.chat.id)
+
+def tg_clear_class(update, context):
+    try:
+        input = tg_admin_default_command(update, context, TgCommands.ClearClass, 1)
+        if len(input)==0:
+            return
+        dt_now = datetime.now()
+        munch_id = int(input[0])
+        munchkin = GlobalInfo.c_munchkins_by_ids[munch_id]
+        munchkin.current_class = RaceClassType.NoClass
+        munchkin.used_trs = []
+        munchkin.class_change_datetime = dt_now + timedelta(0,10)
+        update.message.reply_text('+++clear class')
+        tg_send_to_team(update, context, munchkin, Emojies.Important + 'Ваш класс сброшен')
+        if GlobalInfo.autobackup_enabled:
+            tg_backup_base(context, '661294614')
+    except Exception as e:
+        err_msg = "неизвестная ошибка: {0}".format(str(e))
+        update.message.reply_text(err_msg)
+        context.bot.send_message('228485598', err_msg + 'id:' + update.message.chat.id)
 
 def tg_refresh(update, context):
     try:
@@ -581,6 +623,8 @@ def main():
     dp.add_handler(CommandHandler(TgCommands.Tax, tg_tax))
     dp.add_handler(CommandHandler(TgCommands.Hand, tg_hand))
     dp.add_handler(CommandHandler(TgCommands.Refresh, tg_refresh))
+    dp.add_handler(CommandHandler(TgCommands.ClearRace, tg_clear_race))
+    dp.add_handler(CommandHandler(TgCommands.ClearClass, tg_clear_class))
     dp.add_handler(CommandHandler(TgCommands.Chicken, tg_chicken))
     dp.add_handler(CommandHandler(TgCommands.Shield, tg_shield))
     dp.add_handler(CommandHandler(TgCommands.Curse, tg_curse))
