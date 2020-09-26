@@ -143,7 +143,7 @@ def tg_log(update, context):
         file.close()
         file_to_send = open('1234.json','rb')
         context.bot.send_document('228485598', file_to_send)
-        file.close()
+        file_to_send.close()
     except Exception as e:
         err_msg = "неизвестная ошибка: {0}".format(str(e))
         update.message.reply_text(err_msg)
