@@ -223,8 +223,9 @@ def tg_run(update, context):
     try:
         while Is_monitoring_active:
             new_items = update_data()
+            reply_strs=[]
             for i in new_items:
-                reply_str = reply_str + '\n'
+                reply_str = ''
                 if i.e_bonus and i.e_score==1:
                     reply_str = reply_str + Emjs.Point
                 else:
@@ -232,13 +233,15 @@ def tg_run(update, context):
                         reply_str = reply_str + Emjs.Bonus
                     else:
                         reply_str = reply_str + Emjs.Penalty
-                    reply_str = reply_str + '(' + i.e_score + 's)'
+                    reply_str = reply_str + '(' + str(i.e_score) + 's)'
                 reply_str = reply_str + ' ' + i.e_team + ' at ' + str(i.e_dtime) + ' by ' + i.e_user
-                team_items = [ii for ii in Output_arr if ii.e_team==i.e_team and ii.e_lvl==i.e_lvl]
+                team_items = [Output_arr[ii] for ii in Output_arr if Output_arr[ii].e_team==i.e_team and Output_arr[ii].e_lvl==i.e_lvl]
                 info = get_action_info(team_items)
                 reply_str = reply_str + '(' + info_to_str(info) + ')'
-            if not reply_str=='':
-                print_long(update, context, reply_str)
+                reply_strs.append(reply_str)
+            if len(reply_strs)>0:
+                for reply_str in reply_strs:
+                    print_long(update, context, reply_str)
             time.sleep(60)
         update.message.reply_text("i'm off")
     except Exception as e:
