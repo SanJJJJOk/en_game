@@ -42,161 +42,180 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 
 logger = logging.getLogger(__name__)
 
+class ETypes:
+    NoType = 'none'
+    Egg = 'egg'
+    Task = 'task'
+    Hint = 'hint'
+
 class TgCommands:
     Go = 'go'
     Stop = 'stop'
     Game = 'game'
-    LvlStat = 'lvlstat'
+    TeamStat = 'tstat'
+    UserStat = 'ustat'
+    UserStat = 'ustat'
     Points = 'points'
+    Backup = 'backup'
 
 class Emjs:
+    Bonus = '\u2705'
+    Penalty = '\u274c'
+    Point = '\ud83d\udccd'
+    Egg = '\ud83e\udd5a'
+    Task = '\ud83d\udca1'
+    Hint = '\u2757\ufe0f'
     First = '\ud83e\udd47'
     Second = '\ud83e\udd48'
     Third = '\ud83e\udd49'
     Other = '\ud83d\udd35'
-    Bonus = '\u2705'
-    Penalty = '\u274c'
-    Point = '\ud83d\udccd'
+
+class ActionItemsSet:
+    def __init__(self):
+        self.score_sum = 0
+        self.items = []
+
+    def add(self, item):
+        self.items.append(item)
+        self.score_sum = self.score_sum + item.e_score
+
+class ActionInfo:
+    def __init__(self):
+        self.task_count = 0
+        self.hint_count = 0
+        self.egg_count = 0
 
 class ActionItem:
-    def __init__(self, e_time, e_team, e_lvl, e_bonus, e_score, e_itemid, e_user):
-        self.e_time = e_time
+    def __init__(self, e_dtime, e_team, e_lvl, e_bonus, e_score, e_itemid, e_user, e_type, e_isgood):
+        self.e_dtime = e_dtime
         self.e_team = e_team
         self.e_lvl = e_lvl
         self.e_bonus = e_bonus
         self.e_score = e_score
         self.e_itemid = e_itemid
         self.e_user = e_user
+        self.e_type = e_type
+        self.e_isgood = e_isgood
 
 def tg_error(update, context):
     err_msg = "Callback: {0}".format(str(context.error))
     logger.warning('Update "%s" caused error "%s"', update, context.error)
     
-Holder = GlobalInfo()
 Is_monitoring_active = False
 Auto_update = True
 Output_arr = {}
 Domain = '72'
 Gameid = '70696'
-#Team1 = 'Win Team'
-#Team2 = 'полоскун'
 
-#def tg_set(update, context):
-#    global Is_monitoring_active, Teams, Domain, Gameid
-#    try:
-#        input_teams = update.message.text[len(TgCommands.Set)+2:].split(' ')
-        
-#        teams = []
-#        fp = request.urlopen("http://m."+Domain+".en.cx/GameStat.aspx?gid="+Gameid)
-#        mybytes = fp.read()
+#---------------------------------------base---------------------------------------------------------
 
-#        mystr = mybytes.decode("utf8")
-#        fp.close()
+def get_unique(arr) -> []:
+    return list(dict.fromkeys(arr))
 
-#        soup = BeautifulSoup(mystr, 'html.parser')
-#        regex_m = re.compile("^totalCell")
-#        find_text3 = soup.find_all("td", {'class': regex_m})
-    
-#        allteams = []
-#        for itemstat in find_text3:
-#            teamname = itemstat.find("a").get_text()
-#            if not teamname in allteams:
-#                allteams.append(teamname)
+def sec_to_str(val):
+    return str(round(val // 60)) + 'м' + str(round(val % 60)) + 'с'
 
-#        for inputteam in input_teams:
-#            for team in allteams:
-#                if inputteam in team and not team in teams:
-#                    teams.append(team)
+def get_action_info(items):
+    info = ActionInfo()
+    for item in items:
+        if item.e_type==ETypes.Task:
+            info.task_count = info.task_count + 1
+            continue
+        if item.e_type==ETypes.Hint:
+            info.hint_count = info.hint_count + 1
+            continue
+        if item.e_type==ETypes.Egg:
+            info.egg_count = info.egg_count + 1
+    return info
 
-#        Teams = teams
-#        update.message.reply_text('\n'.join(teams))
-#    except Exception as e:
-#        err_msg = "неизвестная ошибка: {0}".format(str(e))
-#        update.message.reply_text(err_msg)
+def info_to_str(info):
+    return Emjs.Task + ': ' + str(info.task_count) + ' ' + Emjs.Hint + ': ' + str(info.hint_count) + ' ' + Emjs.Egg + ': ' + str(info.egg_count)
 
-#def tg_auto_teams(update, context):
-#    global Is_monitoring_active, Teams, Domain, Gameid
-#    try:
-#        teams = []
-#        fp = request.urlopen("http://m."+Domain+".en.cx/GameStat.aspx?gid="+Gameid)
-#        mybytes = fp.read()
+def get_score_emjs_data(score_values):
+    output = {}
+    unique_values = get_unique(score_values)
+    if not 0 in unique_values:
+        unique_values.append(0)
+    unique_values.sort(reverse=True)
 
-#        mystr = mybytes.decode("utf8")
-#        fp.close()
+    if len(unique_values)<4:
+        for val in unique_values:
+            output[val] = '-'
+        return output
 
-#        soup = BeautifulSoup(mystr, 'html.parser')
-#        regex_m = re.compile("^totalCell")
-#        find_text3 = soup.find_all("td", {'class': regex_m})
-    
-#        #teamname = find_text3[1].find("a").get_text()
-#        #if not Team1 in teamname and not Team2 in teamname:
-#        #    teams.append(teamname)
-#        #teamname = find_text3[3].find("a").get_text()
-#        #if not Team1 in teamname and not Team2 in teamname:
-#        #    teams.append(teamname)
-#        #teamname = find_text3[5].find("a").get_text()
-#        #if not Team1 in teamname and not Team2 in teamname:
-#        #    teams.append(teamname)
-#        Teams = teams
-#        update.message.reply_text('\n'.join(teams))
-#    except Exception as e:
-#        err_msg = "неизвестная ошибка: {0}".format(str(e))
-#        update.message.reply_text(err_msg)
+    output[unique_values[0]] = Emjs.First
+    output[unique_values[1]] = Emjs.Second
+    output[unique_values[2]] = Emjs.Third
+    other_unique_values = unique_values[3:]
+    for val in other_unique_values:
+        output[val] = Emjs.Other
 
+    return output
 
+#---------------------------------------upd---------------------------------------------------------
 
-#---------------------------------------def---------------------------------------------------------
-
-def download_data():
+def update_data():
     global Is_monitoring_active, Auto_update, Output_arr, Domain, Gameid
     fp = request.urlopen("http://"+Domain+".en.cx/GameBonusPenaltyTime.aspx?gid="+Gameid)
     mybytes = fp.read()
-
     mystr = mybytes.decode("utf8")
     fp.close()
-
     soup = BeautifulSoup(mystr, 'html.parser')
-    regex_t = re.compile("^PlayersRepeater")
-    regex_zero = re.compile("([0-9]+)с")
-    find_text1 = soup.find_all('tr', {'id': regex_t})
+
+    bp_items = soup.find_all('tr', {'id': re.compile("^PlayersRepeater")})
 
     action_items = []
+    for i in bp_items:
+        bp_tag = i.find('a', {'id': re.compile("lnkBonus")})
+        if bp_tag.get_text()=='':
+            bp_tag = i.find('a', {'id': re.compile("lnkPenalty")})
 
-    #TODO:
+        bp_link = bp_tag['href']
+        stind = bp_link.index('correct=') + 8
+        enind = bp_link.index('&gid=')
+        e_itemid = bp_link[stind:enind]
 
-    
-            #fp = request.urlopen("http://m."+Domain+".en.cx/GameBonusPenaltyTime.aspx?gid="+Gameid)
-            #mybytes = fp.read()
+        if e_itemid in Output_arr:
+            continue
 
-            #mystr = mybytes.decode("utf8")
-            #fp.close()
+        e_dtime = i.find('td').get_text()
+        e_team = i.find('a', {'id': re.compile("lnkPlayerInfo")}).get_text()
+        e_lvl = int(i.find('td', {'id': re.compile("tdLevelColumnValue")}).get_text())
 
-            #soup = BeautifulSoup(mystr, 'html.parser')
-            #regex_t = re.compile("^PlayersRepeater")
-            #regex_zero = re.compile("([0-9]+)с")
-            #find_text1 = soup.find_all('tr', {'id': regex_t})
+        bp_tag_txt = bp_tag.get_text()
+        e_bonus = bp_tag_txt.startswith('б')
+            
+        input_bp = bp_tag_txt.strip().split(' ')
+        input_bp_correct = [x for x in input_bp if not(x is None or x == '')]
+        scoreval = int(input_bp_correct[1])
+        if input_bp_correct[2].startswith('м'):
+            scoreval = scoreval * 60
+        e_score = scoreval
+        if not e_bonus:
+            e_score = -e_score
 
-            #reply_str = ''
-            #zero_str = ''
-            #for i in find_text1:
-            #    listt = [ ii for ii in i.children if ii.name=='td' ]
-            #    st_team = listt[1].get_text()
-            #    st_time = listt[0].get_text()
-            #    st_key = st_team + st_time
-            #    if not st_key in Output_arr:
-            #        if st_team in Teams:
-            #            st_text = listt[-1].get_text()
+        e_type = ETypes.NoType
+        if e_score==1:
+            e_type = ETypes.Egg
+        else:
+            if e_score>0:
+                e_type = ETypes.Task
+            else:
+                e_type = ETypes.Hint
+
+        fp2 = request.urlopen("http://72.en.cx/" + bp_link)
+        mybytes2 = fp2.read()
+        mystr2 = mybytes2.decode("utf8")
+        fp2.close()
+        soup2 = BeautifulSoup(mystr2, 'html.parser')
+
+        e_user = soup2.find('a', {'id': re.compile("lnkCorrectInfoUserInfo")}).get_text()
+
+        action_item = ActionItem(e_dtime, e_team, e_lvl, e_bonus, e_score, e_itemid, e_user, e_type, True)
+        action_items.append(action_item)
+        Output_arr[e_itemid] = action_item
 
     return action_items
-
-def update_data(action_items):
-    global Is_monitoring_active, Auto_update, Output_arr, Domain, Gameid
-    new_items_ids = []
-    for item in action_items:
-        if not item.e_itemid in Output_arr:
-            Output_arr[item.e_itemid] = item
-            new_items_ids.append(item.e_itemid)
-    return new_items_ids
 
 #-------------------------------------tg-run-------------------------------------------------------
 
@@ -204,20 +223,21 @@ def tg_run(update, context):
     global Is_monitoring_active, Auto_update, Output_arr, Domain, Gameid
     try:
         while Is_monitoring_active:
-            action_items = download_data()
-            new_items_ids = update_data(action_items)
-            for id in new_items_ids:
-                item = Output_arr[id]
+            new_items = update_data()
+            for i in new_items:
                 reply_str = reply_str + '\n'
-                if item.e_bonus and item.e_score==1:
+                if i.e_bonus and i.e_score==1:
                     reply_str = reply_str + Emjs.Point
                 else:
-                    if item.e_bonus:
+                    if i.e_bonus:
                         reply_str = reply_str + Emjs.Bonus
                     else:
                         reply_str = reply_str + Emjs.Penalty
-                    reply_str = reply_str + '(' + item.e_score + 's)\n'
-                reply_str = reply_str + item.e_team + ' at ' + str(item.e_time) + ' by ' + item.e_user
+                    reply_str = reply_str + '(' + i.e_score + 's)'
+                reply_str = reply_str + ' ' + i.e_team + ' at ' + str(i.e_dtime) + ' by ' + i.e_user
+                team_items = [ii for ii in Output_arr if ii.e_team==i.e_team and ii.e_lvl==i.e_lvl]
+                info = get_action_info(team_items)
+                reply_str = reply_str + '(' + info_to_str(info) + ')'
             if not reply_str=='':
                 print_long(update, context, reply_str)
             time.sleep(60)
@@ -227,28 +247,58 @@ def tg_run(update, context):
         update.message.reply_text(err_msg)
         context.bot.send_message('228485598', err_msg + 'id:' + str(update.message.chat.id))
         
+#--------------------------------------stat--------------------------------------------------------
+
+def base_stat_score(spec_lvl, is_by_team, is_only_eggs):
+    global Is_monitoring_active, Auto_update, Output_arr, Domain, Gameid
+    if Auto_update:
+        new_items = update_data()
+    output = {}
+    for key in Output_arr:
+        item = Output_arr[key]
+        if not item.e_isgood:
+            continue
+        if spec_lvl!=0 and item.e_lvl!=spec_lvl:
+            continue
+        if is_only_eggs and item.e_type!=ETypes.Egg:
+            continue
+        item_key = item.e_team if is_by_team else item.e_user
+        if not item_key in output:
+            output[item_key] = ActionItemsSet()
+        output[item_key].add(item)
+    output_sorted = list(output.items())
+    output_sorted.sort(key=lambda i: i[1].score_sum, reverse=True)
+
+    reply_str=''
+    score_emjs_data = get_score_emjs_data([i[1].score_sum for i in output_sorted])
+    for i in output_sorted:
+        info = get_action_info(i.items)
+        reply_str = reply_str + score_emjs_data[i[1].score_sum] + '-' + i[0] + ' (' + sec_to_str(i[1].score_sum) + '): ' + info_to_str(info)
+    return reply_str
+
 #---------------------------------------tg---------------------------------------------------------
 
 def tg_points_stat(update, context):
     global Is_monitoring_active, Auto_update, Output_arr, Domain, Gameid
     try:
-        input_int = int(update.message.text[len(TgCommands.Points)+2:])
-        if Auto_update:
-            action_items = download_data()
-            new_items_ids = update_data(action_items)
-        items = [Output_arr[key] for key in Output_arr]
-        output = {}
-        for item in items:
-            if item.e_user in output:
-                output[item.e_user] = output[item.e_user] + item.e_score
-            else:
-                output[item.e_user] = item.e_score
-
-        output_sorted = list(output.items())
-        output_sorted.sort(key=lambda i: i[1], reverse=True)
-        reply_str=''
-        for i in output_sorted:
-            reply_str = reply_str + i[0] + '-' + i[1]
+        input_int = 0
+        if len(update.message.text)>len(TgCommands.Points)+3:
+            input_int = int(update.message.text[len(TgCommands.Points)+2:])
+        reply_str = base_stat_score(input_int, False, True)
+        if not reply_str=='':
+            print_long(update, context, reply_str)
+    except Exception as e:
+        err_msg = "неизвестная ошибка update: {0}".format(str(e))
+        update.message.reply_text(err_msg)
+        context.bot.send_message('228485598', err_msg + 'id:' + str(update.message.chat.id))
+        
+def tg_team_stat(update, context):
+    global Is_monitoring_active, Auto_update, Output_arr, Domain, Gameid
+    try:
+        input_int = 0
+        if len(update.message.text)>len(TgCommands.TeamStat)+3:
+            input_int = int(update.message.text[len(TgCommands.TeamStat)+2:])
+        reply_str = base_stat_score(input_int, True, False)
         if not reply_str=='':
             print_long(update, context, reply_str)
     except Exception as e:
@@ -256,25 +306,13 @@ def tg_points_stat(update, context):
         update.message.reply_text(err_msg)
         context.bot.send_message('228485598', err_msg + 'id:' + str(update.message.chat.id))
 
-def tg_lvl_stat(update, context):
+def tg_user_stat(update, context):
     global Is_monitoring_active, Auto_update, Output_arr, Domain, Gameid
     try:
-        input_int = int(update.message.text[len(TgCommands.LvlStat)+2:])
-        if Auto_update:
-            action_items = download_data()
-            new_items_ids = update_data(action_items)
-        items = [Output_arr[key] for key in Output_arr if Output_arr[key].e_lvl==input_int]
-        output = {}
-        for item in items:
-            if item.e_team in output:
-                output[item.e_team] = output[item.e_team] + item.e_score
-            else:
-                output[item.e_team] = item.e_score
-        output_sorted = list(output.items())
-        output_sorted.sort(key=lambda i: i[1], reverse=True)
-        reply_str=''
-        for i in output_sorted:
-            reply_str = reply_str + i[0] + '-' + i[1]
+        input_int = 0
+        if len(update.message.text)>len(TgCommands.UserStat)+3:
+            input_int = int(update.message.text[len(TgCommands.UserStat)+2:])
+        reply_str = base_stat_score(input_int, False, False)
         if not reply_str=='':
             print_long(update, context, reply_str)
     except Exception as e:
@@ -285,9 +323,10 @@ def tg_lvl_stat(update, context):
 def tg_go(update, context):
     global Is_monitoring_active
     try:
+        if str(update.message.from_user.id)!='228485598':
+            update.message.reply_text('ты кто?')
+            return
         Is_monitoring_active = True
-        action_items = download_data()
-        new_items_ids = update_data(action_items)
         x = Thread(target=tg_run, args=(update,context,))
         x.start()
         update.message.reply_text('started')
@@ -299,20 +338,11 @@ def tg_go(update, context):
 def tg_stop(update, context):
     global Is_monitoring_active
     try:
+        if str(update.message.from_user.id)!='228485598':
+            update.message.reply_text('ты кто?')
+            return
         Is_monitoring_active = False
         update.message.reply_text('stopped')
-    except Exception as e:
-        err_msg = "неизвестная ошибка: {0}".format(str(e))
-        update.message.reply_text(err_msg)
-        context.bot.send_message('228485598', err_msg + 'id:' + str(update.message.chat.id))
-        
-def tg_game(update, context):
-    global Domain, Gameid
-    try:
-        input = update.message.text[len(TgCommands.Game)+2:].split(' ')
-        Domain = input[0]
-        Gameid = input[1]
-        update.message.reply_text('збс,'+Domain+Gameid)
     except Exception as e:
         err_msg = "неизвестная ошибка: {0}".format(str(e))
         update.message.reply_text(err_msg)
@@ -330,19 +360,102 @@ def print_long(update, context, input_text):
     else:
         update.message.reply_text(input_text)
         
+#---------------------------------import/export----------------------------------------------------
+
+def restore(input_data):
+    global Is_monitoring_active, Auto_update, Output_arr, Domain, Gameid
+    Output_arr = {}
+    input_items = input_data['items']
+    for i in input_items:
+        e_dtime = datetime.strptime(i['e_dtime'], "%m/%d/%Y, %H:%M:%S")
+        e_team = i['e_team']
+        e_lvl = i['e_lvl']
+        e_bonus = i['e_bonus']
+        e_score = i['e_score']
+        e_itemid = i['e_itemid']
+        e_user = i['e_user']
+        e_type = i['e_type']
+        e_isgood = i['e_isgood']
+        item = ActionItem(e_dtime, e_team, e_lvl, e_bonus, e_score, e_itemid, e_user, e_type, e_isgood)
+        Output_arr[e_itemid] = item
+    return None
+    
+def tg_backup(update, context):
+    global Is_monitoring_active, Auto_update, Output_arr, Domain, Gameid
+    try:
+        output_dict = {
+            'items': []
+            }
+        items = output_dict['items']
+        for key in Output_arr:
+            i = Output_arr[key]
+            items.append({
+                'e_dtime': i.e_dtime.strftime("%m/%d/%Y, %H:%M:%S"),
+                'e_team': i.e_team,
+                'e_lvl': i.e_lvl,
+                'e_bonus': i.e_bonus,
+                'e_score': i.e_score,
+                'e_itemid': i.e_itemid,
+                'e_user': i.e_user,
+                'e_type': i.e_type,
+                'e_isgood': i.e_isgood,
+                })
+        m_str = json.dumps(output_dict, ensure_ascii=False, indent=2)
+        file = open('123.json', 'w', encoding='utf-8')
+        file.truncate(0)
+        file.write(m_str)
+        file.close()
+
+        file = open('123.json','rb')
+        context.bot.send_document(id, file)
+        file.close()
+    except Exception as e:
+        err_msg = "неизвестная ошибка: {0}".format(str(e))
+        update.message.reply_text(err_msg)
+        context.bot.send_message('228485598', err_msg + 'id:' + str(update.message.chat.id))
+    
+def tg_document(update, context):
+    global Is_monitoring_active, Auto_update, Output_arr, Domain, Gameid
+    try:
+        if str(update.message.chat.id)!='228485598':
+            update.message.reply_text('ты кто?')
+            return
+        file = update.message.document.get_file()
+        input_filedata = file.download_as_bytearray()
+        json_data = json.loads(input_filedata)
+        output_msg = restore(json_data)
+        if output_msg is None:
+            update.message.reply_text('збс')
+        else:
+            update.message.reply_text(output_msg)
+    except Exception as e:
+        err_msg = "неизвестная ошибка: {0}".format(str(e))
+        update.message.reply_text(err_msg)
+        context.bot.send_message('228485598', err_msg + 'id:' + str(update.message.chat.id))
+
 #--------------------------------------main--------------------------------------------------------
 
 def main():
+    #Output_arr['141234'] = ActionItem(datetime.now(), 'робот', 3, True, 12, '141234', 'qwe', ETypes.Egg, True)
+    #tg_backup(None, None)
+    file = open('data.json','r',encoding='utf-8')
+    input_filedata = file.read()
+    file.close()
+    bytesdata = input_filedata.encode('utf-8')
+    json_data = json.loads(bytesdata)
+    output_msg = restore(json_data)
+
     #updater = Updater("408100374:AAEhMleUbdVH_G1xmKeCAy8MlNfyBwB9AOo", use_context=True)
     updater = Updater("979411435:AAEHIVLx8L8CxmjIHtitaH4L1GeV_OCRJ7M", use_context=True)
     dp = updater.dispatcher
     
     dp.add_handler(CommandHandler(TgCommands.Go, tg_go))
     dp.add_handler(CommandHandler(TgCommands.Stop, tg_stop))
-    dp.add_handler(CommandHandler(TgCommands.Game, tg_game))
-    dp.add_handler(CommandHandler(TgCommands.LvlStat, tg_lvl_stat))
+    dp.add_handler(CommandHandler(TgCommands.TeamStat, tg_team_stat))
+    dp.add_handler(CommandHandler(TgCommands.UserStat, tg_user_stat))
     dp.add_handler(CommandHandler(TgCommands.Points, tg_points_stat))
-    #dp.add_handler(MessageHandler(Filters.text, tg_p_default))
+    dp.add_handler(CommandHandler(TgCommands.Backup, tg_backup))
+    dp.add_handler(MessageHandler(Filters.document, tg_document))
     
     dp.add_error_handler(tg_error)
 
