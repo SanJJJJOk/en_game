@@ -221,27 +221,37 @@ def update_data():
 def tg_run(update, context):
     global Is_monitoring_active, Auto_update, Output_arr, Domain, Gameid
     try:
+        errors_count = 0
         while Is_monitoring_active:
-            new_items = update_data()
-            reply_strs=[]
-            for i in new_items:
-                reply_str = ''
-                if i.e_bonus and i.e_score==1:
-                    reply_str = reply_str + Emjs.Point
-                else:
-                    if i.e_bonus:
-                        reply_str = reply_str + Emjs.Bonus
+            try:
+                new_items = update_data()
+                reply_strs=[]
+                for i in new_items:
+                    reply_str = ''
+                    if i.e_bonus and i.e_score==1:
+                        reply_str = reply_str + Emjs.Point
                     else:
-                        reply_str = reply_str + Emjs.Penalty
-                    reply_str = reply_str + '(' + str(i.e_score) + 's)'
-                reply_str = reply_str + ' ' + i.e_team + ' at ' + str(i.e_dtime) + ' by ' + i.e_user
-                team_items = [Output_arr[ii] for ii in Output_arr if Output_arr[ii].e_team==i.e_team and Output_arr[ii].e_lvl==i.e_lvl]
-                info = get_action_info(team_items)
-                reply_str = reply_str + '(' + info_to_str(info) + ')'
-                reply_strs.append(reply_str)
-            if len(reply_strs)>0:
-                for reply_str in reply_strs:
-                    print_long(update, context, reply_str)
+                        if i.e_bonus:
+                            reply_str = reply_str + Emjs.Bonus
+                        else:
+                            reply_str = reply_str + Emjs.Penalty
+                        reply_str = reply_str + '(' + str(i.e_score) + 's)'
+                    reply_str = reply_str + ' ' + i.e_team + ' at ' + str(i.e_dtime) + ' by ' + i.e_user
+                    team_items = [Output_arr[ii] for ii in Output_arr if Output_arr[ii].e_team==i.e_team and Output_arr[ii].e_lvl==i.e_lvl]
+                    info = get_action_info(team_items)
+                    reply_str = reply_str + '(' + info_to_str(info) + ')'
+                    reply_strs.append(reply_str)
+                if len(reply_strs)>0:
+                    for reply_str in reply_strs:
+                        print_long(update, context, reply_str)
+                    
+            except Exception as e:
+                err_msg = "неизвестная ошибка update: {0}".format(str(e))
+                update.message.reply_text(err_msg)
+                context.bot.send_message('228485598', err_msg + 'id:' + str(update.message.chat.id))
+                errors_count = errors_count + 1
+            if errors_count>100:
+                break
             time.sleep(60)
         update.message.reply_text("i'm off")
     except Exception as e:

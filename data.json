@@ -5642,6 +5642,83 @@
       "e_user": "Yurchik_ogurchik",
       "e_type": "task",
       "e_isgood": true
+    },
+    {
+      "e_dtime": "27.11.2020 20:57:38",
+      "e_team": "ДИВ",
+      "e_lvl": 4,
+      "e_bonus": true,
+      "e_score": 60,
+      "e_itemid": "19273643",
+      "e_user": "Gaff",
+      "e_type": "task",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "27.11.2020 23:38:03",
+      "e_team": "NaId",
+      "e_lvl": 4,
+      "e_bonus": true,
+      "e_score": 60,
+      "e_itemid": "19274629",
+      "e_user": "Yuzhnaya",
+      "e_type": "task",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "27.11.2020 23:53:51",
+      "e_team": "ДИВ",
+      "e_lvl": 4,
+      "e_bonus": true,
+      "e_score": 60,
+      "e_itemid": "19275402",
+      "e_user": "Gaff",
+      "e_type": "task",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "28.11.2020 0:03:51",
+      "e_team": "ДИВ",
+      "e_lvl": 4,
+      "e_bonus": true,
+      "e_score": 60,
+      "e_itemid": "19275895",
+      "e_user": "xobbit",
+      "e_type": "task",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "28.11.2020 0:38:29",
+      "e_team": "Нормальное название команды",
+      "e_lvl": 4,
+      "e_bonus": false,
+      "e_score": -30,
+      "e_itemid": "19276812",
+      "e_user": "lena_776",
+      "e_type": "hint",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "28.11.2020 0:51:08",
+      "e_team": "Нормальное название команды",
+      "e_lvl": 4,
+      "e_bonus": true,
+      "e_score": 60,
+      "e_itemid": "19277036",
+      "e_user": "Alenaardasheva",
+      "e_type": "task",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "28.11.2020 1:02:46",
+      "e_team": "ДИВ",
+      "e_lvl": 4,
+      "e_bonus": true,
+      "e_score": 1,
+      "e_itemid": "19277131",
+      "e_user": "Flashman",
+      "e_type": "egg",
+      "e_isgood": true
     }
   ]
 }
