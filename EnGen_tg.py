@@ -19,9 +19,6 @@ bot.
 
 import logging
 import os.path
-from module2 import *
-from TgTest import *
-from gis import *
 from urllib import request, parse
 from bs4 import *
 from urllib.parse import quote
@@ -53,7 +50,6 @@ class TgCommands:
     Stop = 'stop'
     Game = 'game'
     TeamStat = 'tstat'
-    UserStat = 'ustat'
     UserStat = 'ustat'
     Points = 'points'
     Backup = 'backup'
@@ -209,7 +205,10 @@ def update_data():
         fp2.close()
         soup2 = BeautifulSoup(mystr2, 'html.parser')
 
-        e_user = soup2.find('a', {'id': re.compile("lnkCorrectInfoUserInfo")}).get_text()
+        user_tag = soup2.find('a', {'id': re.compile("lnkCorrectInfoUserInfo")})
+        e_user = None
+        if not user_tag is None:
+            e_user = user_tag.get_text()
 
         action_item = ActionItem(e_dtime, e_team, e_lvl, e_bonus, e_score, e_itemid, e_user, e_type, True)
         action_items.append(action_item)
@@ -272,8 +271,8 @@ def base_stat_score(spec_lvl, is_by_team, is_only_eggs):
     reply_str=''
     score_emjs_data = get_score_emjs_data([i[1].score_sum for i in output_sorted])
     for i in output_sorted:
-        info = get_action_info(i.items)
-        reply_str = reply_str + score_emjs_data[i[1].score_sum] + '-' + i[0] + ' (' + sec_to_str(i[1].score_sum) + '): ' + info_to_str(info)
+        info = get_action_info(i[1].items)
+        reply_str = reply_str + score_emjs_data[i[1].score_sum] + '-' + i[0] + ' (' + sec_to_str(i[1].score_sum) + '): ' + info_to_str(info) + '\n'
     return reply_str
 
 #---------------------------------------tg---------------------------------------------------------
@@ -282,7 +281,7 @@ def tg_points_stat(update, context):
     global Is_monitoring_active, Auto_update, Output_arr, Domain, Gameid
     try:
         input_int = 0
-        if len(update.message.text)>len(TgCommands.Points)+3:
+        if len(update.message.text)>len(TgCommands.Points)+2:
             input_int = int(update.message.text[len(TgCommands.Points)+2:])
         reply_str = base_stat_score(input_int, False, True)
         if not reply_str=='':
@@ -296,7 +295,7 @@ def tg_team_stat(update, context):
     global Is_monitoring_active, Auto_update, Output_arr, Domain, Gameid
     try:
         input_int = 0
-        if len(update.message.text)>len(TgCommands.TeamStat)+3:
+        if len(update.message.text)>len(TgCommands.TeamStat)+2:
             input_int = int(update.message.text[len(TgCommands.TeamStat)+2:])
         reply_str = base_stat_score(input_int, True, False)
         if not reply_str=='':
@@ -310,7 +309,7 @@ def tg_user_stat(update, context):
     global Is_monitoring_active, Auto_update, Output_arr, Domain, Gameid
     try:
         input_int = 0
-        if len(update.message.text)>len(TgCommands.UserStat)+3:
+        if len(update.message.text)>len(TgCommands.UserStat)+2:
             input_int = int(update.message.text[len(TgCommands.UserStat)+2:])
         reply_str = base_stat_score(input_int, False, False)
         if not reply_str=='':
@@ -367,7 +366,7 @@ def restore(input_data):
     Output_arr = {}
     input_items = input_data['items']
     for i in input_items:
-        e_dtime = datetime.strptime(i['e_dtime'], "%m/%d/%Y, %H:%M:%S")
+        e_dtime = i['e_dtime']
         e_team = i['e_team']
         e_lvl = i['e_lvl']
         e_bonus = i['e_bonus']
@@ -390,7 +389,7 @@ def tg_backup(update, context):
         for key in Output_arr:
             i = Output_arr[key]
             items.append({
-                'e_dtime': i.e_dtime.strftime("%m/%d/%Y, %H:%M:%S"),
+                'e_dtime': i.e_dtime,
                 'e_team': i.e_team,
                 'e_lvl': i.e_lvl,
                 'e_bonus': i.e_bonus,
@@ -407,7 +406,7 @@ def tg_backup(update, context):
         file.close()
 
         file = open('123.json','rb')
-        context.bot.send_document(id, file)
+        context.bot.send_document('228485598', file)
         file.close()
     except Exception as e:
         err_msg = "неизвестная ошибка: {0}".format(str(e))

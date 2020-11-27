@@ -5642,6 +5642,17 @@
       "e_user": "Yurchik_ogurchik",
       "e_type": "task",
       "e_isgood": true
+    },
+    {
+      "e_dtime": "27.11.2020 20:57:38",
+      "e_team": "ДИВ",
+      "e_lvl": 4,
+      "e_bonus": true,
+      "e_score": 60,
+      "e_itemid": "19273643",
+      "e_user": "Gaff",
+      "e_type": "task",
+      "e_isgood": true
     }
   ]
 }
