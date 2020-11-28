@@ -51,7 +51,8 @@ class TgCommands:
     Game = 'game'
     TeamStat = 'tstat'
     UserStat = 'ustat'
-    Points = 'points'
+    TeamEggs = 'teggs'
+    UserEggs = 'ueggs'
     Backup = 'backup'
 
 class Emjs:
@@ -243,8 +244,7 @@ def tg_run(update, context):
                     reply_strs.append(reply_str)
                 if len(reply_strs)>0:
                     for reply_str in reply_strs:
-                        print_long(update, context, reply_str)
-                    
+                        print_long(update, context, '\n\n'.join(reply_strs))
             except Exception as e:
                 err_msg = "неизвестная ошибка update: {0}".format(str(e))
                 update.message.reply_text(err_msg)
@@ -288,49 +288,62 @@ def base_stat_score(spec_lvl, is_by_team, is_only_eggs):
         reply_str = reply_str + score_emjs_data[i[1].score_sum] + '-' + i[0] + ' (' + sec_to_str(i[1].score_sum) + '): ' + info_to_str(info) + '\n'
     return reply_str
 
-#---------------------------------------tg---------------------------------------------------------
+#-------------------------------------tgstat---------------------------------------------------------
 
-def tg_points_stat(update, context):
+def tg_base_stat_eggs(update, context, command, is_by_team, is_only_eggs):
     global Is_monitoring_active, Auto_update, Output_arr, Domain, Gameid
     try:
-        input_int = 0
-        if len(update.message.text)>len(TgCommands.Points)+2:
-            input_int = int(update.message.text[len(TgCommands.Points)+2:])
-        reply_str = base_stat_score(input_int, False, True)
+        spec_lvl = 0
+        if len(update.message.text)>len(command)+2:
+            spec_lvl = int(update.message.text[len(command)+2:])
+        if Auto_update:
+            new_items = update_data()
+        output = {}
+        for key in Output_arr:
+            item = Output_arr[key]
+            if not item.e_isgood:
+                continue
+            if spec_lvl!=0 and item.e_lvl!=spec_lvl:
+                continue
+            if is_only_eggs and item.e_type!=ETypes.Egg:
+                continue
+            item_key = item.e_team if is_by_team else item.e_user
+            if not item_key in output:
+                output[item_key] = ActionItemsSet()
+            output[item_key].add(item)
+        output_sorted = list(output.items())
+        output_sorted.sort(key=lambda i: i[1].score_sum, reverse=True)
+
+        score_emjs_data = get_score_emjs_data([i[1].score_sum for i in output_sorted])
+        
+        reply_str=''
+        for i in output_sorted:
+            info = get_action_info(i[1].items)
+            reply_str = reply_str + score_emjs_data[i[1].score_sum] + '-' + i[0] + ' (' + sec_to_str(i[1].score_sum) + '): ' + info_to_str(info) + '\n'
         if not reply_str=='':
             print_long(update, context, reply_str)
     except Exception as e:
         err_msg = "неизвестная ошибка update: {0}".format(str(e))
         update.message.reply_text(err_msg)
         context.bot.send_message('228485598', err_msg + 'id:' + str(update.message.chat.id))
+
+def tg_user_eggs(update, context):
+    global Is_monitoring_active, Auto_update, Output_arr, Domain, Gameid
+    tg_base_stat_eggs(update, context, TgCommands.UserEggs, False, True)
         
+def tg_team_eggs(update, context):
+    global Is_monitoring_active, Auto_update, Output_arr, Domain, Gameid
+    tg_base_stat_eggs(update, context, TgCommands.TeamEggs, True, True)
+
 def tg_team_stat(update, context):
     global Is_monitoring_active, Auto_update, Output_arr, Domain, Gameid
-    try:
-        input_int = 0
-        if len(update.message.text)>len(TgCommands.TeamStat)+2:
-            input_int = int(update.message.text[len(TgCommands.TeamStat)+2:])
-        reply_str = base_stat_score(input_int, True, False)
-        if not reply_str=='':
-            print_long(update, context, reply_str)
-    except Exception as e:
-        err_msg = "неизвестная ошибка update: {0}".format(str(e))
-        update.message.reply_text(err_msg)
-        context.bot.send_message('228485598', err_msg + 'id:' + str(update.message.chat.id))
+    tg_base_stat_eggs(update, context, TgCommands.TeamStat, True, False)
 
 def tg_user_stat(update, context):
     global Is_monitoring_active, Auto_update, Output_arr, Domain, Gameid
-    try:
-        input_int = 0
-        if len(update.message.text)>len(TgCommands.UserStat)+2:
-            input_int = int(update.message.text[len(TgCommands.UserStat)+2:])
-        reply_str = base_stat_score(input_int, False, False)
-        if not reply_str=='':
-            print_long(update, context, reply_str)
-    except Exception as e:
-        err_msg = "неизвестная ошибка update: {0}".format(str(e))
-        update.message.reply_text(err_msg)
-        context.bot.send_message('228485598', err_msg + 'id:' + str(update.message.chat.id))
+    tg_base_stat_eggs(update, context, TgCommands.UserStat, False, False)
+
+#------------------------------------tg: go/stop------------------------------------------------------
 
 def tg_go(update, context):
     global Is_monitoring_active
@@ -465,7 +478,8 @@ def main():
     dp.add_handler(CommandHandler(TgCommands.Stop, tg_stop))
     dp.add_handler(CommandHandler(TgCommands.TeamStat, tg_team_stat))
     dp.add_handler(CommandHandler(TgCommands.UserStat, tg_user_stat))
-    dp.add_handler(CommandHandler(TgCommands.Points, tg_points_stat))
+    dp.add_handler(CommandHandler(TgCommands.TeamEggs, tg_team_eggs))
+    dp.add_handler(CommandHandler(TgCommands.UserEggs, tg_user_eggs))
     dp.add_handler(CommandHandler(TgCommands.Backup, tg_backup))
     dp.add_handler(MessageHandler(Filters.document, tg_document))
     
