@@ -242,7 +242,7 @@ def tg_run(update, context):
                     team_items = [Output_arr[ii] for ii in Output_arr if Output_arr[ii].e_team==i.e_team]
                     info_lvl = get_action_info(team_lvl_items)
                     info = get_action_info(team_items)
-                    reply_str = reply_str + '\n' + str(i.e_lvl) + 'lvl:' + info_to_str(info_lvl) + '\nall:' + info_to_str(info)
+                    reply_str = reply_str + '\n' + str(i.e_lvl) + 'lv:' + info_to_str(info_lvl) + '\nall:' + info_to_str(info)
                     reply_strs.append(reply_str)
                 if len(reply_strs)>0:
                     print_long(update, context, '\n\n'.join(reply_strs))
