@@ -243,8 +243,7 @@ def tg_run(update, context):
                     reply_str = reply_str + '(' + info_to_str(info) + ')'
                     reply_strs.append(reply_str)
                 if len(reply_strs)>0:
-                    for reply_str in reply_strs:
-                        print_long(update, context, '\n\n'.join(reply_strs))
+                    print_long(update, context, '\n\n'.join(reply_strs))
             except Exception as e:
                 err_msg = "неизвестная ошибка update: {0}".format(str(e))
                 update.message.reply_text(err_msg)
@@ -259,35 +258,6 @@ def tg_run(update, context):
         update.message.reply_text(err_msg)
         context.bot.send_message('228485598', err_msg + 'id:' + str(update.message.chat.id))
         
-#--------------------------------------stat--------------------------------------------------------
-
-def base_stat_score(spec_lvl, is_by_team, is_only_eggs):
-    global Is_monitoring_active, Auto_update, Output_arr, Domain, Gameid
-    if Auto_update:
-        new_items = update_data()
-    output = {}
-    for key in Output_arr:
-        item = Output_arr[key]
-        if not item.e_isgood:
-            continue
-        if spec_lvl!=0 and item.e_lvl!=spec_lvl:
-            continue
-        if is_only_eggs and item.e_type!=ETypes.Egg:
-            continue
-        item_key = item.e_team if is_by_team else item.e_user
-        if not item_key in output:
-            output[item_key] = ActionItemsSet()
-        output[item_key].add(item)
-    output_sorted = list(output.items())
-    output_sorted.sort(key=lambda i: i[1].score_sum, reverse=True)
-
-    reply_str=''
-    score_emjs_data = get_score_emjs_data([i[1].score_sum for i in output_sorted])
-    for i in output_sorted:
-        info = get_action_info(i[1].items)
-        reply_str = reply_str + score_emjs_data[i[1].score_sum] + '-' + i[0] + ' (' + sec_to_str(i[1].score_sum) + '): ' + info_to_str(info) + '\n'
-    return reply_str
-
 #-------------------------------------tgstat---------------------------------------------------------
 
 def tg_base_stat_eggs(update, context, command, is_by_team, is_only_eggs):
@@ -315,7 +285,7 @@ def tg_base_stat_eggs(update, context, command, is_by_team, is_only_eggs):
         output_sorted.sort(key=lambda i: i[1].score_sum, reverse=True)
 
         score_emjs_data = get_score_emjs_data([i[1].score_sum for i in output_sorted])
-        
+
         reply_str=''
         for i in output_sorted:
             info = get_action_info(i[1].items)
