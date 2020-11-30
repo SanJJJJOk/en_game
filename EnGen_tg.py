@@ -54,6 +54,8 @@ class TgCommands:
     TeamEggs = 'teggs'
     UserEggs = 'ueggs'
     Backup = 'backup'
+    ByTeamStat = 'btstat'
+    ByTeamEggs = 'bteggs'
 
 class Emjs:
     Bonus = '\u2705'
@@ -262,6 +264,55 @@ def tg_run(update, context):
         
 #-------------------------------------tgstat---------------------------------------------------------
 
+def tg_base_in_teams_stat_eggs(update, context, command, is_only_eggs):
+    global Is_monitoring_active, Auto_update, Output_arr, Domain, Gameid
+    try:
+        spec_lvl = 0
+        if len(update.message.text)>len(command)+2:
+            spec_lvl = int(update.message.text[len(command)+2:])
+        if Auto_update:
+            new_items = update_data()
+        output = {}
+        for key in Output_arr:
+            item = Output_arr[key]
+            if not item.e_isgood:
+                continue
+            if spec_lvl!=0 and item.e_lvl!=spec_lvl:
+                continue
+            if is_only_eggs and item.e_type!=ETypes.Egg:
+                continue
+            item_key = item.e_team
+            if not item_key in output:
+                output[item_key] = ActionItemsSet()
+            output[item_key].add(item)
+        output_sorted = list(output.items())
+        output_sorted.sort(key=lambda i: i[1].score_sum, reverse=True)
+
+        for team_item in output_sorted:
+            o2_output = []
+            team_str = team_item[0]
+            o2_items = team_item[1].items
+            for key in o2_items:
+                item = o2_items[key]
+                item_key = item.e_user
+                if not item_key in o2_output:
+                    o2_output[item_key] = ActionItemsSet()
+                o2_output[item_key].add(item)
+            o2_output_sorted = list(o2_output.items())
+            o2_output_sorted.sort(key=lambda i: i[1].score_sum, reverse=True)
+
+            score_emjs_data = get_score_emjs_data([i[1].score_sum for i in o2_output_sorted])
+
+            reply_str = team_item[0] + ':\n'
+            for i in o2_output_sorted:
+                info = get_action_info(i[1].items)
+                reply_str = reply_str + score_emjs_data[i[1].score_sum] + '-' + i[0] + ' (' + sec_to_str(i[1].score_sum) + '): ' + info_to_str(info) + '\n'
+            print_long(update, context, reply_str)
+    except Exception as e:
+        err_msg = "неизвестная ошибка update: {0}".format(str(e))
+        update.message.reply_text(err_msg)
+        context.bot.send_message('228485598', err_msg + 'id:' + str(update.message.chat.id))
+
 def tg_base_stat_eggs(update, context, command, is_by_team, is_only_eggs):
     global Is_monitoring_active, Auto_update, Output_arr, Domain, Gameid
     try:
@@ -314,6 +365,14 @@ def tg_team_stat(update, context):
 def tg_user_stat(update, context):
     global Is_monitoring_active, Auto_update, Output_arr, Domain, Gameid
     tg_base_stat_eggs(update, context, TgCommands.UserStat, False, False)
+    
+def tg_team_stat_intt(update, context):
+    global Is_monitoring_active, Auto_update, Output_arr, Domain, Gameid
+    tg_base_in_teams_stat_eggs(update, context, TgCommands.ByTeamStat, False)
+
+def tg_team_eggs_intt(update, context):
+    global Is_monitoring_active, Auto_update, Output_arr, Domain, Gameid
+    tg_base_in_teams_stat_eggs(update, context, TgCommands.ByTeamEggs, True)
 
 #------------------------------------tg: go/stop------------------------------------------------------
 
@@ -453,6 +512,8 @@ def main():
     dp.add_handler(CommandHandler(TgCommands.TeamEggs, tg_team_eggs))
     dp.add_handler(CommandHandler(TgCommands.UserEggs, tg_user_eggs))
     dp.add_handler(CommandHandler(TgCommands.Backup, tg_backup))
+    dp.add_handler(CommandHandler(TgCommands.BtTeamStat, tg_team_stat_intt))
+    dp.add_handler(CommandHandler(TgCommands.BtTeamEggs, tg_team_eggs_intt))
     dp.add_handler(MessageHandler(Filters.document, tg_document))
     
     dp.add_error_handler(tg_error)
