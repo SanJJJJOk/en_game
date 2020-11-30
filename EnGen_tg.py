@@ -289,15 +289,12 @@ def tg_base_in_teams_stat_eggs(update, context, command, is_only_eggs):
         output_sorted.sort(key=lambda i: i[1].score_sum, reverse=True)
 
         for team_item in output_sorted:
-            o2_output = []
-            team_str = team_item[0]
-            o2_items = team_item[1].items
-            for key in o2_items:
-                item = o2_items[key]
-                item_key = item.e_user
+            o2_output = {}
+            for o2_item in team_item[1].items:
+                item_key = o2_item.e_user
                 if not item_key in o2_output:
                     o2_output[item_key] = ActionItemsSet()
-                o2_output[item_key].add(item)
+                o2_output[item_key].add(o2_item)
             o2_output_sorted = list(o2_output.items())
             o2_output_sorted.sort(key=lambda i: i[1].score_sum, reverse=True)
 
@@ -512,8 +509,8 @@ def main():
     dp.add_handler(CommandHandler(TgCommands.TeamEggs, tg_team_eggs))
     dp.add_handler(CommandHandler(TgCommands.UserEggs, tg_user_eggs))
     dp.add_handler(CommandHandler(TgCommands.Backup, tg_backup))
-    dp.add_handler(CommandHandler(TgCommands.BtTeamStat, tg_team_stat_intt))
-    dp.add_handler(CommandHandler(TgCommands.BtTeamEggs, tg_team_eggs_intt))
+    dp.add_handler(CommandHandler(TgCommands.ByTeamStat, tg_team_stat_intt))
+    dp.add_handler(CommandHandler(TgCommands.ByTeamEggs, tg_team_eggs_intt))
     dp.add_handler(MessageHandler(Filters.document, tg_document))
     
     dp.add_error_handler(tg_error)
