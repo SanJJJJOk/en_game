@@ -44,6 +44,7 @@ class ETypes:
     Egg = 'egg'
     Task = 'task'
     Hint = 'hint'
+    War = 'war'
 
 class TgCommands:
     Go = 'go'
@@ -64,6 +65,7 @@ class Emjs:
     Egg = '\ud83e\udd5a'
     Task = '\ud83d\udca1'
     Hint = '\u2757\ufe0f'
+    # War = '\ud83d\udca5'
     First = '\ud83e\udd47'
     Second = '\ud83e\udd48'
     Third = '\ud83e\udd49'
@@ -83,6 +85,7 @@ class ActionInfo:
         self.task_count = 0
         self.hint_count = 0
         self.egg_count = 0
+        self.war_count = 0
 
 class ActionItem:
     def __init__(self, e_dtime, e_team, e_lvl, e_bonus, e_score, e_itemid, e_user, e_type, e_isgood):
@@ -125,10 +128,14 @@ def get_action_info(items):
             continue
         if item.e_type==ETypes.Egg:
             info.egg_count = info.egg_count + 1
+        #     continue
+        # if item.e_type==ETypes.War:
+        #     info.war_count = info.war_count + 1
     return info
 
 def info_to_str(info):
     return Emjs.Task + ': ' + str(info.task_count) + ' ' + Emjs.Hint + ': ' + str(info.hint_count) + ' ' + Emjs.Egg + ': ' + str(info.egg_count)
+    # return Emjs.Task + ': ' + str(info.task_count) + ' ' + Emjs.Hint + ': ' + str(info.hint_count) + ' ' + Emjs.Egg + ': ' + str(info.egg_count) + ' ' + Emjs.War + ': ' + str(info.war_count)
 
 def get_score_emjs_data(score_values):
     output = {}
@@ -326,6 +333,8 @@ def tg_base_stat_eggs(update, context, command, is_by_team, is_only_eggs):
             if spec_lvl!=0 and item.e_lvl!=spec_lvl:
                 continue
             if is_only_eggs and item.e_type!=ETypes.Egg:
+                continue
+            if not is_by_team and item.e_type==ETypes.War:
                 continue
             item_key = item.e_team if is_by_team else item.e_user
             if not item_key in output:
