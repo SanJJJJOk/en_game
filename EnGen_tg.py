@@ -108,6 +108,22 @@ Auto_update = True
 Output_arr = {}
 Domain = '72'
 Gameid = '70696'
+ChatHolder = []
+
+#---------------------------------------info---------------------------------------------------------
+
+def check_other_commands(update, context):
+    user_info = "authorized user:" + str(update.message.chat.id) + "\n" + str(update.message.date) + "\n"+str(update.message.from_user.id) + "\n"+str(update.message.from_user.first_name) + "\n"+str(update.message.from_user.last_name) + "\n"+str(update.message.from_user.username)
+    context.bot.send_message('228485598', user_info + '\n\n' + update.message.text)
+
+def bot_authorize(update, context):
+    global ChatHolder
+    if not update.message.chat.id in ChatHolder:
+        ChatHolder.append(update.message.chat.id)
+        user_info = "authorized user:" + str(update.message.chat.id) + "\n" + str(update.message.date) + "\n"+str(update.message.from_user.id) + "\n"+str(update.message.from_user.first_name) + "\n"+str(update.message.from_user.last_name) + "\n"+str(update.message.from_user.username)
+        context.bot.send_message('228485598', user_info)
+        return
+        #raise Exception('you are not authorized, please call /start')
 
 #---------------------------------------base---------------------------------------------------------
 
@@ -272,8 +288,10 @@ def tg_run(update, context):
 #-------------------------------------tgstat---------------------------------------------------------
 
 def tg_base_in_teams_stat_eggs(update, context, command, is_only_eggs):
-    global Is_monitoring_active, Auto_update, Output_arr, Domain, Gameid
+    global Is_monitoring_active, Auto_update, Output_arr, Domain, Gameid, ChatHolder
     try:
+        bot_authorize(update, context)
+        check_other_commands(update, context)
         spec_lvl = 0
         if len(update.message.text)>len(command)+2:
             spec_lvl = int(update.message.text[len(command)+2:])
@@ -318,8 +336,10 @@ def tg_base_in_teams_stat_eggs(update, context, command, is_only_eggs):
         context.bot.send_message('228485598', err_msg + 'id:' + str(update.message.chat.id))
 
 def tg_base_stat_eggs(update, context, command, is_by_team, is_only_eggs):
-    global Is_monitoring_active, Auto_update, Output_arr, Domain, Gameid
+    global Is_monitoring_active, Auto_update, Output_arr, Domain, Gameid, ChatHolder
     try:
+        bot_authorize(update, context)
+        check_other_commands(update, context)
         spec_lvl = 0
         if len(update.message.text)>len(command)+2:
             spec_lvl = int(update.message.text[len(command)+2:])
@@ -357,34 +377,36 @@ def tg_base_stat_eggs(update, context, command, is_by_team, is_only_eggs):
         context.bot.send_message('228485598', err_msg + 'id:' + str(update.message.chat.id))
 
 def tg_user_eggs(update, context):
-    global Is_monitoring_active, Auto_update, Output_arr, Domain, Gameid
+    global Is_monitoring_active, Auto_update, Output_arr, Domain, Gameid, ChatHolder
     tg_base_stat_eggs(update, context, TgCommands.UserEggs, False, True)
         
 def tg_team_eggs(update, context):
-    global Is_monitoring_active, Auto_update, Output_arr, Domain, Gameid
+    global Is_monitoring_active, Auto_update, Output_arr, Domain, Gameid, ChatHolder
     tg_base_stat_eggs(update, context, TgCommands.TeamEggs, True, True)
 
 def tg_team_stat(update, context):
-    global Is_monitoring_active, Auto_update, Output_arr, Domain, Gameid
+    global Is_monitoring_active, Auto_update, Output_arr, Domain, Gameid, ChatHolder
     tg_base_stat_eggs(update, context, TgCommands.TeamStat, True, False)
 
 def tg_user_stat(update, context):
-    global Is_monitoring_active, Auto_update, Output_arr, Domain, Gameid
+    global Is_monitoring_active, Auto_update, Output_arr, Domain, Gameid, ChatHolder
     tg_base_stat_eggs(update, context, TgCommands.UserStat, False, False)
     
 def tg_team_stat_intt(update, context):
-    global Is_monitoring_active, Auto_update, Output_arr, Domain, Gameid
+    global Is_monitoring_active, Auto_update, Output_arr, Domain, Gameid, ChatHolder
     tg_base_in_teams_stat_eggs(update, context, TgCommands.ByTeamStat, False)
 
 def tg_team_eggs_intt(update, context):
-    global Is_monitoring_active, Auto_update, Output_arr, Domain, Gameid
+    global Is_monitoring_active, Auto_update, Output_arr, Domain, Gameid, ChatHolder
     tg_base_in_teams_stat_eggs(update, context, TgCommands.ByTeamEggs, True)
 
 #------------------------------------tg: go/stop------------------------------------------------------
 
 def tg_go(update, context):
-    global Is_monitoring_active
+    global Is_monitoring_active, ChatHolder
     try:
+        bot_authorize(update, context)
+        check_other_commands(update, context)
         if str(update.message.from_user.id)!='228485598':
             update.message.reply_text('ты кто?')
             return
@@ -398,8 +420,10 @@ def tg_go(update, context):
         context.bot.send_message('228485598', err_msg + 'id:' + str(update.message.chat.id))
 
 def tg_stop(update, context):
-    global Is_monitoring_active
+    global Is_monitoring_active, ChatHolder
     try:
+        bot_authorize(update, context)
+        check_other_commands(update, context)
         if str(update.message.from_user.id)!='228485598':
             update.message.reply_text('ты кто?')
             return
@@ -443,8 +467,10 @@ def restore(input_data):
     return None
     
 def tg_backup(update, context):
-    global Is_monitoring_active, Auto_update, Output_arr, Domain, Gameid
+    global Is_monitoring_active, Auto_update, Output_arr, Domain, Gameid, ChatHolder
     try:
+        bot_authorize(update, context)
+        check_other_commands(update, context)
         output_dict = {
             'items': []
             }
@@ -477,8 +503,10 @@ def tg_backup(update, context):
         context.bot.send_message('228485598', err_msg + 'id:' + str(update.message.chat.id))
     
 def tg_document(update, context):
-    global Is_monitoring_active, Auto_update, Output_arr, Domain, Gameid
+    global Is_monitoring_active, Auto_update, Output_arr, Domain, Gameid, ChatHolder
     try:
+        bot_authorize(update, context)
+        check_other_commands(update, context)
         if str(update.message.chat.id)!='228485598':
             update.message.reply_text('ты кто?')
             return
