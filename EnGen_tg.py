@@ -138,7 +138,11 @@ def get_unique(arr) -> []:
     return list(dict.fromkeys(arr))
 
 def sec_to_str(val):
-    return str(round(val // 60)) + 'м' + str(round(val % 60)) + 'с'
+    minval = str(round(val // 60))
+    secval = str(round(val % 60))
+    if len(secval)==1:
+        secval = '0' + secval
+    return minval + ':' + secval
 
 def get_action_info(items):
     info = ActionInfo()
@@ -165,18 +169,18 @@ def get_action_info(items):
 def info_to_str(info, is_zero_shown):
     result = ''
     if is_zero_shown or info.task_count>0:
-        result = result + Emjs.Task + ': ' + str(info.task_count) + ' '
+        result = result + Emjs.Task + str(info.task_count) + ' '
     if is_zero_shown or info.minitask_count>0:
-        result = result + Emjs.MiniTask + ': ' + str(info.minitask_count) + ' '
+        result = result + Emjs.MiniTask + str(info.minitask_count) + ' '
     if is_zero_shown or info.hint_count>0:
-        result = result + Emjs.Hint + ': ' + str(info.hint_count) + ' '
+        result = result + Emjs.Hint + str(info.hint_count) + ' '
     if is_zero_shown or info.minihint_count>0:
-        result = result + Emjs.MiniHint + ': ' + str(info.minihint_count) + ' '
+        result = result + Emjs.MiniHint + str(info.minihint_count) + ' '
     if is_zero_shown or info.egg_count>0:
-        result = result + Emjs.Egg + ': ' + str(info.egg_count) + ' '
+        result = result + Emjs.Egg + str(info.egg_count) + ' '
     # if is_zero_shown or info.war_count>0:
-    #     result = result + Emjs.War + ': ' + str(info.war_count) + ' '
-    return result
+    #     result = result + Emjs.War + str(info.war_count) + ' '
+    return result.strip()
 
 def get_score_emjs_data(score_values):
     output = {}
