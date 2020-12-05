@@ -138,11 +138,15 @@ def get_unique(arr) -> []:
     return list(dict.fromkeys(arr))
 
 def sec_to_str(val):
+    neg_prefix = ''
+    if val < 0:
+        val = -val
+        neg_prefix = '-'
     minval = str(round(val // 60))
     secval = str(round(val % 60))
     if len(secval)==1:
         secval = '0' + secval
-    return minval + ':' + secval
+    return neg_prefix + minval + ':' + secval
 
 def get_action_info(items):
     info = ActionInfo()
