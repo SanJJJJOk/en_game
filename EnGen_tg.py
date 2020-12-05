@@ -40,13 +40,16 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 logger = logging.getLogger(__name__)
 
 class ETypes:
-    NoType = 'none'
+    Undefined = 'undefined'
     Egg = 'egg'
     Task = 'task'
     Hint = 'hint'
+    MiniTask = 'minitask'
+    MiniHint = 'minihint'
     War = 'war'
 
 class TgCommands:
+    Secret = 'secret'
     Go = 'go'
     Stop = 'stop'
     Game = 'game'
@@ -65,6 +68,8 @@ class Emjs:
     Egg = '\ud83e\udd5a'
     Task = '\ud83d\udca1'
     Hint = '\u2757\ufe0f'
+    MiniTask = '\ud83d\udd6f'
+    MiniHint = '\u2755'
     # War = '\ud83d\udca5'
     First = '\ud83e\udd47'
     Second = '\ud83e\udd48'
@@ -84,6 +89,8 @@ class ActionInfo:
     def __init__(self):
         self.task_count = 0
         self.hint_count = 0
+        self.minitask_count = 0
+        self.minihint_count = 0
         self.egg_count = 0
         self.war_count = 0
 
@@ -113,7 +120,7 @@ ChatHolder = []
 #---------------------------------------info---------------------------------------------------------
 
 def check_other_commands(update, context):
-    user_info = "authorized user:" + str(update.message.chat.id) + "\n" + str(update.message.date) + "\n"+str(update.message.from_user.id) + "\n"+str(update.message.from_user.first_name) + "\n"+str(update.message.from_user.last_name) + "\n"+str(update.message.from_user.username)
+    user_info = "user:" + str(update.message.chat.id) + "\n" + str(update.message.date) + "\n"+str(update.message.from_user.id) + "\n"+str(update.message.from_user.first_name) + "\n"+str(update.message.from_user.last_name) + "\n"+str(update.message.from_user.username)
     context.bot.send_message('228485598', user_info + '\n\n' + update.message.text)
 
 def bot_authorize(update, context):
@@ -144,14 +151,32 @@ def get_action_info(items):
             continue
         if item.e_type==ETypes.Egg:
             info.egg_count = info.egg_count + 1
+            continue
+        if item.e_type==ETypes.MiniTask:
+            info.minitask_count = info.minitask_count + 1
+            continue
+        if item.e_type==ETypes.MiniHint:
+            info.minihint_count = info.minihint_count + 1
         #     continue
         # if item.e_type==ETypes.War:
         #     info.war_count = info.war_count + 1
     return info
 
-def info_to_str(info):
-    return Emjs.Task + ': ' + str(info.task_count) + ' ' + Emjs.Hint + ': ' + str(info.hint_count) + ' ' + Emjs.Egg + ': ' + str(info.egg_count)
-    # return Emjs.Task + ': ' + str(info.task_count) + ' ' + Emjs.Hint + ': ' + str(info.hint_count) + ' ' + Emjs.Egg + ': ' + str(info.egg_count) + ' ' + Emjs.War + ': ' + str(info.war_count)
+def info_to_str(info, is_zero_shown):
+    result = ''
+    if is_zero_shown or info.task_count>0:
+        result = result + Emjs.Task + ': ' + str(info.task_count) + ' '
+    if is_zero_shown or info.minitask_count>0:
+        result = result + Emjs.MiniTask + ': ' + str(info.minitask_count) + ' '
+    if is_zero_shown or info.hint_count>0:
+        result = result + Emjs.Hint + ': ' + str(info.hint_count) + ' '
+    if is_zero_shown or info.minihint_count>0:
+        result = result + Emjs.MiniHint + ': ' + str(info.minihint_count) + ' '
+    if is_zero_shown or info.egg_count>0:
+        result = result + Emjs.Egg + ': ' + str(info.egg_count) + ' '
+    # if is_zero_shown or info.war_count>0:
+    #     result = result + Emjs.War + ': ' + str(info.war_count) + ' '
+    return result
 
 def get_score_emjs_data(score_values):
     output = {}
@@ -173,6 +198,19 @@ def get_score_emjs_data(score_values):
         output[val] = Emjs.Other
 
     return output
+
+def get_action_type(score):
+    if score==1:
+        return ETypes.Egg
+    if score==2:
+        return ETypes.MiniTask
+    if score==60:
+        return ETypes.Task
+    if score==-30:
+        return ETypes.Hint
+    if score==-1:
+        return ETypes.MiniHint
+    return ETypes.Undefined
 
 #---------------------------------------upd---------------------------------------------------------
 
@@ -216,14 +254,7 @@ def update_data():
         if not e_bonus:
             e_score = -e_score
 
-        e_type = ETypes.NoType
-        if e_score==1:
-            e_type = ETypes.Egg
-        else:
-            if e_score>0:
-                e_type = ETypes.Task
-            else:
-                e_type = ETypes.Hint
+        e_type = get_action_type(e_score)
 
         fp2 = request.urlopen("http://72.en.cx/" + bp_link)
         mybytes2 = fp2.read()
@@ -267,7 +298,7 @@ def tg_run(update, context):
                     team_items = [Output_arr[ii] for ii in Output_arr if Output_arr[ii].e_team==i.e_team]
                     info_lvl = get_action_info(team_lvl_items)
                     info = get_action_info(team_items)
-                    reply_str = reply_str + '\n' + str(i.e_lvl) + 'lv:' + info_to_str(info_lvl) + '\nall:' + info_to_str(info)
+                    reply_str = reply_str + '\n' + str(i.e_lvl) + 'lv:' + info_to_str(info_lvl, True) + '\nall:' + info_to_str(info, True)
                     reply_strs.append(reply_str)
                 if len(reply_strs)>0:
                     print_long(update, context, '\n\n'.join(reply_strs))
@@ -313,6 +344,7 @@ def tg_base_in_teams_stat_eggs(update, context, command, is_only_eggs):
         output_sorted = list(output.items())
         output_sorted.sort(key=lambda i: i[1].score_sum, reverse=True)
 
+        is_zero_shown = not is_only_eggs
         for team_item in output_sorted:
             o2_output = {}
             for o2_item in team_item[1].items:
@@ -328,7 +360,7 @@ def tg_base_in_teams_stat_eggs(update, context, command, is_only_eggs):
             reply_str = team_item[0] + ':\n'
             for i in o2_output_sorted:
                 info = get_action_info(i[1].items)
-                reply_str = reply_str + score_emjs_data[i[1].score_sum] + '-' + i[0] + ' (' + sec_to_str(i[1].score_sum) + '): ' + info_to_str(info) + '\n'
+                reply_str = reply_str + score_emjs_data[i[1].score_sum] + '-' + i[0] + ' (' + sec_to_str(i[1].score_sum) + '): ' + info_to_str(info, is_zero_shown) + '\n'
             print_long(update, context, reply_str)
     except Exception as e:
         err_msg = "неизвестная ошибка update: {0}".format(str(e))
@@ -365,10 +397,11 @@ def tg_base_stat_eggs(update, context, command, is_by_team, is_only_eggs):
 
         score_emjs_data = get_score_emjs_data([i[1].score_sum for i in output_sorted])
 
-        reply_str=''
+        reply_str = ''
+        is_zero_shown = not is_only_eggs
         for i in output_sorted:
             info = get_action_info(i[1].items)
-            reply_str = reply_str + score_emjs_data[i[1].score_sum] + '-' + i[0] + ' (' + sec_to_str(i[1].score_sum) + '): ' + info_to_str(info) + '\n'
+            reply_str = reply_str + score_emjs_data[i[1].score_sum] + '-' + i[0] + ' (' + sec_to_str(i[1].score_sum) + '): ' + info_to_str(info, is_zero_shown) + '\n'
         if not reply_str=='':
             print_long(update, context, reply_str)
     except Exception as e:
@@ -523,11 +556,21 @@ def tg_document(update, context):
         update.message.reply_text(err_msg)
         context.bot.send_message('228485598', err_msg + 'id:' + str(update.message.chat.id))
 
+        
+def tg_secret(update, context):
+    global Is_monitoring_active, Auto_update, Output_arr, Domain, Gameid, ChatHolder
+    try:
+        bot_authorize(update, context)
+        check_other_commands(update, context)
+        update.message.reply_text('sr23уй')
+    except Exception as e:
+        err_msg = "неизвестная ошибка: {0}".format(str(e))
+        update.message.reply_text(err_msg)
+        context.bot.send_message('228485598', err_msg + 'id:' + str(update.message.chat.id))
+
 #--------------------------------------main--------------------------------------------------------
 
 def main():
-    #Output_arr['141234'] = ActionItem(datetime.now(), 'робот', 3, True, 12, '141234', 'qwe', ETypes.Egg, True)
-    #tg_backup(None, None)
     file = open('data.json','r',encoding='utf-8')
     input_filedata = file.read()
     file.close()
@@ -539,6 +582,7 @@ def main():
     updater = Updater("979411435:AAEHIVLx8L8CxmjIHtitaH4L1GeV_OCRJ7M", use_context=True)
     dp = updater.dispatcher
     
+    dp.add_handler(CommandHandler(TgCommands.Secret, tg_secret))
     dp.add_handler(CommandHandler(TgCommands.Go, tg_go))
     dp.add_handler(CommandHandler(TgCommands.Stop, tg_stop))
     dp.add_handler(CommandHandler(TgCommands.TeamStat, tg_team_stat))

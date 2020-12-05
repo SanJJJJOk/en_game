@@ -844,7 +844,7 @@
       "e_score": 2,
       "e_itemid": "19212166",
       "e_user": "barca_man",
-      "e_type": "task",
+      "e_type": "minitask",
       "e_isgood": true
     },
     {
@@ -888,7 +888,7 @@
       "e_score": 2,
       "e_itemid": "19212178",
       "e_user": "Lunxe",
-      "e_type": "task",
+      "e_type": "minitask",
       "e_isgood": true
     },
     {
@@ -1031,7 +1031,7 @@
       "e_score": 2,
       "e_itemid": "19212208",
       "e_user": "one_hp~",
-      "e_type": "task",
+      "e_type": "minitask",
       "e_isgood": true
     },
     {
@@ -1229,7 +1229,7 @@
       "e_score": 2,
       "e_itemid": "19214183",
       "e_user": "Эннергия",
-      "e_type": "task",
+      "e_type": "minitask",
       "e_isgood": true
     },
     {
@@ -1658,7 +1658,7 @@
       "e_score": -1,
       "e_itemid": "19215896",
       "e_user": "tormaz",
-      "e_type": "hint",
+      "e_type": "minihint",
       "e_isgood": true
     },
     {
@@ -1669,7 +1669,7 @@
       "e_score": 2,
       "e_itemid": "19215914",
       "e_user": "Опаздавший пассажир",
-      "e_type": "task",
+      "e_type": "minitask",
       "e_isgood": true
     },
     {
@@ -1768,7 +1768,7 @@
       "e_score": 2,
       "e_itemid": "19216056",
       "e_user": "tormaz",
-      "e_type": "task",
+      "e_type": "minitask",
       "e_isgood": true
     },
     {
@@ -1801,7 +1801,7 @@
       "e_score": 2,
       "e_itemid": "19216102",
       "e_user": "hellojacker",
-      "e_type": "task",
+      "e_type": "minitask",
       "e_isgood": true
     },
     {
@@ -1812,7 +1812,7 @@
       "e_score": 2,
       "e_itemid": "19216104",
       "e_user": "Yuzhnaya",
-      "e_type": "task",
+      "e_type": "minitask",
       "e_isgood": true
     },
     {
@@ -1878,7 +1878,7 @@
       "e_score": 2,
       "e_itemid": "19216278",
       "e_user": "Gaff",
-      "e_type": "task",
+      "e_type": "minitask",
       "e_isgood": true
     },
     {
@@ -2032,7 +2032,7 @@
       "e_score": 2,
       "e_itemid": "19216524",
       "e_user": "Chipi",
-      "e_type": "task",
+      "e_type": "minitask",
       "e_isgood": true
     },
     {
@@ -2065,7 +2065,7 @@
       "e_score": 2,
       "e_itemid": "19216527",
       "e_user": "Иван Бубнов",
-      "e_type": "task",
+      "e_type": "minitask",
       "e_isgood": true
     },
     {
@@ -2087,7 +2087,7 @@
       "e_score": 2,
       "e_itemid": "19216531",
       "e_user": "Dram4ik13",
-      "e_type": "task",
+      "e_type": "minitask",
       "e_isgood": true
     },
     {
@@ -2142,7 +2142,7 @@
       "e_score": 2,
       "e_itemid": "19216536",
       "e_user": "Mary_Ru",
-      "e_type": "task",
+      "e_type": "minitask",
       "e_isgood": true
     },
     {
@@ -2329,7 +2329,7 @@
       "e_score": 2,
       "e_itemid": "19216638",
       "e_user": "Alenaardasheva",
-      "e_type": "task",
+      "e_type": "minitask",
       "e_isgood": true
     },
     {
@@ -2505,7 +2505,7 @@
       "e_score": -1,
       "e_itemid": "19216665",
       "e_user": "movis08",
-      "e_type": "hint",
+      "e_type": "minihint",
       "e_isgood": true
     },
     {
@@ -2582,7 +2582,7 @@
       "e_score": 2,
       "e_itemid": "19216672",
       "e_user": "movis08",
-      "e_type": "task",
+      "e_type": "minitask",
       "e_isgood": true
     },
     {
@@ -7081,7 +7081,7 @@
       "e_score": 2,
       "e_itemid": "19309314",
       "e_user": "barca_man",
-      "e_type": "task",
+      "e_type": "minitask",
       "e_isgood": true
     },
     {
@@ -7092,7 +7092,7 @@
       "e_score": 2,
       "e_itemid": "19309316",
       "e_user": "dust1q",
-      "e_type": "task",
+      "e_type": "minitask",
       "e_isgood": true
     },
     {
@@ -7103,7 +7103,7 @@
       "e_score": 2,
       "e_itemid": "19309317",
       "e_user": "BelENko",
-      "e_type": "task",
+      "e_type": "minitask",
       "e_isgood": true
     },
     {
@@ -7114,7 +7114,7 @@
       "e_score": 2,
       "e_itemid": "19309318",
       "e_user": "BelENko",
-      "e_type": "task",
+      "e_type": "minitask",
       "e_isgood": true
     },
     {
@@ -7125,7 +7125,7 @@
       "e_score": 2,
       "e_itemid": "19309319",
       "e_user": "BelENko",
-      "e_type": "task",
+      "e_type": "minitask",
       "e_isgood": true
     },
     {
@@ -7147,7 +7147,7 @@
       "e_score": 2,
       "e_itemid": "19309323",
       "e_user": "Таня Семёнова",
-      "e_type": "task",
+      "e_type": "minitask",
       "e_isgood": true
     },
     {
@@ -7158,7 +7158,7 @@
       "e_score": 2,
       "e_itemid": "19309369",
       "e_user": "dust1q",
-      "e_type": "task",
+      "e_type": "minitask",
       "e_isgood": true
     },
     {
@@ -7169,7 +7169,7 @@
       "e_score": 2,
       "e_itemid": "19309376",
       "e_user": "Chipi",
-      "e_type": "task",
+      "e_type": "minitask",
       "e_isgood": true
     },
     {
@@ -7180,7 +7180,7 @@
       "e_score": 2,
       "e_itemid": "19309378",
       "e_user": "Chipi",
-      "e_type": "task",
+      "e_type": "minitask",
       "e_isgood": true
     },
     {
@@ -7191,7 +7191,7 @@
       "e_score": 2,
       "e_itemid": "19309379",
       "e_user": "BelENko",
-      "e_type": "task",
+      "e_type": "minitask",
       "e_isgood": true
     },
     {
@@ -7202,7 +7202,7 @@
       "e_score": 2,
       "e_itemid": "19309381",
       "e_user": "MindControl",
-      "e_type": "task",
+      "e_type": "minitask",
       "e_isgood": true
     },
     {
@@ -7213,7 +7213,7 @@
       "e_score": 2,
       "e_itemid": "19309382",
       "e_user": "Gaff",
-      "e_type": "task",
+      "e_type": "minitask",
       "e_isgood": true
     },
     {
@@ -7224,7 +7224,7 @@
       "e_score": 2,
       "e_itemid": "19309383",
       "e_user": "Yuzhnaya",
-      "e_type": "task",
+      "e_type": "minitask",
       "e_isgood": true
     },
     {
@@ -7235,7 +7235,7 @@
       "e_score": 2,
       "e_itemid": "19309384",
       "e_user": "dust1q",
-      "e_type": "task",
+      "e_type": "minitask",
       "e_isgood": true
     },
     {
@@ -7246,7 +7246,7 @@
       "e_score": 2,
       "e_itemid": "19309385",
       "e_user": "MindControl",
-      "e_type": "task",
+      "e_type": "minitask",
       "e_isgood": true
     },
     {
@@ -7257,7 +7257,7 @@
       "e_score": 2,
       "e_itemid": "19309645",
       "e_user": "Orient_RG",
-      "e_type": "task",
+      "e_type": "minitask",
       "e_isgood": true
     },
     {
@@ -7268,7 +7268,7 @@
       "e_score": 2,
       "e_itemid": "19309926",
       "e_user": "Orient_RG",
-      "e_type": "task",
+      "e_type": "minitask",
       "e_isgood": true
     },
     {
@@ -7279,7 +7279,7 @@
       "e_score": 2,
       "e_itemid": "19309931",
       "e_user": "lena_776",
-      "e_type": "task",
+      "e_type": "minitask",
       "e_isgood": true
     },
     {
@@ -7290,7 +7290,7 @@
       "e_score": 2,
       "e_itemid": "19310547",
       "e_user": "dust1q",
-      "e_type": "task",
+      "e_type": "minitask",
       "e_isgood": true
     },
     {
@@ -7312,7 +7312,7 @@
       "e_score": 2,
       "e_itemid": "19312414",
       "e_user": "Yuzhnaya",
-      "e_type": "task",
+      "e_type": "minitask",
       "e_isgood": true
     },
     {
@@ -7323,7 +7323,7 @@
       "e_score": 2,
       "e_itemid": "19312430",
       "e_user": "dust1q",
-      "e_type": "task",
+      "e_type": "minitask",
       "e_isgood": true
     },
     {
@@ -7334,7 +7334,7 @@
       "e_score": 2,
       "e_itemid": "19312927",
       "e_user": "Yuzhnaya",
-      "e_type": "task",
+      "e_type": "minitask",
       "e_isgood": true
     },
     {
@@ -7389,7 +7389,7 @@
       "e_score": 2,
       "e_itemid": "19313708",
       "e_user": "T-zh",
-      "e_type": "task",
+      "e_type": "minitask",
       "e_isgood": true
     },
     {
@@ -7411,7 +7411,7 @@
       "e_score": 2,
       "e_itemid": "19316361",
       "e_user": "Orient_RG",
-      "e_type": "task",
+      "e_type": "minitask",
       "e_isgood": true
     },
     {
@@ -7422,7 +7422,7 @@
       "e_score": 2,
       "e_itemid": "19318130",
       "e_user": "hellojacker",
-      "e_type": "task",
+      "e_type": "minitask",
       "e_isgood": true
     },
     {
@@ -7433,7 +7433,7 @@
       "e_score": 2,
       "e_itemid": "19318148",
       "e_user": "Rafa83~",
-      "e_type": "task",
+      "e_type": "minitask",
       "e_isgood": true
     },
     {
@@ -7444,7 +7444,7 @@
       "e_score": 2,
       "e_itemid": "19318280",
       "e_user": "Julickay",
-      "e_type": "task",
+      "e_type": "minitask",
       "e_isgood": true
     },
     {
@@ -7455,6 +7455,2085 @@
       "e_score": 2,
       "e_itemid": "19318359",
       "e_user": "Эрик Ивков",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "02.12.2020 23:39:17",
+      "e_team": "GirlsBand",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 1,
+      "e_itemid": "19318393",
+      "e_user": "Эннергия",
+      "e_type": "egg",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "02.12.2020 23:46:20",
+      "e_team": "Ботинки Кирилла",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 1,
+      "e_itemid": "19318414",
+      "e_user": "one_hp~",
+      "e_type": "egg",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "02.12.2020 23:49:32",
+      "e_team": "ДИВ",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19318422",
+      "e_user": "Gaff",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "02.12.2020 23:52:45",
+      "e_team": "ТорChi",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 1,
+      "e_itemid": "19318428",
+      "e_user": "Chipi",
+      "e_type": "egg",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "02.12.2020 23:57:54",
+      "e_team": "О.Т. Win Team",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19318439",
+      "e_user": "barca_man",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "03.12.2020 0:25:25",
+      "e_team": "О.Т. Win Team",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19318536",
+      "e_user": "dust1q",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "03.12.2020 0:32:40",
+      "e_team": "ДИВ",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19318618",
+      "e_user": "Gaff",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "03.12.2020 0:36:12",
+      "e_team": "Последний_вагон",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 1,
+      "e_itemid": "19318664",
+      "e_user": "Опаздавший пассажир",
+      "e_type": "egg",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "03.12.2020 0:41:48",
+      "e_team": "NaId",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19318729",
+      "e_user": "zil13",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "03.12.2020 0:54:52",
+      "e_team": "Нормальное название команды",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19318844",
+      "e_user": "T-zh",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "03.12.2020 1:04:07",
+      "e_team": "ТорChi",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19318935",
+      "e_user": "masjka",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "03.12.2020 1:32:11",
+      "e_team": "О.Т. Win Team",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19319141",
+      "e_user": "dust1q",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "03.12.2020 1:50:12",
+      "e_team": "ТорChi",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19319202",
+      "e_user": "Chipi",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "03.12.2020 7:42:33",
+      "e_team": "О.Т. Win Team",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19319272",
+      "e_user": "barca_man",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "03.12.2020 11:00:01",
+      "e_team": "О.Т. Win Team",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19319340",
+      "e_user": "barca_man",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "03.12.2020 12:41:06",
+      "e_team": "NaId",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19319355",
+      "e_user": "Ruzil",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "03.12.2020 12:54:37",
+      "e_team": "SoSеди",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 60,
+      "e_itemid": "19319376",
+      "e_user": "Orient_RG",
+      "e_type": "task",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "03.12.2020 13:29:17",
+      "e_team": "ТорChi",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19319377",
+      "e_user": "temkoin",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "03.12.2020 13:41:45",
+      "e_team": "ТорChi",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19319379",
+      "e_user": "Chipi",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "03.12.2020 14:16:23",
+      "e_team": "Ворчание ягнят",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19319380",
+      "e_user": "Julickay",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "03.12.2020 14:31:50",
+      "e_team": "Ворчание ягнят",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19319381",
+      "e_user": "Mary_Ru",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "03.12.2020 14:39:37",
+      "e_team": "Нормальное название команды",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19319382",
+      "e_user": "Bestolo413",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "03.12.2020 15:47:59",
+      "e_team": "ТорChi",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19319402",
+      "e_user": "Chipi",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "03.12.2020 16:06:06",
+      "e_team": "ТорChi",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19319404",
+      "e_user": "masjka",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "03.12.2020 16:13:44",
+      "e_team": "Короче, хочу в Сочи!",
+      "e_lvl": 7,
+      "e_bonus": false,
+      "e_score": -30,
+      "e_itemid": "19319405",
+      "e_user": "tormaz",
+      "e_type": "hint",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "03.12.2020 16:14:17",
+      "e_team": "Короче, хочу в Сочи!",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 60,
+      "e_itemid": "19319407",
+      "e_user": "tormaz",
+      "e_type": "task",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "03.12.2020 16:17:31",
+      "e_team": "Короче, хочу в Сочи!",
+      "e_lvl": 7,
+      "e_bonus": false,
+      "e_score": -30,
+      "e_itemid": "19319408",
+      "e_user": "tormaz",
+      "e_type": "hint",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "03.12.2020 16:18:28",
+      "e_team": "Короче, хочу в Сочи!",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 60,
+      "e_itemid": "19319409",
+      "e_user": "tormaz",
+      "e_type": "task",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "03.12.2020 16:23:04",
+      "e_team": "Короче, хочу в Сочи!",
+      "e_lvl": 7,
+      "e_bonus": false,
+      "e_score": -1,
+      "e_itemid": "19319410",
+      "e_user": "tormaz",
+      "e_type": "minihint",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "03.12.2020 16:23:53",
+      "e_team": "Короче, хочу в Сочи!",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19319411",
+      "e_user": "tormaz",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "03.12.2020 16:43:04",
+      "e_team": "ТорChi",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 60,
+      "e_itemid": "19319412",
+      "e_user": "Chipi",
+      "e_type": "task",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "03.12.2020 16:43:56",
+      "e_team": "ТорChi",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 1,
+      "e_itemid": "19319413",
+      "e_user": "Chipi",
+      "e_type": "egg",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "03.12.2020 16:54:46",
+      "e_team": "ТорChi",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19319414",
+      "e_user": "Chipi",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "03.12.2020 17:12:44",
+      "e_team": "ТорChi",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19319415",
+      "e_user": "Chipi",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "03.12.2020 17:13:00",
+      "e_team": "Восстание Левых Эклеров",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19319416",
+      "e_user": "Beatrichche",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "03.12.2020 17:13:18",
+      "e_team": "ТорChi",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19319417",
+      "e_user": "Chipi",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "03.12.2020 17:13:56",
+      "e_team": "ТорChi",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19319418",
+      "e_user": "Chipi",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "03.12.2020 17:18:20",
+      "e_team": "О.Т. Win Team",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 60,
+      "e_itemid": "19319419",
+      "e_user": "dust1q",
+      "e_type": "task",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "03.12.2020 17:25:43",
+      "e_team": "ТорChi",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19319421",
+      "e_user": "Chipi",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "03.12.2020 17:33:36",
+      "e_team": "SoSеди",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19319423",
+      "e_user": "Yurchik_ogurchik",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "03.12.2020 17:42:57",
+      "e_team": "C.S.",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 60,
+      "e_itemid": "19319436",
+      "e_user": "BelENko",
+      "e_type": "task",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "03.12.2020 17:50:24",
+      "e_team": "Ворчание ягнят",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19319444",
+      "e_user": "Alem_N",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "03.12.2020 18:29:13",
+      "e_team": "D.I.C",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19319475",
+      "e_user": "Begi",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "03.12.2020 19:17:04",
+      "e_team": "NaId",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 60,
+      "e_itemid": "19319477",
+      "e_user": "zil13",
+      "e_type": "task",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "03.12.2020 19:26:20",
+      "e_team": "О.Т. Win Team",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 60,
+      "e_itemid": "19319478",
+      "e_user": "DezmaN",
+      "e_type": "task",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "03.12.2020 19:38:55",
+      "e_team": "NaId",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19319479",
+      "e_user": "zil13",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "03.12.2020 20:22:01",
+      "e_team": "Короче, хочу в Сочи!",
+      "e_lvl": 7,
+      "e_bonus": false,
+      "e_score": -1,
+      "e_itemid": "19319482",
+      "e_user": "tormaz",
+      "e_type": "minihint",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "03.12.2020 20:24:30",
+      "e_team": "Короче, хочу в Сочи!",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19319483",
+      "e_user": "tormaz",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "03.12.2020 20:35:44",
+      "e_team": "Ворчание ягнят",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19319484",
+      "e_user": "Julickay",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "03.12.2020 21:08:55",
+      "e_team": "Нормальное название команды",
+      "e_lvl": 7,
+      "e_bonus": false,
+      "e_score": -1,
+      "e_itemid": "19319487",
+      "e_user": "Bestolo413",
+      "e_type": "minihint",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "03.12.2020 21:09:22",
+      "e_team": "Нормальное название команды",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19319488",
+      "e_user": "Bestolo413",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "03.12.2020 21:16:43",
+      "e_team": "Нормальное название команды",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19319502",
+      "e_user": "Bestolo413",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "03.12.2020 21:23:00",
+      "e_team": "C.S.",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19319508",
+      "e_user": "Lunxe",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "03.12.2020 21:25:08",
+      "e_team": "Восстание Левых Эклеров",
+      "e_lvl": 7,
+      "e_bonus": false,
+      "e_score": -30,
+      "e_itemid": "19319510",
+      "e_user": "movis08",
+      "e_type": "hint",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "03.12.2020 21:25:39",
+      "e_team": "Восстание Левых Эклеров",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 60,
+      "e_itemid": "19319511",
+      "e_user": "movis08",
+      "e_type": "task",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "03.12.2020 21:26:50",
+      "e_team": "Восстание Левых Эклеров",
+      "e_lvl": 7,
+      "e_bonus": false,
+      "e_score": -30,
+      "e_itemid": "19319512",
+      "e_user": "movis08",
+      "e_type": "hint",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "03.12.2020 21:27:40",
+      "e_team": "Восстание Левых Эклеров",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 60,
+      "e_itemid": "19319513",
+      "e_user": "movis08",
+      "e_type": "task",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "03.12.2020 21:43:41",
+      "e_team": "Нормальное название команды",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19319520",
+      "e_user": "Bestolo413",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "03.12.2020 21:51:48",
+      "e_team": "Нормальное название команды",
+      "e_lvl": 7,
+      "e_bonus": false,
+      "e_score": -1,
+      "e_itemid": "19319618",
+      "e_user": "lena_776",
+      "e_type": "minihint",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "03.12.2020 21:51:54",
+      "e_team": "Нормальное название команды",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19319627",
+      "e_user": "lena_776",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "03.12.2020 22:02:36",
+      "e_team": "GirlsBand",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19319990",
+      "e_user": "Таня Семёнова",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "03.12.2020 22:28:35",
+      "e_team": "Название потом придумаем",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19320721",
+      "e_user": "Rafa83~",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "03.12.2020 22:31:59",
+      "e_team": "Ботинки Кирилла",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19320797",
+      "e_user": "one_hp~",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "03.12.2020 22:56:08",
+      "e_team": "GirlsBand",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19321166",
+      "e_user": "Анастасия Цветкова",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "03.12.2020 23:21:46",
+      "e_team": "Ботинки Кирилла",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19321260",
+      "e_user": "one_hp~",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "04.12.2020 0:22:21",
+      "e_team": "C.S.",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19321780",
+      "e_user": "MindControl",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "04.12.2020 1:18:38",
+      "e_team": "ДИВ",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19322040",
+      "e_user": "Gaff",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "04.12.2020 2:07:56",
+      "e_team": "C.S.",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 60,
+      "e_itemid": "19322164",
+      "e_user": "Comet",
+      "e_type": "task",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "04.12.2020 2:12:14",
+      "e_team": "C.S.",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 1,
+      "e_itemid": "19322180",
+      "e_user": "MindControl",
+      "e_type": "egg",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "04.12.2020 2:17:41",
+      "e_team": "C.S.",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19322192",
+      "e_user": "MindControl",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "04.12.2020 2:40:37",
+      "e_team": "C.S.",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19322213",
+      "e_user": "Comet",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "04.12.2020 2:59:10",
+      "e_team": "C.S.",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19322219",
+      "e_user": "Comet",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "04.12.2020 2:59:53",
+      "e_team": "C.S.",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19322221",
+      "e_user": "Comet",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "04.12.2020 3:26:33",
+      "e_team": "C.S.",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19322225",
+      "e_user": "Comet",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "04.12.2020 3:37:07",
+      "e_team": "ТорChi",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 60,
+      "e_itemid": "19322226",
+      "e_user": "Chipi",
+      "e_type": "task",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "04.12.2020 3:40:28",
+      "e_team": "C.S.",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 60,
+      "e_itemid": "19322227",
+      "e_user": "Comet",
+      "e_type": "task",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "04.12.2020 7:22:05",
+      "e_team": "Синий_Ангел",
+      "e_lvl": 7,
+      "e_bonus": false,
+      "e_score": -30,
+      "e_itemid": "19322232",
+      "e_user": "Dram4ik13",
+      "e_type": "hint",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "04.12.2020 7:22:28",
+      "e_team": "Синий_Ангел",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 60,
+      "e_itemid": "19322233",
+      "e_user": "Dram4ik13",
+      "e_type": "task",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "04.12.2020 7:22:57",
+      "e_team": "Синий_Ангел",
+      "e_lvl": 7,
+      "e_bonus": false,
+      "e_score": -30,
+      "e_itemid": "19322234",
+      "e_user": "Dram4ik13",
+      "e_type": "hint",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "04.12.2020 7:23:15",
+      "e_team": "Синий_Ангел",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 60,
+      "e_itemid": "19322235",
+      "e_user": "Dram4ik13",
+      "e_type": "task",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "04.12.2020 7:38:47",
+      "e_team": "Синий_Ангел",
+      "e_lvl": 7,
+      "e_bonus": false,
+      "e_score": -1,
+      "e_itemid": "19322238",
+      "e_user": "Dram4ik13",
+      "e_type": "minihint",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "04.12.2020 7:39:35",
+      "e_team": "Синий_Ангел",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19322239",
+      "e_user": "Dram4ik13",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "04.12.2020 9:25:37",
+      "e_team": "Нормальное название команды",
+      "e_lvl": 7,
+      "e_bonus": false,
+      "e_score": -30,
+      "e_itemid": "19322246",
+      "e_user": "lena_776",
+      "e_type": "hint",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "04.12.2020 9:26:12",
+      "e_team": "Нормальное название команды",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 60,
+      "e_itemid": "19322247",
+      "e_user": "lena_776",
+      "e_type": "task",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "04.12.2020 9:42:56",
+      "e_team": "Ворчание ягнят",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19322250",
+      "e_user": "Julickay",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "04.12.2020 10:47:26",
+      "e_team": "Ворчание ягнят",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19322263",
+      "e_user": "Mary_Ru",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "04.12.2020 12:24:33",
+      "e_team": "О.Т. Win Team",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 60,
+      "e_itemid": "19322275",
+      "e_user": "DezmaN",
+      "e_type": "task",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "04.12.2020 12:30:00",
+      "e_team": "NaId",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19322276",
+      "e_user": "Yuzhnaya",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "04.12.2020 12:55:06",
+      "e_team": "Ворчание ягнят",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19322299",
+      "e_user": "Julickay",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "04.12.2020 13:10:32",
+      "e_team": "Последний_вагон",
+      "e_lvl": 7,
+      "e_bonus": false,
+      "e_score": -1,
+      "e_itemid": "19322415",
+      "e_user": "Опаздавший пассажир",
+      "e_type": "minihint",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "04.12.2020 13:12:17",
+      "e_team": "Последний_вагон",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19322431",
+      "e_user": "Опаздавший пассажир",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "04.12.2020 13:41:23",
+      "e_team": "Ворчание ягнят",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 60,
+      "e_itemid": "19322501",
+      "e_user": "Julickay",
+      "e_type": "task",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "04.12.2020 13:44:16",
+      "e_team": "Ворчание ягнят",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 1,
+      "e_itemid": "19322505",
+      "e_user": "Mary_Ru",
+      "e_type": "egg",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "04.12.2020 14:07:50",
+      "e_team": "Восстание Левых Эклеров",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19322508",
+      "e_user": "Beatrichche",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "04.12.2020 14:11:16",
+      "e_team": "Ворчание ягнят",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19322511",
+      "e_user": "Julickay",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "04.12.2020 14:43:34",
+      "e_team": "ДИВ",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19322514",
+      "e_user": "xobbit",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "04.12.2020 14:59:06",
+      "e_team": "Синий_Ангел",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 60,
+      "e_itemid": "19322521",
+      "e_user": "Dram4ik13",
+      "e_type": "task",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "04.12.2020 15:26:00",
+      "e_team": "ТорChi",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 60,
+      "e_itemid": "19324814",
+      "e_user": "temkoin",
+      "e_type": "task",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "04.12.2020 15:46:19",
+      "e_team": "ДИВ",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19325383",
+      "e_user": "xobbit",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "04.12.2020 16:25:29",
+      "e_team": "Синий_Ангел",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 1,
+      "e_itemid": "19325618",
+      "e_user": "Dram4ik13",
+      "e_type": "egg",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "04.12.2020 17:20:16",
+      "e_team": "Ворчание ягнят",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19325732",
+      "e_user": "Alem_N",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "04.12.2020 17:21:49",
+      "e_team": "О.Т. Win Team",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 60,
+      "e_itemid": "19325759",
+      "e_user": "barca_man",
+      "e_type": "task",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "04.12.2020 17:22:14",
+      "e_team": "Ворчание ягнят",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19325766",
+      "e_user": "Alem_N",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "04.12.2020 17:24:02",
+      "e_team": "Синий_Ангел",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19325801",
+      "e_user": "Dram4ik13",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "04.12.2020 17:24:10",
+      "e_team": "О.Т. Win Team",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19325802",
+      "e_user": "DezmaN",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "04.12.2020 17:25:21",
+      "e_team": "Ворчание ягнят",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19325803",
+      "e_user": "Julickay",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "04.12.2020 17:26:31",
+      "e_team": "Ворчание ягнят",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19325804",
+      "e_user": "Julickay",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "04.12.2020 17:33:53",
+      "e_team": "О.Т. Win Team",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 60,
+      "e_itemid": "19325927",
+      "e_user": "sanjjjjok",
+      "e_type": "task",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "04.12.2020 17:34:24",
+      "e_team": "О.Т. Win Team",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 1,
+      "e_itemid": "19325946",
+      "e_user": "dust1q",
+      "e_type": "egg",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "04.12.2020 17:36:11",
+      "e_team": "О.Т. Win Team",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19325963",
+      "e_user": "barca_man",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "04.12.2020 17:48:59",
+      "e_team": "Короче, хочу в Сочи!",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 60,
+      "e_itemid": "19326067",
+      "e_user": "Светля4ок",
+      "e_type": "task",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "04.12.2020 17:51:36",
+      "e_team": "Восстание Левых Эклеров",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 60,
+      "e_itemid": "19326071",
+      "e_user": "a.moiseeva",
+      "e_type": "task",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "04.12.2020 17:58:51",
+      "e_team": "GirlsBand",
+      "e_lvl": 7,
+      "e_bonus": false,
+      "e_score": -1,
+      "e_itemid": "19326078",
+      "e_user": "Таня Семёнова",
+      "e_type": "minihint",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "04.12.2020 17:59:17",
+      "e_team": "GirlsBand",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19326080",
+      "e_user": "Эннергия",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "04.12.2020 18:12:18",
+      "e_team": "GirlsBand",
+      "e_lvl": 7,
+      "e_bonus": false,
+      "e_score": -1,
+      "e_itemid": "19326094",
+      "e_user": "Эннергия",
+      "e_type": "minihint",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "04.12.2020 18:12:45",
+      "e_team": "GirlsBand",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19326095",
+      "e_user": "Эннергия",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "04.12.2020 18:28:23",
+      "e_team": "GirlsBand",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19326101",
+      "e_user": "Таня Семёнова",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "04.12.2020 18:53:07",
+      "e_team": "Синий_Ангел",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 60,
+      "e_itemid": "19326137",
+      "e_user": "Dram4ik13",
+      "e_type": "task",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "04.12.2020 18:53:15",
+      "e_team": "GirlsBand",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19326139",
+      "e_user": "Таня Семёнова",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "04.12.2020 19:16:50",
+      "e_team": "Синий_Ангел",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19326278",
+      "e_user": "Dram4ik13",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "04.12.2020 19:31:34",
+      "e_team": "О.Т. Win Team",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 60,
+      "e_itemid": "19326313",
+      "e_user": "sanjjjjok",
+      "e_type": "task",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "04.12.2020 19:51:09",
+      "e_team": "О.Т. Win Team",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 60,
+      "e_itemid": "19326359",
+      "e_user": "sanjjjjok",
+      "e_type": "task",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "04.12.2020 20:43:27",
+      "e_team": "Нормальное название команды",
+      "e_lvl": 7,
+      "e_bonus": false,
+      "e_score": -30,
+      "e_itemid": "19326547",
+      "e_user": "lena_776",
+      "e_type": "hint",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "04.12.2020 20:44:02",
+      "e_team": "Нормальное название команды",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 60,
+      "e_itemid": "19326551",
+      "e_user": "lena_776",
+      "e_type": "task",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "04.12.2020 20:44:14",
+      "e_team": "C.S.",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 60,
+      "e_itemid": "19326553",
+      "e_user": "MindControl",
+      "e_type": "task",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "04.12.2020 21:14:22",
+      "e_team": "Восстание Левых Эклеров",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 60,
+      "e_itemid": "19326652",
+      "e_user": "a.moiseeva",
+      "e_type": "task",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "04.12.2020 21:39:51",
+      "e_team": "Ботинки Кирилла",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19326681",
+      "e_user": "Эрик Ивков",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "04.12.2020 21:49:10",
+      "e_team": "Ботинки Кирилла",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19326694",
+      "e_user": "Эрик Ивков",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "04.12.2020 23:01:48",
+      "e_team": "D.I.C",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 60,
+      "e_itemid": "19326751",
+      "e_user": "Иван Бубнов",
+      "e_type": "task",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "04.12.2020 23:16:02",
+      "e_team": "NaId",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 60,
+      "e_itemid": "19326778",
+      "e_user": "zil13",
+      "e_type": "task",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "04.12.2020 23:37:21",
+      "e_team": "D.I.C",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19327272",
+      "e_user": "Иван Бубнов",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "05.12.2020 0:03:40",
+      "e_team": "ТорChi",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 60,
+      "e_itemid": "19328767",
+      "e_user": "masjka",
+      "e_type": "task",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "05.12.2020 0:10:24",
+      "e_team": "Синий_Ангел",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19329016",
+      "e_user": "Dram4ik13",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "05.12.2020 0:14:13",
+      "e_team": "Название потом придумаем",
+      "e_lvl": 7,
+      "e_bonus": false,
+      "e_score": -30,
+      "e_itemid": "19329107",
+      "e_user": "Rafa83~",
+      "e_type": "hint",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "05.12.2020 0:14:42",
+      "e_team": "Название потом придумаем",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 60,
+      "e_itemid": "19329121",
+      "e_user": "Rafa83~",
+      "e_type": "task",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "05.12.2020 0:15:21",
+      "e_team": "GirlsBand",
+      "e_lvl": 7,
+      "e_bonus": false,
+      "e_score": -30,
+      "e_itemid": "19329137",
+      "e_user": "Эннергия",
+      "e_type": "hint",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "05.12.2020 0:16:37",
+      "e_team": "Название потом придумаем",
+      "e_lvl": 7,
+      "e_bonus": false,
+      "e_score": -30,
+      "e_itemid": "19329171",
+      "e_user": "Rafa83~",
+      "e_type": "hint",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "05.12.2020 0:17:01",
+      "e_team": "Название потом придумаем",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 60,
+      "e_itemid": "19329180",
+      "e_user": "Rafa83~",
+      "e_type": "task",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "05.12.2020 0:23:33",
+      "e_team": "D.I.C",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 60,
+      "e_itemid": "19329279",
+      "e_user": "Begi",
+      "e_type": "task",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "05.12.2020 0:25:43",
+      "e_team": "GirlsBand",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 60,
+      "e_itemid": "19329313",
+      "e_user": "Таня Семёнова",
+      "e_type": "task",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "05.12.2020 0:25:44",
+      "e_team": "GirlsBand",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 60,
+      "e_itemid": "19329314",
+      "e_user": "Эннергия",
+      "e_type": "task",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "05.12.2020 0:32:24",
+      "e_team": "NaId",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 60,
+      "e_itemid": "19329390",
+      "e_user": "Yuzhnaya",
+      "e_type": "task",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "05.12.2020 0:57:49",
+      "e_team": "Название потом придумаем",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19329466",
+      "e_user": "Rafa83~",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "05.12.2020 1:04:15",
+      "e_team": "Ботинки Кирилла",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19329471",
+      "e_user": "Эрик Ивков",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "05.12.2020 1:42:01",
+      "e_team": "Ботинки Кирилла",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19329575",
+      "e_user": "Эрик Ивков",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "05.12.2020 1:52:38",
+      "e_team": "SoSеди",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 60,
+      "e_itemid": "19329595",
+      "e_user": "Orient_RG",
+      "e_type": "task",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "05.12.2020 2:03:13",
+      "e_team": "ДИВ",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 60,
+      "e_itemid": "19329624",
+      "e_user": "xobbit",
+      "e_type": "task",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "05.12.2020 2:44:20",
+      "e_team": "Ботинки Кирилла",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 60,
+      "e_itemid": "19329735",
+      "e_user": "one_hp~",
+      "e_type": "task",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "05.12.2020 2:54:59",
+      "e_team": "Ботинки Кирилла",
+      "e_lvl": 7,
+      "e_bonus": false,
+      "e_score": -1,
+      "e_itemid": "19329762",
+      "e_user": "one_hp~",
+      "e_type": "minihint",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "05.12.2020 2:55:05",
+      "e_team": "Ботинки Кирилла",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19329765",
+      "e_user": "one_hp~",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "05.12.2020 3:24:37",
+      "e_team": "Ботинки Кирилла",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 60,
+      "e_itemid": "19329839",
+      "e_user": "one_hp~",
+      "e_type": "task",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "05.12.2020 3:25:18",
+      "e_team": "Ботинки Кирилла",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 1,
+      "e_itemid": "19329840",
+      "e_user": "one_hp~",
+      "e_type": "egg",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "05.12.2020 3:35:38",
+      "e_team": "Ботинки Кирилла",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19329858",
+      "e_user": "one_hp~",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "05.12.2020 3:38:20",
+      "e_team": "GirlsBand",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19329874",
+      "e_user": "Эннергия",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "05.12.2020 8:44:33",
+      "e_team": "Восстание Левых Эклеров",
+      "e_lvl": 7,
+      "e_bonus": false,
+      "e_score": -1,
+      "e_itemid": "19330378",
+      "e_user": "Beatrichche",
+      "e_type": "minihint",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "05.12.2020 8:45:16",
+      "e_team": "Восстание Левых Эклеров",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19330379",
+      "e_user": "Beatrichche",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "05.12.2020 8:47:44",
+      "e_team": "Восстание Левых Эклеров",
+      "e_lvl": 7,
+      "e_bonus": false,
+      "e_score": -1,
+      "e_itemid": "19330380",
+      "e_user": "Beatrichche",
+      "e_type": "minihint",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "05.12.2020 8:48:28",
+      "e_team": "Восстание Левых Эклеров",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19330381",
+      "e_user": "Beatrichche",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "05.12.2020 8:50:36",
+      "e_team": "Восстание Левых Эклеров",
+      "e_lvl": 7,
+      "e_bonus": false,
+      "e_score": -1,
+      "e_itemid": "19330382",
+      "e_user": "Beatrichche",
+      "e_type": "minihint",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "05.12.2020 8:51:00",
+      "e_team": "Восстание Левых Эклеров",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19330383",
+      "e_user": "Beatrichche",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "05.12.2020 8:52:35",
+      "e_team": "Восстание Левых Эклеров",
+      "e_lvl": 7,
+      "e_bonus": false,
+      "e_score": -1,
+      "e_itemid": "19330384",
+      "e_user": "Beatrichche",
+      "e_type": "minihint",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "05.12.2020 8:52:45",
+      "e_team": "Восстание Левых Эклеров",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19330386",
+      "e_user": "Beatrichche",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "05.12.2020 8:54:11",
+      "e_team": "Ворчание ягнят",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 60,
+      "e_itemid": "19330389",
+      "e_user": "Julickay",
+      "e_type": "task",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "05.12.2020 8:55:37",
+      "e_team": "Восстание Левых Эклеров",
+      "e_lvl": 7,
+      "e_bonus": false,
+      "e_score": -1,
+      "e_itemid": "19330390",
+      "e_user": "Beatrichche",
+      "e_type": "minihint",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "05.12.2020 8:56:06",
+      "e_team": "Восстание Левых Эклеров",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19330391",
+      "e_user": "Beatrichche",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "05.12.2020 8:57:27",
+      "e_team": "Восстание Левых Эклеров",
+      "e_lvl": 7,
+      "e_bonus": false,
+      "e_score": -1,
+      "e_itemid": "19330393",
+      "e_user": "Beatrichche",
+      "e_type": "minihint",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "05.12.2020 8:58:27",
+      "e_team": "Восстание Левых Эклеров",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19330395",
+      "e_user": "Beatrichche",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "05.12.2020 9:53:08",
+      "e_team": "Синий_Ангел",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19330398",
+      "e_user": "Dram4ik13",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "05.12.2020 10:16:40",
+      "e_team": "Ворчание ягнят",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 60,
+      "e_itemid": "19330399",
+      "e_user": "Julickay",
+      "e_type": "task",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "05.12.2020 10:23:07",
+      "e_team": "Восстание Левых Эклеров",
+      "e_lvl": 7,
+      "e_bonus": false,
+      "e_score": -30,
+      "e_itemid": "19330400",
+      "e_user": "Beatrichche",
+      "e_type": "hint",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "05.12.2020 10:23:28",
+      "e_team": "Восстание Левых Эклеров",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 60,
+      "e_itemid": "19330401",
+      "e_user": "Beatrichche",
+      "e_type": "task",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "05.12.2020 10:24:24",
+      "e_team": "Восстание Левых Эклеров",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 1,
+      "e_itemid": "19330402",
+      "e_user": "Beatrichche",
+      "e_type": "egg",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "05.12.2020 10:33:24",
+      "e_team": "Восстание Левых Эклеров",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19330403",
+      "e_user": "movis08",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "05.12.2020 10:35:18",
+      "e_team": "C.S.",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 60,
+      "e_itemid": "19330404",
+      "e_user": "MindControl",
+      "e_type": "task",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "05.12.2020 10:39:24",
+      "e_team": "SoSеди",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 60,
+      "e_itemid": "19330405",
+      "e_user": "FisTashik",
+      "e_type": "task",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "05.12.2020 10:50:34",
+      "e_team": "SoSеди",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19330406",
+      "e_user": "-Cool-",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "05.12.2020 10:57:17",
+      "e_team": "Ботинки Кирилла",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19330409",
+      "e_user": "one_hp~",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "05.12.2020 11:02:47",
+      "e_team": "Восстание Левых Эклеров",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19330412",
+      "e_user": "Beatrichche",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "05.12.2020 11:06:47",
+      "e_team": "ДИВ",
+      "e_lvl": 7,
+      "e_bonus": false,
+      "e_score": -30,
+      "e_itemid": "19330414",
+      "e_user": "Gaff",
+      "e_type": "hint",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "05.12.2020 11:07:25",
+      "e_team": "ДИВ",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 60,
+      "e_itemid": "19330415",
+      "e_user": "Gaff",
+      "e_type": "task",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "05.12.2020 11:09:08",
+      "e_team": "Синий_Ангел",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19330416",
+      "e_user": "Dram4ik13",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "05.12.2020 11:13:10",
+      "e_team": "Восстание Левых Эклеров",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 1,
+      "e_itemid": "19330419",
+      "e_user": "Beatrichche",
+      "e_type": "egg",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "05.12.2020 11:15:14",
+      "e_team": "Ботинки Кирилла",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19330421",
+      "e_user": "one_hp~",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "05.12.2020 11:21:58",
+      "e_team": "ДИВ",
+      "e_lvl": 7,
+      "e_bonus": false,
+      "e_score": -1,
+      "e_itemid": "19330426",
+      "e_user": "Gaff",
+      "e_type": "minihint",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "05.12.2020 11:22:05",
+      "e_team": "ДИВ",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19330427",
+      "e_user": "Gaff",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "05.12.2020 11:22:21",
+      "e_team": "ДИВ",
+      "e_lvl": 7,
+      "e_bonus": false,
+      "e_score": -1,
+      "e_itemid": "19330428",
+      "e_user": "Gaff",
+      "e_type": "minihint",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "05.12.2020 11:22:37",
+      "e_team": "ДИВ",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19330429",
+      "e_user": "Gaff",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "05.12.2020 11:26:00",
+      "e_team": "Ботинки Кирилла",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 2,
+      "e_itemid": "19330431",
+      "e_user": "one_hp~",
+      "e_type": "minitask",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "05.12.2020 11:28:08",
+      "e_team": "D.I.C",
+      "e_lvl": 7,
+      "e_bonus": true,
+      "e_score": 60,
+      "e_itemid": "19330438",
+      "e_user": "Begi",
       "e_type": "task",
       "e_isgood": true
     }
