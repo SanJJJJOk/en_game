@@ -222,6 +222,21 @@ def get_action_type(score):
 
 #---------------------------------------upd---------------------------------------------------------
 
+def update_users():
+    global Is_monitoring_active, Auto_update, Output_arr, Domain, Gameid
+    nullusers = [Output_arr[ii] for ii in Output_arr if Output_arr[ii].e_isgood and Output_arr[ii].e_user is None]
+    for item in nullusers:
+        bp_link = 'GameBonusPenaltyTime.aspx?correct=' + item.e_itemid + '&gid=70696'
+        fp2 = request.urlopen("http://72.en.cx/" + bp_link)
+        mybytes2 = fp2.read()
+        mystr2 = mybytes2.decode("utf8")
+        fp2.close()
+        soup2 = BeautifulSoup(mystr2, 'html.parser')
+
+        user_tag = soup2.find('a', {'id': re.compile("lnkCorrectInfoUserInfo")})
+        if not user_tag is None:
+            item.e_user = user_tag.get_text()
+
 def update_data():
     global Is_monitoring_active, Auto_update, Output_arr, Domain, Gameid
     fp = request.urlopen("http://"+Domain+".en.cx/GameBonusPenaltyTime.aspx?gid="+Gameid)
@@ -279,6 +294,7 @@ def update_data():
         action_items.append(action_item)
         Output_arr[e_itemid] = action_item
 
+    update_users()
     return action_items
 
 #-------------------------------------tg-run-------------------------------------------------------
