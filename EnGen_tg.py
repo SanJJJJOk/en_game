@@ -225,6 +225,7 @@ def get_action_type(score):
 def update_users():
     global Is_monitoring_active, Auto_update, Output_arr, Domain, Gameid
     nullusers = [Output_arr[ii] for ii in Output_arr if Output_arr[ii].e_isgood and Output_arr[ii].e_user is None]
+    output_not_updated = []
     for item in nullusers:
         bp_link = 'GameBonusPenaltyTime.aspx?correct=' + item.e_itemid + '&gid=70696'
         fp2 = request.urlopen("http://72.en.cx/" + bp_link)
@@ -236,6 +237,9 @@ def update_users():
         user_tag = soup2.find('a', {'id': re.compile("lnkCorrectInfoUserInfo")})
         if not user_tag is None:
             item.e_user = user_tag.get_text()
+        else:
+            output_not_updated.append(item)
+    return output_not_updated
 
 def update_data():
     global Is_monitoring_active, Auto_update, Output_arr, Domain, Gameid
