@@ -24232,6 +24232,28 @@
       "e_user": "Rafa83~",
       "e_type": "egg",
       "e_isgood": true
+    },
+    {
+      "e_dtime": "12.12.2020 1:01:24",
+      "e_team": "GirlsBand",
+      "e_lvl": 10,
+      "e_bonus": false,
+      "e_score": -30,
+      "e_itemid": "19396973",
+      "e_user": "Эннергия",
+      "e_type": "hint",
+      "e_isgood": true
+    },
+    {
+      "e_dtime": "12.12.2020 1:01:58",
+      "e_team": "GirlsBand",
+      "e_lvl": 10,
+      "e_bonus": true,
+      "e_score": 60,
+      "e_itemid": "19396982",
+      "e_user": "Эннергия",
+      "e_type": "task",
+      "e_isgood": true
     }
   ]
 }
