@@ -60,6 +60,7 @@ class TgCommands:
     Backup = 'backup'
     ByTeamStat = 'btstat'
     ByTeamEggs = 'bteggs'
+    Special10 = 'rinat'
 
 class Emjs:
     Bonus = '\u2705'
@@ -437,6 +438,40 @@ def tg_base_stat_eggs(update, context, command, is_by_team, is_only_eggs):
         update.message.reply_text(err_msg)
         context.bot.send_message('228485598', err_msg + 'id:' + str(update.message.chat.id))
 
+def tg_special_10(update, context):
+    global Is_monitoring_active, Auto_update, Output_arr, Domain, Gameid, ChatHolder
+    try:
+        bot_authorize(update, context)
+        check_other_commands(update, context)
+        if Auto_update:
+            new_items = update_data()
+        output = {}
+        for key in Output_arr:
+            item = Output_arr[key]
+            if not item.e_isgood:
+                continue
+            if item.e_lvl!=10:
+                continue
+            if not item.e_team in output:
+                output[item.e_team] = ActionItemsSet()
+            output[item.e_team].add(item)
+        output_sorted = list(output.items())
+        output_sorted.sort(key=lambda i: i[1].score_sum, reverse=True)
+
+        score_emjs_data = get_score_emjs_data([i[1].score_sum for i in output_sorted])
+
+        reply_str = ''
+        for i in output_sorted:
+            info = get_action_info(i[1].items)
+            reply_str = reply_str + i[0] + ';' + sec_to_str(i[1].score_sum) + ';' + str(info.task_count) + ';' + str(info.hint_count) + '\n'
+        if not reply_str=='':
+            print_long(update, context, reply_str)
+    except Exception as e:
+        err_msg = "неизвестная ошибка update: {0}".format(str(e))
+        update.message.reply_text(err_msg)
+        context.bot.send_message('228485598', err_msg + 'id:' + str(update.message.chat.id))
+
+
 def tg_user_eggs(update, context):
     global Is_monitoring_active, Auto_update, Output_arr, Domain, Gameid, ChatHolder
     tg_base_stat_eggs(update, context, TgCommands.UserEggs, False, True)
@@ -629,6 +664,7 @@ def main():
     dp.add_handler(CommandHandler(TgCommands.Backup, tg_backup))
     dp.add_handler(CommandHandler(TgCommands.ByTeamStat, tg_team_stat_intt))
     dp.add_handler(CommandHandler(TgCommands.ByTeamEggs, tg_team_eggs_intt))
+    dp.add_handler(CommandHandler(TgCommands.Special10, tg_special_10))
     dp.add_handler(MessageHandler(Filters.document, tg_document))
     dp.add_handler(MessageHandler(Filters.text, tg_default_txt))
     
