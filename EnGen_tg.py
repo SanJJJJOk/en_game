@@ -640,6 +640,27 @@ def tg_default_txt(update, context):
         update.message.reply_text(err_msg)
         context.bot.send_message('228485598', err_msg + 'id:' + str(update.message.chat.id))
 
+def tg_start(update, context):
+    global Is_monitoring_active, Auto_update, Output_arr, Domain, Gameid, ChatHolder
+    try:
+        bot_authorize(update, context)
+        check_other_commands(update, context)
+        update.message.reply_text('ну привет')
+    except Exception as e:
+        err_msg = "неизвестная ошибка: {0}".format(str(e))
+        update.message.reply_text(err_msg)
+        context.bot.send_message('228485598', err_msg + 'id:' + str(update.message.chat.id))
+        
+def tg_help(update, context):
+    global Is_monitoring_active, Auto_update, Output_arr, Domain, Gameid, ChatHolder
+    try:
+        bot_authorize(update, context)
+        check_other_commands(update, context)
+        update.message.reply_text('хуелп')
+    except Exception as e:
+        err_msg = "неизвестная ошибка: {0}".format(str(e))
+        update.message.reply_text(err_msg)
+        context.bot.send_message('228485598', err_msg + 'id:' + str(update.message.chat.id))
 #--------------------------------------main--------------------------------------------------------
 
 def main():
@@ -665,6 +686,8 @@ def main():
     dp.add_handler(CommandHandler(TgCommands.ByTeamStat, tg_team_stat_intt))
     dp.add_handler(CommandHandler(TgCommands.ByTeamEggs, tg_team_eggs_intt))
     dp.add_handler(CommandHandler(TgCommands.Special10, tg_special_10))
+    dp.add_handler(CommandHandler('start', tg_start))
+    dp.add_handler(CommandHandler('help', tg_help))
     dp.add_handler(MessageHandler(Filters.document, tg_document))
     dp.add_handler(MessageHandler(Filters.text, tg_default_txt))
     
